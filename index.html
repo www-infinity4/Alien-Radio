@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ALIEN RADIO · Deep Space Transmissions</title>
+  <meta name="description" content="Alien sounds channel digital radio — futuristic HUD channel scanner with Bitcoin-harvesting signal architecture and GP Suite AI dashboard." />
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google Fonts preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+</head>
+<body>
+<div id="app">
+
+  <!-- ══════════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════════ -->
+  <header class="site-header">
+    <div class="logo">
+      <span class="logo-symbol">👾</span>
+      <div>
+        <div class="logo-title">ALIEN RADIO</div>
+        <div class="logo-subtitle">Deep Space Transmissions · GP Suite AI</div>
+      </div>
+    </div>
+
+    <div class="header-status">
+      <span class="status-dot"><span class="dot"></span> ONLINE</span>
+      <span class="status-dot"><span class="dot orange"></span> BTC LIVE</span>
+      <span class="status-dot"><span class="dot purple"></span> AI ACTIVE</span>
+      <span class="header-time" id="header-time">00:00:00 UTC</span>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════
+       BTC TICKER
+  ══════════════════════════════════════════ -->
+  <div class="btc-ticker">
+    <div class="ticker-track" id="ticker-track">
+      <!-- populated by app.js -->
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       MAIN GRID  [LEFT | CENTER | RIGHT]
+  ══════════════════════════════════════════ -->
+  <main class="main-grid container">
+
+    <!-- ── LEFT COLUMN: Channel Scanner ── -->
+    <aside class="col-left">
+      <div class="hud-panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <span class="panel-icon">📡</span>
+            <span>Channel Scanner</span>
+          </div>
+          <span class="panel-badge">8 CH</span>
+        </div>
+        <div class="panel-body">
+
+          <!-- Frequency Display -->
+          <div class="scanner-display">
+            <div class="scan-line"></div>
+            <div class="freq-display" id="freq-display">88.1</div>
+            <div class="freq-unit">MHz · SIGNAL LOCKED</div>
+            <div class="channel-name" id="channel-name">ANDROMEDA</div>
+            <div class="signal-bar-row" id="signal-bars">
+              <div class="sig-bar" style="height:8px"></div>
+              <div class="sig-bar" style="height:11px"></div>
+              <div class="sig-bar" style="height:15px"></div>
+              <div class="sig-bar" style="height:20px"></div>
+              <div class="sig-bar" style="height:24px"></div>
+              <div class="sig-bar" style="height:20px"></div>
+              <div class="sig-bar" style="height:15px"></div>
+              <div class="sig-bar" style="height:11px"></div>
+              <div class="sig-bar" style="height:8px"></div>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="scanner-controls">
+            <button class="hud-btn" onclick="prevChannel()" data-tooltip="Previous channel">⏮ PREV</button>
+            <button class="hud-btn green active" id="scan-btn" onclick="toggleScan()" data-tooltip="Auto-scan channels">⟳ SCAN</button>
+            <button class="hud-btn" onclick="nextChannel()" data-tooltip="Next channel">NEXT ⏭</button>
+          </div>
+
+          <!-- Volume -->
+          <div class="volume-row">
+            <span class="vol-label">VOL</span>
+            <input type="range" class="vol-slider" id="vol-slider" min="0" max="100" value="72" />
+          </div>
+
+          <!-- Channel List -->
+          <ul class="channel-list" id="channel-list">
+            <!-- populated by app.js -->
+          </ul>
+
+        </div><!-- /panel-body -->
+      </div><!-- /hud-panel -->
+    </aside>
+
+    <!-- ── CENTER COLUMN: Now Playing + Visualizer ── -->
+    <section class="col-center">
+
+      <!-- Now Playing -->
+      <div class="now-playing-card">
+        <div class="np-art" id="np-art">👾</div>
+        <div class="np-info">
+          <div class="np-channel" id="np-channel">Deep Space Transmissions</div>
+          <div class="np-title"  id="np-title">ANDROMEDA BROADCAST</div>
+          <div class="np-artist" id="np-artist">Deep Space Network · Alien Radio</div>
+        </div>
+        <div class="np-controls">
+          <button class="np-btn" onclick="prevChannel()" data-tooltip="Previous">⏮</button>
+          <button class="np-btn play-btn" id="play-btn" onclick="togglePlay()" data-tooltip="Play / Pause">⏸</button>
+          <button class="np-btn" onclick="nextChannel()" data-tooltip="Next">⏭</button>
+        </div>
+      </div>
+
+      <!-- Visualizer -->
+      <div class="hud-panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <span class="panel-icon">📊</span>
+            <span>Spectrum Analyzer</span>
+          </div>
+          <span class="panel-badge">LIVE</span>
+        </div>
+        <div class="panel-body">
+          <div class="visualizer-wrap">
+            <canvas id="visualizer"></canvas>
+            <div class="vis-overlay"></div>
+          </div>
+          <div class="vis-type-row mt-1">
+            <button class="vis-type-btn" data-type="bars"   onclick="setVisType('bars')">BARS</button>
+            <button class="vis-type-btn" data-type="wave"   onclick="setVisType('wave')">WAVE</button>
+            <button class="vis-type-btn" data-type="circle" onclick="setVisType('circle')">ORBITAL</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signal Meters -->
+      <div class="hud-panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <span class="panel-icon">⚡</span>
+            <span>Signal Telemetry</span>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="signal-meters">
+            <div class="sig-meter-row">
+              <span class="sig-meter-label">SIGNAL</span>
+              <div class="sig-meter-bar"><div class="sig-meter-fill fill-cyan"   id="sig-meter-signal"   style="width:92%"></div></div>
+              <span class="sig-meter-val">92%</span>
+            </div>
+            <div class="sig-meter-row">
+              <span class="sig-meter-label">COSMIC</span>
+              <div class="sig-meter-bar"><div class="sig-meter-fill fill-purple" id="sig-meter-cosmic"   style="width:67%"></div></div>
+              <span class="sig-meter-val">67%</span>
+            </div>
+            <div class="sig-meter-row">
+              <span class="sig-meter-label">QUANTUM</span>
+              <div class="sig-meter-bar"><div class="sig-meter-fill fill-green"  id="sig-meter-quantum"  style="width:81%"></div></div>
+              <span class="sig-meter-val">81%</span>
+            </div>
+            <div class="sig-meter-row">
+              <span class="sig-meter-label">HARMONIC</span>
+              <div class="sig-meter-bar"><div class="sig-meter-fill fill-orange" id="sig-meter-harmonic" style="width:54%"></div></div>
+              <span class="sig-meter-val">54%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ── RIGHT COLUMN: AI Dashboard + BTC Feed ── -->
+    <aside class="col-right">
+
+      <!-- Giro Quantum Core -->
+      <div class="hud-panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <span class="panel-icon">⟲</span>
+            <span>Giro Quantum Core</span>
+          </div>
+          <span class="panel-badge">ACTIVE</span>
+        </div>
+        <div class="panel-body">
+          <div class="giro-core-wrap">
+            <div class="giro-core">
+              <div class="giro-ring ring-1"></div>
+              <div class="giro-ring ring-2"></div>
+              <div class="giro-ring ring-3"></div>
+              <div class="giro-center">⚛️</div>
+            </div>
+          </div>
+
+          <hr class="divider" />
+
+          <!-- GP Suite AI Grid -->
+          <div class="panel-header" style="padding: 0 0 0.4rem; border: none;">
+            <div class="panel-title-group">
+              <span class="panel-icon">🤖</span>
+              <span>GP Suite AI Agents</span>
+            </div>
+          </div>
+          <div class="ai-grid" id="ai-grid">
+            <!-- populated by app.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Bitcoin Transaction Feed -->
+      <div class="hud-panel mt-2" style="margin-top: 1rem;">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <span class="panel-icon">₿</span>
+            <span>Bitcoin Harvest Feed</span>
+          </div>
+          <span class="panel-badge text-orange" style="color:var(--neon-orange); border-color:rgba(255,136,0,0.4);">
+            <span id="btc-total">0.00000000 BTC</span>
+          </span>
+        </div>
+        <div class="panel-body">
+          <div class="btc-feed" id="btc-feed">
+            <!-- populated by app.js -->
+          </div>
+          <hr class="divider" />
+          <button class="hud-btn orange full mt-1" onclick="showToast('Minting token…','₿')">
+            ₿ MINT TOKEN
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Tool Panel (emoji toolbar) -->
+      <div class="hud-panel" style="margin-top: 1rem;">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <span class="panel-icon">🧰</span>
+            <span>Quick Tools</span>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="scanner-controls" style="grid-template-columns: repeat(4, 1fr);">
+            <button class="hud-btn" onclick="openModal('radio-type-modal')"       data-tooltip="Add Radio / TV / Gallery">🎷</button>
+            <button class="hud-btn" onclick="showToast('Visualizer added','😎')"  data-tooltip="Add Visualizer">😎</button>
+            <button class="hud-btn" onclick="showToast('Token minted','🟡')"      data-tooltip="Token Walker">🟡</button>
+            <button class="hud-btn" onclick="showToast('Content doubled','🍄')"   data-tooltip="Double Content">🍄</button>
+            <button class="hud-btn" onclick="showToast('Scanning page…','🔬')"    data-tooltip="Microscope Fixes">🔬</button>
+            <button class="hud-btn" onclick="showToast('Art studio opening…','🎨')" data-tooltip="Art Studio">🎨</button>
+            <button class="hud-btn" onclick="showToast('Research thread started','♠️')" data-tooltip="Research Writer">♠️</button>
+            <button class="hud-btn" onclick="showToast('Merchant options loaded','♦️')" data-tooltip="Merchant Options">♦️</button>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- ══════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <span>© ALIEN RADIO · GP Suite AI · Deep Space Network</span>
+    <div class="footer-links">
+      <a href="#">Channels</a>
+      <a href="#">AI Dashboard</a>
+      <a href="#">Bitcoin Feed</a>
+      <a href="#">About</a>
+    </div>
+    <span class="text-dim">SIGNAL LOCKED · 8 CHANNELS · GP SUITE ACTIVE</span>
+  </footer>
+
+  <!-- ══════════════════════════════════════════
+       TOAST CONTAINER
+  ══════════════════════════════════════════ -->
+  <div id="toast-container"></div>
+
+  <!-- ══════════════════════════════════════════
+       MODAL: Radio Type Picker
+  ══════════════════════════════════════════ -->
+  <div class="modal-overlay" id="radio-type-modal">
+    <div class="modal-box">
+      <div class="modal-title">🎷 Add Media Stream</div>
+      <button class="modal-close" onclick="closeModal('radio-type-modal')">✕</button>
+      <ul class="modal-option-list">
+        <li class="modal-option" onclick="handleModalOption('Alien Radio')">
+          <span class="option-icon">📻</span>
+          <div>
+            <div class="option-label">Alien Radio</div>
+            <div class="option-desc">Deep space channel scanner · 8 channels</div>
+          </div>
+        </li>
+        <li class="modal-option" onclick="handleModalOption('Infinity TV')">
+          <span class="option-icon">📺</span>
+          <div>
+            <div class="option-label">Infinity TV</div>
+            <div class="option-desc">Video streams from across the universe</div>
+          </div>
+        </li>
+        <li class="modal-option" onclick="handleModalOption('Image Gallery')">
+          <span class="option-icon">🖼️</span>
+          <div>
+            <div class="option-label">Image Gallery</div>
+            <div class="option-desc">Curated alien imagery from the void</div>
+          </div>
+        </li>
+        <li class="modal-option" onclick="handleModalOption('RSS Feed')">
+          <span class="option-icon">📡</span>
+          <div>
+            <div class="option-label">RSS Signal Feed</div>
+            <div class="option-desc">Live signal broadcasts from the network</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /#app -->
+<script src="app.js"></script>
+</body>
+</html>
