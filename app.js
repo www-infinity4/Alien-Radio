@@ -143,8 +143,12 @@ function selectChannel(idx) {
     el.classList.toggle('active', i === idx);
   });
 
-  // Auto-play
-  if (!state.isPlaying) togglePlay();
+  // Auto-play / switch audio
+  if (!state.isPlaying) {
+    togglePlay();
+  } else {
+    startAudio(idx);
+  }
 
   // Log transaction
   addTx({ icon: '⚡', action: `Tuned to ${ch.name}`, value: `+${(Math.random()*0.0001).toFixed(6)} BTC` });
@@ -170,9 +174,11 @@ function togglePlay() {
   if (btn) btn.textContent = state.isPlaying ? '⏸' : '▶';
   if (art) art.classList.toggle('playing', state.isPlaying);
   if (state.isPlaying) {
+    startAudio(state.activeChannel);
     startVisualizer();
     addTx({ icon: '🎵', action: 'Stream started', value: `+${(Math.random()*0.00002).toFixed(6)} BTC` });
   } else {
+    stopAudio();
     stopVisualizer();
   }
 }
@@ -195,6 +201,261 @@ function toggleScan() {
   }
 }
 
+/* ── Web Audio Engine ── */
+let audioCtx       = null;
+let analyserNode   = null;
+let masterGainNode = null;
+let activeAudioNodes = [];
+let fftBuffer      = null;
+
+// Per-channel sound profiles
+const CHANNEL_SOUNDS = [
+  { type: 'spaceHum',   baseFreq: 55,  lfoRate: 0.3, filterFreq: 800  },  // ANDROMEDA
+  { type: 'cosmicPad',  baseFreq: 110, lfoRate: 0.5, filterFreq: 1200 },  // NEBULA-7
+  { type: 'pulsarBeat', baseFreq: 80,  lfoRate: 2.0, filterFreq: 600  },  // PULSAR BEAT
+  { type: 'ionStorm',   baseFreq: 200, lfoRate: 0.8, filterFreq: 2000 },  // ZETA WAVE
+  { type: 'voidDrone',  baseFreq: 30,  lfoRate: 0.1, filterFreq: 400  },  // VOID SIGNAL
+  { type: 'solarDrift', baseFreq: 220, lfoRate: 0.6, filterFreq: 3000 },  // SOLAR DRIFT
+  { type: 'quantumFM',  baseFreq: 140, lfoRate: 1.2, filterFreq: 1500 },  // QUANTUM FOLD
+  { type: 'hyperFM',    baseFreq: 180, lfoRate: 3.0, filterFreq: 2500 },  // HYPERDRIVE FM
+];
+
+function ensureAudioContext() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyserNode = audioCtx.createAnalyser();
+    analyserNode.fftSize = 128;
+    analyserNode.smoothingTimeConstant = 0.8;
+    fftBuffer = new Uint8Array(analyserNode.frequencyBinCount);
+    masterGainNode = audioCtx.createGain();
+    masterGainNode.gain.value = state.volume / 100;
+    analyserNode.connect(masterGainNode);
+    masterGainNode.connect(audioCtx.destination);
+  }
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function stopAudio() {
+  activeAudioNodes.forEach(node => {
+    try { if (node.stop) node.stop(0); } catch (e) {}
+    try { node.disconnect(); } catch (e) {}
+  });
+  activeAudioNodes = [];
+}
+
+function startAudio(channelIdx) {
+  stopAudio();
+  ensureAudioContext();
+  const profile = CHANNEL_SOUNDS[channelIdx] || CHANNEL_SOUNDS[0];
+  const dest = analyserNode;
+  ({
+    spaceHum:   () => buildSpaceHum(profile, dest),
+    cosmicPad:  () => buildCosmicPad(profile, dest),
+    pulsarBeat: () => buildPulsarBeat(profile, dest),
+    ionStorm:   () => buildIonStorm(profile, dest),
+    voidDrone:  () => buildVoidDrone(profile, dest),
+    solarDrift: () => buildSolarDrift(profile, dest),
+    quantumFM:  () => buildQuantumFM(profile, dest),
+    hyperFM:    () => buildHyperFM(profile, dest),
+  }[profile.type] || (() => buildSpaceHum(profile, dest)))();
+}
+
+// Node factory helpers
+function mkOsc(type, freq, detune = 0) {
+  const osc = audioCtx.createOscillator();
+  osc.type = type;
+  osc.frequency.value = freq;
+  if (detune) osc.detune.value = detune;
+  activeAudioNodes.push(osc);
+  return osc;
+}
+function mkGain(val) {
+  const g = audioCtx.createGain();
+  g.gain.value = val;
+  activeAudioNodes.push(g);
+  return g;
+}
+function mkFilter(type, freq, q = 1) {
+  const f = audioCtx.createBiquadFilter();
+  f.type = type;
+  f.frequency.value = freq;
+  f.Q.value = q;
+  activeAudioNodes.push(f);
+  return f;
+}
+function mkNoise(gainVal = 0.1) {
+  const bufSize = audioCtx.sampleRate * 2;
+  const buffer  = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+  const data    = buffer.getChannelData(0);
+  for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+  const src = audioCtx.createBufferSource();
+  src.buffer = buffer;
+  src.loop   = true;
+  const g = mkGain(gainVal);
+  src.connect(g);
+  activeAudioNodes.push(src);
+  return { src, gain: g };
+}
+
+// ANDROMEDA — deep-space hum: detuned sine cluster + slow tremolo
+function buildSpaceHum({ baseFreq, lfoRate }, dest) {
+  const masterG = mkGain(0.4);
+  masterG.connect(dest);
+  for (let i = 0; i < 5; i++) {
+    const osc = mkOsc('sine', baseFreq * (1 + i * 0.5), (Math.random() - 0.5) * 15);
+    const g   = mkGain(0.08 / (i + 1));
+    osc.connect(g); g.connect(masterG); osc.start();
+  }
+  const lfo  = mkOsc('sine', lfoRate);
+  const lfoG = mkGain(0.15);
+  lfo.connect(lfoG); lfoG.connect(masterG.gain); lfo.start();
+  const { src: noise, gain: noiseGain } = mkNoise(0.05);
+  const lp = mkFilter('lowpass', 200, 2);
+  noiseGain.connect(lp); lp.connect(masterG); noise.start();
+}
+
+// NEBULA-7 — cosmic pad: sawtooth stack through slow filter sweep
+function buildCosmicPad({ baseFreq, lfoRate, filterFreq }, dest) {
+  const masterG = mkGain(0.3);
+  masterG.connect(dest);
+  const filter = mkFilter('lowpass', filterFreq, 3);
+  filter.connect(masterG);
+  const lfoF  = mkOsc('sine', lfoRate * 0.3);
+  const lfoFG = mkGain(filterFreq * 0.5);
+  lfoF.connect(lfoFG); lfoFG.connect(filter.frequency); lfoF.start();
+  for (let i = 0; i < 4; i++) {
+    const osc = mkOsc('sawtooth', baseFreq * (i + 1), i % 2 === 0 ? 10 : -10);
+    const g   = mkGain(0.06 / (i + 1));
+    osc.connect(g); g.connect(filter); osc.start();
+  }
+  const shimmer = mkOsc('triangle', baseFreq * 7.1);
+  const shimG   = mkGain(0.02);
+  shimmer.connect(shimG); shimG.connect(filter); shimmer.start();
+}
+
+// PULSAR BEAT — rhythmic square pulse + noise sweep
+function buildPulsarBeat({ baseFreq, lfoRate }, dest) {
+  const masterG = mkGain(0.5);
+  masterG.connect(dest);
+  const osc    = mkOsc('square', baseFreq);
+  const filter = mkFilter('bandpass', baseFreq * 2, 5);
+  const g      = mkGain(0.0);
+  osc.connect(filter); filter.connect(g); g.connect(masterG); osc.start();
+  const lfo  = mkOsc('square', lfoRate);
+  const lfoG = mkGain(0.15);
+  lfo.connect(lfoG); lfoG.connect(g.gain); lfo.start();
+  const sub  = mkOsc('sine', baseFreq * 0.5);
+  const subG = mkGain(0.1);
+  sub.connect(subG); subG.connect(masterG); sub.start();
+  const { src: noise, gain: noiseGain } = mkNoise(0.08);
+  const bp = mkFilter('bandpass', 1000, 8);
+  noiseGain.connect(bp); bp.connect(masterG); noise.start();
+  const sweepLFO  = mkOsc('sine', 0.4);
+  const sweepLFOG = mkGain(800);
+  sweepLFO.connect(sweepLFOG); sweepLFOG.connect(bp.frequency); sweepLFO.start();
+}
+
+// ZETA WAVE — ion storm: multi-band noise with independent sweeps
+function buildIonStorm(_profile, dest) {
+  const masterG = mkGain(0.4);
+  masterG.connect(dest);
+  [200, 500, 1200, 3000].forEach((freq, i) => {
+    const { src: noise, gain: noiseGain } = mkNoise(0.08);
+    const bp   = mkFilter('bandpass', freq, 4 + i);
+    noiseGain.connect(bp); bp.connect(masterG);
+    const lfo  = mkOsc('sine', 0.1 + i * 0.15);
+    const lfoG = mkGain(freq * 0.4);
+    lfo.connect(lfoG); lfoG.connect(bp.frequency); lfo.start(); noise.start();
+  });
+  const { src: crackle, gain: crackleGain } = mkNoise(0.2);
+  const hp = mkFilter('highpass', 2000, 1);
+  crackleGain.connect(hp); hp.connect(masterG); crackle.start();
+}
+
+// VOID SIGNAL — ultra-deep drone with very slow beating
+function buildVoidDrone({ baseFreq, lfoRate }, dest) {
+  const masterG = mkGain(0.5);
+  masterG.connect(dest);
+  for (let i = 0; i < 3; i++) {
+    const osc = mkOsc('sine', baseFreq + i * 7, (Math.random() - 0.5) * 8);
+    const g   = mkGain(0.12);
+    osc.connect(g); g.connect(masterG); osc.start();
+  }
+  const lfo  = mkOsc('sine', lfoRate);
+  const lfoG = mkGain(0.2);
+  lfo.connect(lfoG); lfoG.connect(masterG.gain); lfo.start();
+  const { src: noise, gain: noiseGain } = mkNoise(0.1);
+  const lp = mkFilter('lowpass', 100, 2);
+  noiseGain.connect(lp); lp.connect(masterG); noise.start();
+}
+
+// SOLAR DRIFT — shimmering harmonic series with high-register noise
+function buildSolarDrift({ baseFreq, lfoRate, filterFreq }, dest) {
+  const masterG = mkGain(0.3);
+  masterG.connect(dest);
+  const filter = mkFilter('highpass', 400, 1);
+  filter.connect(masterG);
+  for (let i = 1; i <= 6; i++) {
+    const osc = mkOsc('triangle', baseFreq * i, (Math.random() - 0.5) * 25);
+    const g   = mkGain(0.05 / i);
+    osc.connect(g); g.connect(filter); osc.start();
+  }
+  const lfo  = mkOsc('sine', lfoRate);
+  const lfoG = mkGain(0.1);
+  lfo.connect(lfoG); lfoG.connect(masterG.gain); lfo.start();
+  const { src: noise, gain: noiseGain } = mkNoise(0.04);
+  const hp = mkFilter('highpass', filterFreq * 0.5, 3);
+  noiseGain.connect(hp); hp.connect(filter); noise.start();
+}
+
+// QUANTUM FOLD — FM synthesis with evolving modulation index
+function buildQuantumFM({ baseFreq, lfoRate }, dest) {
+  const masterG = mkGain(0.35);
+  masterG.connect(dest);
+  const carrier   = mkOsc('sine', baseFreq);
+  const modulator = mkOsc('sine', baseFreq * 2.1);
+  const modGain   = mkGain(baseFreq * 3);
+  const carrierG  = mkGain(0.15);
+  modulator.connect(modGain); modGain.connect(carrier.frequency);
+  carrier.connect(carrierG); carrierG.connect(masterG);
+  carrier.start(); modulator.start();
+  const carrier2   = mkOsc('sine', baseFreq * 1.5);
+  const modulator2 = mkOsc('sine', baseFreq * 3.7);
+  const modGain2   = mkGain(baseFreq * 1.5);
+  const carrier2G  = mkGain(0.08);
+  modulator2.connect(modGain2); modGain2.connect(carrier2.frequency);
+  carrier2.connect(carrier2G); carrier2G.connect(masterG);
+  carrier2.start(); modulator2.start();
+  const lfo  = mkOsc('sine', lfoRate * 0.2);
+  const lfoG = mkGain(baseFreq * 2);
+  lfo.connect(lfoG); lfoG.connect(modGain.gain); lfo.start();
+}
+
+// HYPERDRIVE FM — chaotic multi-pair FM with warp noise
+function buildHyperFM({ baseFreq, lfoRate }, dest) {
+  const masterG = mkGain(0.35);
+  masterG.connect(dest);
+  [
+    { cFreq: baseFreq,        mRatio: 1.41, modIdx: 4 },
+    { cFreq: baseFreq * 1.25, mRatio: 2.5,  modIdx: 2 },
+    { cFreq: baseFreq * 0.75, mRatio: 3.14, modIdx: 6 },
+  ].forEach(p => {
+    const carrier   = mkOsc('sine', p.cFreq);
+    const modulator = mkOsc('sine', p.cFreq * p.mRatio);
+    const modGain   = mkGain(p.cFreq * p.modIdx);
+    const carrierG  = mkGain(0.08);
+    modulator.connect(modGain); modGain.connect(carrier.frequency);
+    carrier.connect(carrierG); carrierG.connect(masterG);
+    carrier.start(); modulator.start();
+  });
+  const lfo  = mkOsc('triangle', lfoRate);
+  const lfoG = mkGain(0.2);
+  lfo.connect(lfoG); lfoG.connect(masterG.gain); lfo.start();
+  const { src: noise, gain: noiseGain } = mkNoise(0.06);
+  const bp = mkFilter('bandpass', 800, 5);
+  noiseGain.connect(bp); bp.connect(masterG); noise.start();
+}
+
 /* ── Visualizer ── */
 let visData = new Array(64).fill(0);
 
@@ -209,13 +470,21 @@ function startVisualizer() {
     const H = canvas.height = canvas.offsetHeight;
     ctx.clearRect(0, 0, W, H);
 
-    // Simulate frequency data
-    visData = visData.map((v, i) => {
-      const target = state.isPlaying
-        ? Math.random() * 0.8 + 0.05 + Math.sin(i * 0.3 + Date.now() * 0.003) * 0.2
-        : Math.random() * 0.04;
-      return v + (target - v) * 0.12;
-    });
+    // Use real FFT data when audio is playing, otherwise idle animation
+    if (analyserNode && state.isPlaying && fftBuffer) {
+      analyserNode.getByteFrequencyData(fftBuffer);
+      visData = visData.map((v, i) => {
+        const target = fftBuffer[i] / 255;
+        return v + (target - v) * 0.15;
+      });
+    } else {
+      visData = visData.map((v, i) => {
+        const target = state.isPlaying
+          ? Math.random() * 0.8 + 0.05 + Math.sin(i * 0.3 + Date.now() * 0.003) * 0.2
+          : Math.random() * 0.04;
+        return v + (target - v) * 0.12;
+      });
+    }
 
     drawVisualizer(ctx, W, H, visData, state.visType);
     state.animFrame = requestAnimationFrame(animate);
@@ -492,7 +761,10 @@ function init() {
   const volSlider = document.getElementById('vol-slider');
   if (volSlider) {
     volSlider.value = state.volume;
-    volSlider.addEventListener('input', e => { state.volume = e.target.value; });
+    volSlider.addEventListener('input', e => {
+      state.volume = e.target.value;
+      if (masterGainNode) masterGainNode.gain.value = e.target.value / 100;
+    });
   }
 
   // Default vis type button
