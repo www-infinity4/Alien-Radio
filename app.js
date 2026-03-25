@@ -4,16 +4,83 @@
 
 'use strict';
 
-/* ── Channel Data ── */
+/* ── Channel Data ──
+   streamUrl: live internet radio stream (SomaFM / Intergalactic FM / Radio Paradise)
+   synthType: fallback Web Audio synth profile key if the stream cannot be loaded
+── */
 const CHANNELS = [
-  { id: 1,  name: 'ANDROMEDA',      freq: '88.1',  color: '#00fff7', genre: 'Deep Space Transmissions', signal: 92 },
-  { id: 2,  name: 'NEBULA-7',       freq: '91.5',  color: '#cc44ff', genre: 'Cosmic Jazz Frequencies', signal: 87 },
-  { id: 3,  name: 'PULSAR BEAT',    freq: '94.3',  color: '#00ff88', genre: 'Stellar Rhythm Engine', signal: 78 },
-  { id: 4,  name: 'ZETA WAVE',      freq: '97.7',  color: '#ff8800', genre: 'Ion Storm Broadcasts', signal: 95 },
-  { id: 5,  name: 'VOID SIGNAL',    freq: '101.1', color: '#0088ff', genre: 'Dark Matter Resonance', signal: 65 },
-  { id: 6,  name: 'SOLAR DRIFT',    freq: '104.5', color: '#ff2244', genre: 'Helion Pulse Network', signal: 83 },
-  { id: 7,  name: 'QUANTUM FOLD',   freq: '107.9', color: '#00fff7', genre: 'Waveform Collapse Radio', signal: 71 },
-  { id: 8,  name: 'HYPERDRIVE FM',  freq: '110.3', color: '#cc44ff', genre: 'Interstellar Dance Mix', signal: 89 },
+  {
+    id: 1,  name: 'ANDROMEDA',     freq: '88.1',  color: '#00fff7', signal: 92,
+    genre: 'Deep Space Ambient · SomaFM Drone Zone',
+    streamUrl: 'https://ice1.somafm.com/dronezone-128-mp3',
+    synthType: 'spaceHum',
+  },
+  {
+    id: 2,  name: 'NEBULA-7',      freq: '91.5',  color: '#cc44ff', signal: 87,
+    genre: 'Space Station Soma · SomaFM',
+    streamUrl: 'https://ice1.somafm.com/spacestation-128-mp3',
+    synthType: 'cosmicPad',
+  },
+  {
+    id: 3,  name: 'PULSAR BEAT',   freq: '94.3',  color: '#00ff88', signal: 78,
+    genre: 'Groove Salad · SomaFM Chill',
+    streamUrl: 'https://ice1.somafm.com/groovesalad-128-mp3',
+    synthType: 'pulsarBeat',
+  },
+  {
+    id: 4,  name: 'ZETA WAVE',     freq: '97.7',  color: '#ff8800', signal: 95,
+    genre: 'Beat Blender · SomaFM Electronic',
+    streamUrl: 'https://ice1.somafm.com/beatblender-128-mp3',
+    synthType: 'ionStorm',
+  },
+  {
+    id: 5,  name: 'VOID SIGNAL',   freq: '101.1', color: '#0088ff', signal: 65,
+    genre: 'Mission Control · SomaFM',
+    streamUrl: 'https://ice1.somafm.com/missioncontrol-128-mp3',
+    synthType: 'voidDrone',
+  },
+  {
+    id: 6,  name: 'SOLAR DRIFT',   freq: '104.5', color: '#ff2244', signal: 83,
+    genre: 'Fluid · SomaFM Ambient IDM',
+    streamUrl: 'https://ice1.somafm.com/fluid-128-mp3',
+    synthType: 'solarDrift',
+  },
+  {
+    id: 7,  name: 'QUANTUM FOLD',  freq: '107.9', color: '#ffe600', signal: 71,
+    genre: 'Lush · SomaFM Chilled Beats',
+    streamUrl: 'https://ice1.somafm.com/lush-128-mp3',
+    synthType: 'quantumFM',
+  },
+  {
+    id: 8,  name: 'HYPERDRIVE FM', freq: '110.3', color: '#cc44ff', signal: 89,
+    genre: 'Suburbs of Goa · SomaFM Psytrance',
+    streamUrl: 'https://ice1.somafm.com/suburbsofgoa-128-mp3',
+    synthType: 'hyperFM',
+  },
+  {
+    id: 9,  name: 'STARGAZE',      freq: '113.7', color: '#ff66aa', signal: 76,
+    genre: 'Digitalis · SomaFM Indie Electronic',
+    streamUrl: 'https://ice1.somafm.com/digitalis-128-mp3',
+    synthType: 'cosmicPad',
+  },
+  {
+    id: 10, name: 'WARP CORE',     freq: '116.1', color: '#44ffcc', signal: 88,
+    genre: 'Deep Space One · SomaFM Electro',
+    streamUrl: 'https://ice1.somafm.com/deepspaceone-128-mp3',
+    synthType: 'quantumFM',
+  },
+  {
+    id: 11, name: 'INTERGALACTIC', freq: '119.5', color: '#ff4400', signal: 94,
+    genre: 'Intergalactic FM · Electronic / Techno',
+    streamUrl: 'https://listen.intergalactic.fm/main.mp3',
+    synthType: 'hyperFM',
+  },
+  {
+    id: 12, name: 'DARK MATTER',   freq: '122.0', color: '#8844ff', signal: 61,
+    genre: 'Radio Paradise Mellow Mix · Ambient',
+    streamUrl: 'https://stream.radioparadise.com/mellow-320',
+    synthType: 'voidDrone',
+  },
 ];
 
 /* ── GP Suite AI Entities ── */
@@ -208,17 +275,21 @@ let masterGainNode = null;
 let activeAudioNodes = [];
 let fftBuffer      = null;
 
-// Per-channel sound profiles
-const CHANNEL_SOUNDS = [
-  { type: 'spaceHum',   baseFreq: 55,  lfoRate: 0.3, filterFreq: 800  },  // ANDROMEDA
-  { type: 'cosmicPad',  baseFreq: 110, lfoRate: 0.5, filterFreq: 1200 },  // NEBULA-7
-  { type: 'pulsarBeat', baseFreq: 80,  lfoRate: 2.0, filterFreq: 600  },  // PULSAR BEAT
-  { type: 'ionStorm',   baseFreq: 200, lfoRate: 0.8, filterFreq: 2000 },  // ZETA WAVE
-  { type: 'voidDrone',  baseFreq: 30,  lfoRate: 0.1, filterFreq: 400  },  // VOID SIGNAL
-  { type: 'solarDrift', baseFreq: 220, lfoRate: 0.6, filterFreq: 3000 },  // SOLAR DRIFT
-  { type: 'quantumFM',  baseFreq: 140, lfoRate: 1.2, filterFreq: 1500 },  // QUANTUM FOLD
-  { type: 'hyperFM',    baseFreq: 180, lfoRate: 3.0, filterFreq: 2500 },  // HYPERDRIVE FM
-];
+// Active HTML5 stream element (null when using synth fallback)
+let streamAudioEl  = null;
+let streamMediaSrc = null;
+
+// Synth profiles — keyed by synthType (used as fallback when stream fails)
+const SYNTH_PROFILES = {
+  spaceHum:   { baseFreq: 55,  lfoRate: 0.3, filterFreq: 800  },
+  cosmicPad:  { baseFreq: 110, lfoRate: 0.5, filterFreq: 1200 },
+  pulsarBeat: { baseFreq: 80,  lfoRate: 2.0, filterFreq: 600  },
+  ionStorm:   { baseFreq: 200, lfoRate: 0.8, filterFreq: 2000 },
+  voidDrone:  { baseFreq: 30,  lfoRate: 0.1, filterFreq: 400  },
+  solarDrift: { baseFreq: 220, lfoRate: 0.6, filterFreq: 3000 },
+  quantumFM:  { baseFreq: 140, lfoRate: 1.2, filterFreq: 1500 },
+  hyperFM:    { baseFreq: 180, lfoRate: 3.0, filterFreq: 2500 },
+};
 
 function ensureAudioContext() {
   if (!audioCtx) {
@@ -236,6 +307,17 @@ function ensureAudioContext() {
 }
 
 function stopAudio() {
+  // Stop HTML5 stream
+  if (streamAudioEl) {
+    streamAudioEl.pause();
+    streamAudioEl.src = '';
+    streamAudioEl = null;
+  }
+  if (streamMediaSrc) {
+    try { streamMediaSrc.disconnect(); } catch (e) {}
+    streamMediaSrc = null;
+  }
+  // Stop synth nodes
   activeAudioNodes.forEach(node => {
     try { if (node.stop) node.stop(0); } catch (e) {}
     try { node.disconnect(); } catch (e) {}
@@ -246,9 +328,51 @@ function stopAudio() {
 function startAudio(channelIdx) {
   stopAudio();
   ensureAudioContext();
-  const profile = CHANNEL_SOUNDS[channelIdx] || CHANNEL_SOUNDS[0];
+  const ch = CHANNELS[channelIdx] || CHANNELS[0];
+  if (ch.streamUrl) {
+    startStream(ch.streamUrl, ch.synthType || 'spaceHum');
+  } else {
+    startSynth(ch.synthType || 'spaceHum');
+  }
+}
+
+function startStream(url, fallbackSynthType) {
+  const el = new Audio();
+  el.crossOrigin = 'anonymous';
+  el.preload = 'none';
+  el.src = url;
+  streamAudioEl = el;
+
+  el.addEventListener('canplay', () => {
+    // Guard: ignore stale events if the user already switched to another channel
+    if (el !== streamAudioEl) return;
+    ensureAudioContext();
+    if (!streamMediaSrc) {
+      streamMediaSrc = audioCtx.createMediaElementSource(el);
+      streamMediaSrc.connect(analyserNode);
+    }
+    el.play().catch(err => {
+      if (err.name === 'NotAllowedError') {
+        showToast('Click play to start stream (autoplay blocked)', '🔇');
+      }
+    });
+  }, { once: true });
+
+  el.addEventListener('error', () => {
+    // Guard: ignore stale events from a previously replaced stream element
+    if (el !== streamAudioEl) return;
+    streamAudioEl = null;
+    startSynth(fallbackSynthType);
+    showToast(`Stream unavailable (${url.split('/').pop()}) · using synth`, '🎛');
+  }, { once: true });
+
+  el.load();
+}
+
+function startSynth(synthType) {
+  const profile = SYNTH_PROFILES[synthType] || SYNTH_PROFILES.spaceHum;
   const dest = analyserNode;
-  ({
+  const builders = {
     spaceHum:   () => buildSpaceHum(profile, dest),
     cosmicPad:  () => buildCosmicPad(profile, dest),
     pulsarBeat: () => buildPulsarBeat(profile, dest),
@@ -257,7 +381,8 @@ function startAudio(channelIdx) {
     solarDrift: () => buildSolarDrift(profile, dest),
     quantumFM:  () => buildQuantumFM(profile, dest),
     hyperFM:    () => buildHyperFM(profile, dest),
-  }[profile.type] || (() => buildSpaceHum(profile, dest)))();
+  };
+  (builders[synthType] || builders.spaceHum)();
 }
 
 // Node factory helpers
@@ -762,8 +887,9 @@ function init() {
   if (volSlider) {
     volSlider.value = state.volume;
     volSlider.addEventListener('input', e => {
-      state.volume = e.target.value;
-      if (masterGainNode) masterGainNode.gain.value = e.target.value / 100;
+      state.volume = parseInt(e.target.value, 10);
+      if (masterGainNode) masterGainNode.gain.value = state.volume / 100;
+      if (streamAudioEl) streamAudioEl.volume = state.volume / 100;
     });
   }
 
