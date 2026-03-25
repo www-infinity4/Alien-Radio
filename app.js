@@ -81,6 +81,42 @@ const CHANNELS = [
     streamUrl: 'https://stream.radioparadise.com/mellow-320',
     synthType: 'voidDrone',
   },
+  {
+    id: 13, name: 'XENON PULSE',   freq: '125.4', color: '#00ccff', signal: 84,
+    genre: 'Cliqhop IDM · SomaFM Glitch Electronic',
+    streamUrl: 'https://ice1.somafm.com/cliqhop-128-mp3',
+    synthType: 'quantumFM',
+  },
+  {
+    id: 14, name: 'VAPORWAVE',     freq: '128.8', color: '#ff44cc', signal: 77,
+    genre: 'Vaporwaves · SomaFM Ethereal Synthwave',
+    streamUrl: 'https://ice1.somafm.com/vaporwaves-128-mp3',
+    synthType: 'cosmicPad',
+  },
+  {
+    id: 15, name: 'SIGMA VOID',    freq: '132.2', color: '#33ffaa', signal: 69,
+    genre: 'SF 10-33 · SomaFM Experimental Transmissions',
+    streamUrl: 'https://ice1.somafm.com/sf1033-128-mp3',
+    synthType: 'voidDrone',
+  },
+  {
+    id: 16, name: 'THE TRIP',      freq: '135.6', color: '#ffaa00', signal: 91,
+    genre: 'The Trip · SomaFM Psychedelic Journeys',
+    streamUrl: 'https://ice1.somafm.com/thetrip-128-mp3',
+    synthType: 'solarDrift',
+  },
+  {
+    id: 17, name: 'NOVA STREAM',   freq: '139.0', color: '#ff6644', signal: 73,
+    genre: 'Sonic Universe · SomaFM Jazz Fusion Instrumental',
+    streamUrl: 'https://ice1.somafm.com/sonicuniverse-128-mp3',
+    synthType: 'ionStorm',
+  },
+  {
+    id: 18, name: 'DEF CON',       freq: '142.5', color: '#44ff00', signal: 96,
+    genre: 'DEF CON Radio · SomaFM Techno Electronic',
+    streamUrl: 'https://ice1.somafm.com/defcon-128-mp3',
+    synthType: 'hyperFM',
+  },
 ];
 
 /* ── GP Suite AI Entities ── */
