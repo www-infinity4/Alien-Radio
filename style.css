@@ -1181,6 +1181,9 @@ body::after {
   border-top: 1px solid var(--border-dim);
 }
 
+/* Prevent background scroll while drawer is open */
+body.drawer-open { overflow: hidden; }
+
 /* ══════════════════════════════════════════════════════════════════
    HEADER — left / right groups
 ══════════════════════════════════════════════════════════════════ */

@@ -17,11 +17,11 @@
   <!-- ══════════════════════════════════════════
        HAMBURGER DRAWER
   ══════════════════════════════════════════ -->
-  <div class="ham-overlay" id="hamOverlay"></div>
+  <div class="ham-overlay" id="hamOverlay" onclick="closeHamburger()"></div>
   <nav class="ham-drawer" id="hamDrawer" aria-label="Navigation" aria-hidden="true">
     <div class="ham-head">
       <span class="ham-brand">👾 Alien Radio</span>
-      <button class="ham-close" id="hamClose" aria-label="Close menu">✕</button>
+      <button class="ham-close" id="hamClose" aria-label="Close menu" onclick="closeHamburger()">✕</button>
     </div>
     <div class="ham-section-label">📻 Radio</div>
     <a class="ham-link" href="#" onclick="closeHamburger();nextChannel();return false;">⏭ Next Channel</a>

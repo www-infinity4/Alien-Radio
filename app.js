@@ -900,6 +900,7 @@ function openHamburger() {
   if (drawer)  { drawer.classList.add('open'); drawer.setAttribute('aria-hidden', 'false'); }
   if (overlay) overlay.classList.add('open');
   if (btn)     btn.setAttribute('aria-expanded', 'true');
+  document.body.classList.add('drawer-open');
 }
 function closeHamburger() {
   const drawer  = document.getElementById('hamDrawer');
@@ -908,7 +909,16 @@ function closeHamburger() {
   if (drawer)  { drawer.classList.remove('open'); drawer.setAttribute('aria-hidden', 'true'); }
   if (overlay) overlay.classList.remove('open');
   if (btn)     btn.setAttribute('aria-expanded', 'false');
+  document.body.classList.remove('drawer-open');
 }
+
+// Close hamburger drawer with Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const drawer = document.getElementById('hamDrawer');
+    if (drawer && drawer.classList.contains('open')) closeHamburger();
+  }
+});
 
 /* ══════════════════════════════════════════════════════════════════
    AUTH — LOGIN / REGISTER
@@ -1250,7 +1260,12 @@ function closeModal(id) {
    BOOTSTRAP AUTH
 ══════════════════════════════════════════════════════════════════ */
 (async function bootstrapAuth() {
-  await AUTH.ensureAdmin();
+  try {
+    await AUTH.ensureAdmin();
+  } catch (e) {
+    // crypto.subtle may be unavailable on non-secure origins; auth features will be degraded
+    console.warn('Auth init failed (crypto unavailable?):', e);
+  }
   onAuthChange();
 
   // Hamburger close on overlay click
