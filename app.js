@@ -832,16 +832,7 @@ function setVisType(type) {
   });
 }
 
-/* ── Modal helpers ── */
-function openModal(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.add('open');
-}
-function closeModal(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.remove('open');
-}
-
+/* ── Skip / Prev ── */
 function handleModalOption(option) {
   closeModal('radio-type-modal');
   showToast(`Loading: ${option}`, '📻');
@@ -898,3 +889,381 @@ function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
+/* ══════════════════════════════════════════════════════════════════
+   HAMBURGER MENU
+══════════════════════════════════════════════════════════════════ */
+function openHamburger() {
+  const drawer  = document.getElementById('hamDrawer');
+  const overlay = document.getElementById('hamOverlay');
+  const btn     = document.getElementById('hamBtn');
+  if (drawer)  { drawer.classList.add('open'); drawer.setAttribute('aria-hidden', 'false'); }
+  if (overlay) overlay.classList.add('open');
+  if (btn)     btn.setAttribute('aria-expanded', 'true');
+}
+function closeHamburger() {
+  const drawer  = document.getElementById('hamDrawer');
+  const overlay = document.getElementById('hamOverlay');
+  const btn     = document.getElementById('hamBtn');
+  if (drawer)  { drawer.classList.remove('open'); drawer.setAttribute('aria-hidden', 'true'); }
+  if (overlay) overlay.classList.remove('open');
+  if (btn)     btn.setAttribute('aria-expanded', 'false');
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   AUTH — LOGIN / REGISTER
+══════════════════════════════════════════════════════════════════ */
+function switchAuthTab(tab) {
+  const loginForm    = document.getElementById('loginForm');
+  const registerForm = document.getElementById('registerForm');
+  const tabLogin     = document.getElementById('tabLogin');
+  const tabRegister  = document.getElementById('tabRegister');
+  if (!loginForm || !registerForm) return;
+  if (tab === 'login') {
+    loginForm.style.display    = '';
+    registerForm.style.display = 'none';
+    tabLogin.classList.add('active');
+    tabRegister.classList.remove('active');
+  } else {
+    loginForm.style.display    = 'none';
+    registerForm.style.display = '';
+    tabRegister.classList.add('active');
+    tabLogin.classList.remove('active');
+  }
+}
+
+async function handleLogin() {
+  const user = document.getElementById('loginUser')?.value.trim();
+  const pass = document.getElementById('loginPass')?.value;
+  const msg  = document.getElementById('loginMsg');
+  if (!user || !pass) { if (msg) { msg.textContent = 'Enter username and password.'; msg.className = 'auth-msg'; } return; }
+  try {
+    await AUTH.login(user, pass);
+    if (msg) { msg.textContent = ''; msg.className = 'auth-msg'; }
+    closeModal('login-modal');
+    onAuthChange();
+    showToast('Signed in — welcome back!', '🔐');
+  } catch (e) {
+    if (msg) { msg.textContent = e.message; msg.className = 'auth-msg'; }
+  }
+}
+
+async function handleRegister() {
+  const user  = document.getElementById('regUser')?.value.trim();
+  const email = document.getElementById('regEmail')?.value.trim();
+  const pass  = document.getElementById('regPass')?.value;
+  const msg   = document.getElementById('registerMsg');
+  if (!user || !email || !pass) { if (msg) { msg.textContent = 'Fill in all fields.'; msg.className = 'auth-msg'; } return; }
+  try {
+    await AUTH.register(user, email, pass);
+    if (msg) { msg.textContent = ''; msg.className = 'auth-msg'; }
+    closeModal('login-modal');
+    onAuthChange();
+    showToast('Account created — your wallet is ready!', '🟡');
+  } catch (e) {
+    if (msg) { msg.textContent = e.message; msg.className = 'auth-msg'; }
+  }
+}
+
+/** Called after any auth state change. */
+function onAuthChange() {
+  const user       = AUTH.currentUser();
+  const badge      = document.getElementById('user-badge');
+  const badgeName  = document.getElementById('user-badge-name');
+  const tokenCount = document.getElementById('user-token-count');
+  const loginBtn   = document.getElementById('loginBtn');
+
+  if (user) {
+    if (badge)      badge.style.display = 'flex';
+    if (loginBtn)   loginBtn.style.display = 'none';
+    if (badgeName)  badgeName.textContent = user.username;
+    updateTokenDisplay();
+  } else {
+    if (badge)      badge.style.display = 'none';
+    if (loginBtn)   loginBtn.style.display = '';
+    if (tokenCount) tokenCount.textContent = '0 ∞';
+    updateTabTokenCount(0);
+  }
+}
+
+function updateTokenDisplay() {
+  const user = AUTH.currentUser();
+  if (!user) return;
+  const wallet     = AUTH.getWallet(user.username);
+  if (!wallet) return;
+  const tokens     = wallet.infinityTokens || 0;
+  const tokenCount = document.getElementById('user-token-count');
+  if (tokenCount)  tokenCount.textContent = tokens + ' ∞';
+  updateTabTokenCount(tokens);
+}
+
+function updateTabTokenCount(n) {
+  const el = document.getElementById('tab-token-count');
+  if (el) el.textContent = n;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   WALLET MODAL
+══════════════════════════════════════════════════════════════════ */
+function renderWalletModal() {
+  const content = document.getElementById('wallet-content');
+  if (!content) return;
+  const user = AUTH.currentUser();
+  if (!user) {
+    content.innerHTML = '<div class="wallet-not-logged">Sign in to view your wallet.</div>';
+    return;
+  }
+  const wallet = AUTH.getWallet(user.username) || {};
+  const tokens  = wallet.infinityTokens || 0;
+  const btc     = (wallet.btcBacking || 0).toFixed(8);
+  const hours   = Math.floor((wallet.listenSeconds || 0) / 3600);
+  const mins    = Math.floor(((wallet.listenSeconds || 0) % 3600) / 60);
+  const secsIntoHour = (wallet.listenSeconds || 0) % 3600;
+  const nextHourPct  = Math.round((secsIntoHour / 3600) * 100);
+  const daily   = wallet.dailyGameTokens || 0;
+
+  content.innerHTML = `
+    <div class="wallet-hero">
+      <div class="wallet-symbol">🟡</div>
+      <div>
+        <div class="wallet-tokens">${tokens}</div>
+        <div class="wallet-token-label">∞ INFINITY TOKENS</div>
+        <div class="wallet-btc">≈ ${btc} BTC (notional)</div>
+      </div>
+    </div>
+    <div class="wallet-stats">
+      <div class="wallet-stat">
+        <div class="wallet-stat-label">Listen Time</div>
+        <div class="wallet-stat-val">${hours}h ${mins}m</div>
+      </div>
+      <div class="wallet-stat">
+        <div class="wallet-stat-label">Game Tokens Today</div>
+        <div class="wallet-stat-val">${daily}/24</div>
+      </div>
+    </div>
+    <div class="wallet-progress">
+      <div class="wallet-progress-label">
+        <span>Next listen token</span>
+        <span>${nextHourPct}%</span>
+      </div>
+      <div class="wallet-progress-bar">
+        <div class="wallet-progress-fill" style="width:${nextHourPct}%"></div>
+      </div>
+    </div>
+    <p class="text-dim" style="font-size:.65rem;line-height:1.5;">
+      Earn 1 ∞TOKEN per hour of listening. Earn up to 24 extra tokens per day playing Signal Catch.
+      Tokens are backed by Bitcoin and stored in the AI system — no real crypto is handled.
+    </p>
+    <div style="display:flex;gap:.5rem;margin-top:.75rem;">
+      <button class="hud-btn green full" onclick="openMiniGame();closeModal('wallet-modal')">🎮 Play &amp; Earn</button>
+      <button class="hud-btn orange full" onclick="handleMintToken();closeModal('wallet-modal')">₿ Mint Token</button>
+    </div>
+  `;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   TOKEN ACTIONS
+══════════════════════════════════════════════════════════════════ */
+function handleMintToken() {
+  const user = AUTH.currentUser();
+  if (!user) {
+    showToast('Sign in to mint tokens', '🔐');
+    openModal('login-modal');
+    return;
+  }
+  AUTH.mintToken(user.username, 'Manual mint');
+  updateTokenDisplay();
+  addTx({ icon: '🟡', action: 'Token minted', value: '+1 ∞TOKEN' });
+  showToast('∞TOKEN minted to your wallet!', '🟡');
+}
+
+function handleMushroom() {
+  const user = AUTH.currentUser();
+  if (!user) {
+    showToast('Sign in to activate boost', '🍄');
+    openModal('login-modal');
+    return;
+  }
+  // Mushroom boost: double the next listen-time award window temporarily
+  showToast('🍄 Signal BOOST active — 2× tokens for 5 minutes!', '🍄');
+  addTx({ icon: '🍄', action: 'Signal boost activated', value: '+BOOST' });
+  // Visual flash on the giro core
+  const core = document.querySelector('.giro-core');
+  if (core) {
+    core.style.filter = 'drop-shadow(0 0 30px #00ff88) brightness(1.5)';
+    setTimeout(() => { core.style.filter = ''; }, 2000);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   LISTEN-TIME TOKEN TICKER
+   Awards 1 ∞TOKEN per completed hour of listening.
+══════════════════════════════════════════════════════════════════ */
+(function startListenTimer() {
+  const TICK_MS = 5000; // update every 5 seconds
+  setInterval(() => {
+    const user = AUTH.currentUser();
+    if (!user || !state.isPlaying) return;
+    const awarded = AUTH.addListenTime(user.username, TICK_MS / 1000);
+    updateTokenDisplay();
+    if (awarded > 0) {
+      showToast(`+${awarded} ∞TOKEN earned for listening!`, '🟡');
+      addTx({ icon: '🟡', action: '1-hour listen reward', value: `+${awarded} ∞TOKEN` });
+    }
+  }, TICK_MS);
+})();
+
+/* ══════════════════════════════════════════════════════════════════
+   RESEARCH ARTICLE WRITER
+══════════════════════════════════════════════════════════════════ */
+function openResearchWriter() {
+  const user = AUTH.currentUser();
+  const { html, topic, summary } = RESEARCH.generateArticle();
+  const body = document.getElementById('research-modal-body');
+  if (body) body.innerHTML = html;
+  openModal('research-modal');
+  // Save and reward token if logged in
+  if (user) {
+    AUTH.saveResearchArticle(user.username, summary);
+    AUTH.mintToken(user.username, 'Research article generated');
+    updateTokenDisplay();
+    addTx({ icon: '🔬', action: `Research: ${topic.title}`, value: '+1 ∞TOKEN' });
+  }
+}
+
+function showResearchLibrary() {
+  const user = AUTH.currentUser();
+  if (!user) {
+    showToast('Sign in to view your research library', '🔬');
+    openModal('login-modal');
+    return;
+  }
+  const articles = AUTH.getResearchArticles(user.username);
+  if (!articles.length) {
+    showToast('No research articles yet — click Research to generate one!', '🔬');
+    return;
+  }
+  // Show most recent article
+  const latest = articles[articles.length - 1];
+  const topic  = RESEARCH.getTopicById(latest.id);
+  if (topic) {
+    const body = document.getElementById('research-modal-body');
+    if (body) body.innerHTML = RESEARCH.buildArticleHTML(topic);
+    openModal('research-modal');
+  } else {
+    showToast(`Latest research: ${latest.title}`, '📚');
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   MINI-GAME: Signal Catch
+══════════════════════════════════════════════════════════════════ */
+let gameActive    = false;
+let gameScore     = 0;
+let gameInterval  = null;
+
+function openMiniGame() {
+  updateGameUI();
+  openModal('minigame-modal');
+}
+
+function updateGameUI() {
+  const user  = AUTH.currentUser();
+  const today = document.getElementById('game-today');
+  const score = document.getElementById('game-score');
+  if (score) score.textContent = gameScore;
+  if (today && user) {
+    const wallet = AUTH.getWallet(user.username);
+    today.textContent = wallet ? wallet.dailyGameTokens : 0;
+  }
+}
+
+function startMiniGame() {
+  if (gameActive) return;
+  gameActive = true;
+  gameScore  = 0;
+  updateGameUI();
+  document.getElementById('game-status').textContent = 'Catch the signal node!';
+  moveNode();
+  gameInterval = setInterval(() => {
+    if (gameActive) moveNode();
+  }, 1800);
+}
+
+function moveNode() {
+  const arena = document.getElementById('minigame-arena');
+  const node  = document.getElementById('minigame-node');
+  if (!arena || !node) return;
+  const maxX = arena.offsetWidth  - 44;
+  const maxY = arena.offsetHeight - 44;
+  node.style.left = Math.floor(Math.random() * maxX) + 'px';
+  node.style.top  = Math.floor(Math.random() * maxY) + 'px';
+}
+
+function catchNode() {
+  if (!gameActive) return;
+  gameScore++;
+  moveNode();
+  const user = AUTH.currentUser();
+  if (user) {
+    const awarded = AUTH.awardGameTokens(user.username, 1);
+    if (awarded > 0) {
+      updateTokenDisplay();
+      document.getElementById('game-status').textContent = `+1 ∞TOKEN earned!`;
+      addTx({ icon: '🎮', action: 'Signal Catch', value: '+1 ∞TOKEN' });
+    } else {
+      document.getElementById('game-status').textContent = 'Daily limit (24) reached.';
+    }
+  } else {
+    document.getElementById('game-status').textContent = `Sign in to earn tokens!`;
+  }
+  document.getElementById('game-score').textContent = gameScore;
+  updateGameUI();
+  // Flash the node
+  const node = document.getElementById('minigame-node');
+  if (node) {
+    node.textContent = '✨';
+    setTimeout(() => { node.textContent = '📡'; }, 300);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   MODAL HELPERS (open/close with aria + wallet re-render)
+══════════════════════════════════════════════════════════════════ */
+function openModal(id) {
+  const el = document.getElementById(id);
+  if (el) { el.classList.add('open'); el.setAttribute('aria-hidden', 'false'); }
+  if (id === 'wallet-modal') renderWalletModal();
+}
+function closeModal(id) {
+  const el = document.getElementById(id);
+  if (el) { el.classList.remove('open'); el.setAttribute('aria-hidden', 'true'); }
+  // Close mini-game when its modal closes
+  if (id === 'minigame-modal' && gameActive) {
+    gameActive = false;
+    clearInterval(gameInterval);
+    document.getElementById('game-status').textContent = '';
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   BOOTSTRAP AUTH
+══════════════════════════════════════════════════════════════════ */
+(async function bootstrapAuth() {
+  await AUTH.ensureAdmin();
+  onAuthChange();
+
+  // Hamburger close on overlay click
+  const overlay = document.getElementById('hamOverlay');
+  if (overlay) overlay.addEventListener('click', closeHamburger);
+  const hamClose = document.getElementById('hamClose');
+  if (hamClose) hamClose.addEventListener('click', closeHamburger);
+
+  // Enter key on login/register inputs
+  ['loginPass', 'regPass'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { id === 'loginPass' ? handleLogin() : handleRegister(); }
+    });
+  });
+})();

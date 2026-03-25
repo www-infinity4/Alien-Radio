@@ -15,22 +15,157 @@
 <div id="app">
 
   <!-- ══════════════════════════════════════════
+       HAMBURGER DRAWER
+  ══════════════════════════════════════════ -->
+  <div class="ham-overlay" id="hamOverlay"></div>
+  <nav class="ham-drawer" id="hamDrawer" aria-label="Navigation" aria-hidden="true">
+    <div class="ham-head">
+      <span class="ham-brand">👾 Alien Radio</span>
+      <button class="ham-close" id="hamClose" aria-label="Close menu">✕</button>
+    </div>
+    <div class="ham-section-label">📻 Radio</div>
+    <a class="ham-link" href="#" onclick="closeHamburger();nextChannel();return false;">⏭ Next Channel</a>
+    <a class="ham-link" href="#" onclick="closeHamburger();toggleScan();return false;">⟳ Auto Scan</a>
+    <div class="ham-divider"></div>
+    <div class="ham-section-label">🔬 Research</div>
+    <a class="ham-link" href="#" onclick="closeHamburger();openResearchWriter();return false;">✍️ Research Article Writer</a>
+    <a class="ham-link" href="#" onclick="closeHamburger();showResearchLibrary();return false;">📚 Research Library</a>
+    <div class="ham-divider"></div>
+    <div class="ham-section-label">🟡 Token Wallet</div>
+    <a class="ham-link" href="#" onclick="closeHamburger();openModal('wallet-modal');return false;">💼 My Wallet</a>
+    <a class="ham-link" href="#" onclick="closeHamburger();openMiniGame();return false;">🎮 Play &amp; Earn</a>
+    <div class="ham-divider"></div>
+    <div class="ham-section-label">🌐 Links</div>
+    <a class="ham-link" href="https://archive.org/search?query=television+radio+vintage" target="_blank" rel="noopener noreferrer">🗄️ Archive.org TV &amp; Radio</a>
+    <a class="ham-link" href="https://www.youtube.com/results?search_query=vintage+television+shows" target="_blank" rel="noopener noreferrer">▶ YouTube Vintage TV</a>
+    <a class="ham-link" href="https://github.com/www-infinity4/Alien-Radio" target="_blank" rel="noopener noreferrer">📁 GitHub Repo</a>
+    <div class="ham-divider"></div>
+    <div class="ham-footer">∞ Alien Radio · GP Suite AI</div>
+  </nav>
+
+  <!-- ══════════════════════════════════════════
+       LOGIN MODAL
+  ══════════════════════════════════════════ -->
+  <div class="modal-overlay" id="login-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="loginModalTitle">
+    <div class="modal-box auth-modal">
+      <div class="modal-title" id="loginModalTitle">🔐 Account</div>
+      <button class="modal-close" onclick="closeModal('login-modal')" aria-label="Close">✕</button>
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Sign In</button>
+        <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Sign Up</button>
+      </div>
+      <!-- Login form -->
+      <div id="loginForm">
+        <div class="auth-form-grid">
+          <label class="auth-label">Username / Email</label>
+          <input class="auth-input" id="loginUser" type="text" autocomplete="username" placeholder="Kris or email" />
+          <label class="auth-label">Password</label>
+          <input class="auth-input" id="loginPass" type="password" autocomplete="current-password" placeholder="••••••••" />
+        </div>
+        <div class="auth-actions">
+          <button class="hud-btn green full" id="btnLogin" onclick="handleLogin()">Sign In</button>
+        </div>
+        <div class="auth-msg" id="loginMsg"></div>
+      </div>
+      <!-- Register form -->
+      <div id="registerForm" style="display:none">
+        <div class="auth-form-grid">
+          <label class="auth-label">Username</label>
+          <input class="auth-input" id="regUser" type="text" autocomplete="username" placeholder="YourName" />
+          <label class="auth-label">Email</label>
+          <input class="auth-input" id="regEmail" type="email" autocomplete="email" placeholder="you@example.com" />
+          <label class="auth-label">Password</label>
+          <input class="auth-input" id="regPass" type="password" autocomplete="new-password" placeholder="min 4 chars" />
+        </div>
+        <div class="auth-actions">
+          <button class="hud-btn green full" id="btnRegister" onclick="handleRegister()">Create Account</button>
+        </div>
+        <div class="auth-msg" id="registerMsg"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       WALLET MODAL
+  ══════════════════════════════════════════ -->
+  <div class="modal-overlay" id="wallet-modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-box wallet-modal-box">
+      <div class="modal-title">💼 My Infinity Wallet</div>
+      <button class="modal-close" onclick="closeModal('wallet-modal')" aria-label="Close">✕</button>
+      <div id="wallet-content">
+        <div class="wallet-not-logged">Sign in to view your wallet.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       RESEARCH VIEWER MODAL
+  ══════════════════════════════════════════ -->
+  <div class="modal-overlay research-overlay" id="research-modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-box research-modal-box">
+      <div class="modal-title">🔬 TV &amp; Radio Research Article</div>
+      <button class="modal-close" onclick="closeModal('research-modal')" aria-label="Close">✕</button>
+      <div class="research-modal-body" id="research-modal-body">
+        <!-- filled dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       MINI-GAME MODAL
+  ══════════════════════════════════════════ -->
+  <div class="modal-overlay" id="minigame-modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-box minigame-box">
+      <div class="modal-title">🎮 Signal Catch — Earn ∞Tokens</div>
+      <button class="modal-close" onclick="closeModal('minigame-modal')" aria-label="Close">✕</button>
+      <div class="minigame-body">
+        <p class="text-dim" style="margin-bottom:.75rem;font-size:.8rem;">Catch the orbiting signal nodes before they escape. Each catch = 1 ∞TOKEN (max 24/day).</p>
+        <div class="minigame-arena" id="minigame-arena">
+          <div class="minigame-node" id="minigame-node" onclick="catchNode()">📡</div>
+        </div>
+        <div class="minigame-stats">
+          <span>Score: <strong id="game-score">0</strong></span>
+          <span>Today: <strong id="game-today">0</strong>/24 tokens</span>
+          <span id="game-status" class="text-dim"></span>
+        </div>
+        <button class="hud-btn green full mt-1" onclick="startMiniGame()">▶ Start Game</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
        HEADER
   ══════════════════════════════════════════ -->
   <header class="site-header">
-    <div class="logo">
-      <span class="logo-symbol">👾</span>
-      <div>
-        <div class="logo-title">ALIEN RADIO</div>
-        <div class="logo-subtitle">Deep Space Transmissions · GP Suite AI</div>
+    <div class="header-left">
+      <!-- Hamburger -->
+      <button class="ham-btn" id="hamBtn" onclick="openHamburger()" aria-label="Open menu" aria-expanded="false" aria-controls="hamDrawer">
+        <span class="ham-icon">☰</span>
+      </button>
+      <div class="logo">
+        <span class="logo-symbol">👾</span>
+        <div>
+          <div class="logo-title">ALIEN RADIO</div>
+          <div class="logo-subtitle">Deep Space Transmissions · GP Suite AI</div>
+        </div>
       </div>
     </div>
 
-    <div class="header-status">
-      <span class="status-dot"><span class="dot"></span> ONLINE</span>
-      <span class="status-dot"><span class="dot orange"></span> BTC LIVE</span>
-      <span class="status-dot"><span class="dot purple"></span> AI ACTIVE</span>
-      <span class="header-time" id="header-time">00:00:00 UTC</span>
+    <div class="header-right">
+      <div class="header-status">
+        <span class="status-dot"><span class="dot"></span> ONLINE</span>
+        <span class="status-dot"><span class="dot orange"></span> BTC LIVE</span>
+        <span class="status-dot"><span class="dot purple"></span> AI ACTIVE</span>
+        <span class="header-time" id="header-time">00:00:00 UTC</span>
+      </div>
+      <!-- User badge (shown when logged in) -->
+      <div class="user-badge" id="user-badge" style="display:none">
+        <span class="user-badge-name" id="user-badge-name"></span>
+        <span class="user-token-count" id="user-token-count">0 ∞</span>
+        <button class="hud-btn" style="padding:.2rem .5rem;font-size:.6rem;" onclick="AUTH.logout();onAuthChange()">Sign Out</button>
+      </div>
+      <button class="hud-btn" id="loginBtn" onclick="openModal('login-modal')" style="font-size:.65rem;">🔐 Sign In</button>
     </div>
   </header>
 
@@ -230,7 +365,7 @@
             <!-- populated by app.js -->
           </div>
           <hr class="divider" />
-          <button class="hud-btn orange full mt-1" onclick="showToast('Minting token…','₿')">
+          <button class="hud-btn orange full mt-1" onclick="handleMintToken()">
             ₿ MINT TOKEN
           </button>
         </div>
@@ -248,12 +383,12 @@
           <div class="scanner-controls" style="grid-template-columns: repeat(4, 1fr);">
             <button class="hud-btn" onclick="openModal('radio-type-modal')"       data-tooltip="Add Radio / TV / Gallery">🎷</button>
             <button class="hud-btn" onclick="showToast('Visualizer added','😎')"  data-tooltip="Add Visualizer">😎</button>
-            <button class="hud-btn" onclick="showToast('Token minted','🟡')"      data-tooltip="Token Walker">🟡</button>
-            <button class="hud-btn" onclick="showToast('Content doubled','🍄')"   data-tooltip="Double Content">🍄</button>
+            <button class="hud-btn" onclick="handleMintToken()"                   data-tooltip="Mint ∞Token">🟡</button>
+            <button class="hud-btn" onclick="handleMushroom()"                    data-tooltip="Signal Boost">🍄</button>
             <button class="hud-btn" onclick="showToast('Scanning page…','🔬')"    data-tooltip="Microscope Fixes">🔬</button>
             <button class="hud-btn" onclick="showToast('Art studio opening…','🎨')" data-tooltip="Art Studio">🎨</button>
-            <button class="hud-btn" onclick="showToast('Research thread started','♠️')" data-tooltip="Research Writer">♠️</button>
-            <button class="hud-btn" onclick="showToast('Merchant options loaded','♦️')" data-tooltip="Merchant Options">♦️</button>
+            <button class="hud-btn" onclick="openResearchWriter()"                data-tooltip="Research Writer">♠️</button>
+            <button class="hud-btn" onclick="openMiniGame()"                      data-tooltip="Play &amp; Earn">♦️</button>
           </div>
         </div>
       </div>
@@ -274,6 +409,33 @@
     </div>
     <span class="text-dim">SIGNAL LOCKED · 12 CHANNELS · GP SUITE ACTIVE</span>
   </footer>
+
+  <!-- ══════════════════════════════════════════
+       TOKEN ACTION BAR (sticky bottom)
+  ══════════════════════════════════════════ -->
+  <div class="token-action-bar" id="token-action-bar">
+    <button class="tab-btn tab-token" onclick="openModal('wallet-modal')" data-tooltip="My Infinity Wallet">
+      <span class="tab-icon">🟡</span>
+      <span class="tab-label">WALLET</span>
+      <span class="tab-count" id="tab-token-count">0</span>
+    </button>
+    <button class="tab-btn tab-research" onclick="openResearchWriter()" data-tooltip="Research Article Writer">
+      <span class="tab-icon">🔬</span>
+      <span class="tab-label">RESEARCH</span>
+    </button>
+    <button class="tab-btn tab-game" onclick="openMiniGame()" data-tooltip="Play &amp; Earn Tokens">
+      <span class="tab-icon">🎮</span>
+      <span class="tab-label">PLAY</span>
+    </button>
+    <button class="tab-btn tab-mushroom" onclick="showToast('Mushroom power activated!','🍄');handleMushroom()" data-tooltip="Double Signal Power">
+      <span class="tab-icon tab-mushroom-icon">🍄</span>
+      <span class="tab-label">BOOST</span>
+    </button>
+    <button class="tab-btn tab-mint" onclick="handleMintToken()" data-tooltip="Mint ∞Token">
+      <span class="tab-icon">₿</span>
+      <span class="tab-label">MINT</span>
+    </button>
+  </div>
 
   <!-- ══════════════════════════════════════════
        TOAST CONTAINER
@@ -321,6 +483,8 @@
   </div>
 
 </div><!-- /#app -->
+<script src="auth.js"></script>
+<script src="research.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
