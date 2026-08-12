@@ -93,27 +93,6 @@ const AI_AGENTS = [
   { id: 'gitpin',   symbol: '∆', name: 'Gitpin',   role: 'Triangulator',status: 'Mapping spatial field…',  color: '#0088ff' },
 ];
 
-/* ── BTC Ticker Items ── */
-const TICKER_BASE = [
-  { label: 'BTC/USD',  value: '$67,420.00', delta: '+2.14%', up: true  },
-  { label: 'ETH/USD',  value: '$3,512.88',  delta: '+1.07%', up: true  },
-  { label: 'SAT/TX',   value: '24 sat/vB',  delta: '−3.50%', up: false },
-  { label: 'MEMPOOL',  value: '148,923 tx', delta: '+8.20%', up: true  },
-  { label: 'HASHRATE', value: '642 EH/s',   delta: '+0.95%', up: true  },
-  { label: 'BLOCKS',   value: '847,291',    delta: '+1',     up: true  },
-  { label: 'FEES',     value: '0.00024 BTC', delta: '−1.10%', up: false },
-];
-
-/* ── BTC Transaction Log ── */
-const TX_TEMPLATES = [
-  { icon: '⚡', action: 'Channel tuned',      value: () => `+${(Math.random()*0.0001).toFixed(6)} BTC` },
-  { icon: '📡', action: 'Signal acquired',    value: () => `+${(Math.random()*0.00005).toFixed(6)} BTC` },
-  { icon: '🎵', action: 'Track streamed',     value: () => `+${(Math.random()*0.00002).toFixed(6)} BTC` },
-  { icon: '🔬', action: 'AI scan complete',   value: () => `+${(Math.random()*0.00008).toFixed(6)} BTC` },
-  { icon: '💎', action: 'Intent harvested',   value: () => `+${(Math.random()*0.0003).toFixed(6)} BTC` },
-  { icon: '⚙️',  action: 'Giro pulse fired',   value: () => `+${(Math.random()*0.0001).toFixed(6)} BTC` },
-];
-
 /* ── App State ── */
 const state = {
   activeChannel: 0,
@@ -123,18 +102,9 @@ const state = {
   visType: 'bars',   // bars | wave | circle
   animFrame: null,
   scanInterval: null,
-  txInterval: null,
-  btcTotal: 0.00000000,
 };
 
 /* ── Helpers ── */
-function randomHash() {
-  const chars = '0123456789abcdef';
-  let h = '';
-  for (let i = 0; i < 16; i++) h += chars[Math.floor(Math.random() * 16)];
-  return h;
-}
-
 function randomBetween(min, max) {
   return Math.random() * (max - min) + min;
 }
@@ -154,21 +124,6 @@ function updateClock() {
   if (!el) return;
   const now = new Date();
   el.textContent = now.toLocaleTimeString('en-US', { hour12: false }) + ' UTC';
-}
-
-/* ── Build Ticker ── */
-function buildTicker() {
-  const track = document.getElementById('ticker-track');
-  if (!track) return;
-  // Duplicate for seamless loop
-  const items = [...TICKER_BASE, ...TICKER_BASE];
-  track.innerHTML = items.map(t => `
-    <span class="ticker-item">
-      <span class="ticker-label">${t.label}</span>
-      <span class="ticker-value">${t.value}</span>
-      <span class="${t.up ? 'ticker-up' : 'ticker-down'}">${t.delta}</span>
-    </span>
-  `).join('');
 }
 
 /* ── Build Channel List ── */
@@ -218,7 +173,6 @@ function selectChannel(idx) {
   }
 
   // Log transaction
-  addTx({ icon: '⚡', action: `Tuned to ${ch.name}`, value: `+${(Math.random()*0.0001).toFixed(6)} BTC` });
   showToast(`Locked onto ${ch.name} · ${ch.freq} MHz`, '📡');
 }
 
@@ -243,7 +197,6 @@ function togglePlay() {
   if (state.isPlaying) {
     startAudio(state.activeChannel);
     startVisualizer();
-    addTx({ icon: '🎵', action: 'Stream started', value: `+${(Math.random()*0.00002).toFixed(6)} BTC` });
   } else {
     stopAudio();
     stopVisualizer();
@@ -787,43 +740,6 @@ function animateMeters() {
   });
 }
 
-/* ── Bitcoin TX Feed ── */
-function addTx(tx) {
-  const feed = document.getElementById('btc-feed');
-  if (!feed) return;
-  const hash = randomHash();
-
-  // Add BTC value (strip everything except digits and decimal point)
-  const val = parseFloat(tx.value.replace(/[^0-9.]/g, '')) || 0;
-  state.btcTotal += val;
-
-  const el = document.createElement('div');
-  el.className = 'tx-item';
-  el.innerHTML = `
-    <span class="tx-icon">${tx.icon}</span>
-    <div>
-      <div class="tx-hash">#${hash}</div>
-      <div class="tx-action">${tx.action}</div>
-      <div class="tx-value">${tx.value}</div>
-    </div>
-  `;
-  feed.prepend(el);
-
-  // Keep max 20 items
-  while (feed.children.length > 20) feed.removeChild(feed.lastChild);
-
-  // Update total
-  const totalEl = document.getElementById('btc-total');
-  if (totalEl) totalEl.textContent = state.btcTotal.toFixed(8) + ' BTC';
-}
-
-function startTxFeed() {
-  state.txInterval = setInterval(() => {
-    const tpl = TX_TEMPLATES[Math.floor(Math.random() * TX_TEMPLATES.length)];
-    addTx({ icon: tpl.icon, action: tpl.action, value: tpl.value() });
-  }, 4000);
-}
-
 /* ── Visualizer Type Switch ── */
 function setVisType(type) {
   state.visType = type;
@@ -836,7 +752,6 @@ function setVisType(type) {
 function handleModalOption(option) {
   closeModal('radio-type-modal');
   showToast(`Loading: ${option}`, '📻');
-  addTx({ icon: '📡', action: `Radio type: ${option}`, value: `+${(Math.random()*0.00005).toFixed(6)} BTC` });
 }
 
 /* ── Skip / Prev ── */
@@ -851,11 +766,10 @@ function nextChannel() {
 
 /* ── Init ── */
 function init() {
-  buildTicker();
+  AlienMarketFeed.init();
   buildChannelList();
   buildAIDashboard();
   startVisualizer();
-  startTxFeed();
   animateMiniWave();
 
   // Clock
@@ -1015,7 +929,6 @@ function renderWalletModal() {
   }
   const wallet = AUTH.getWallet(user.username) || {};
   const tokens  = wallet.infinityTokens || 0;
-  const btc     = (wallet.btcBacking || 0).toFixed(8);
   const hours   = Math.floor((wallet.listenSeconds || 0) / 3600);
   const mins    = Math.floor(((wallet.listenSeconds || 0) % 3600) / 60);
   const secsIntoHour = (wallet.listenSeconds || 0) % 3600;
@@ -1028,7 +941,6 @@ function renderWalletModal() {
       <div>
         <div class="wallet-tokens">${tokens}</div>
         <div class="wallet-token-label">∞ INFINITY TOKENS</div>
-        <div class="wallet-btc">≈ ${btc} BTC (notional)</div>
       </div>
     </div>
     <div class="wallet-stats">
@@ -1052,11 +964,11 @@ function renderWalletModal() {
     </div>
     <p class="text-dim" style="font-size:.65rem;line-height:1.5;">
       Earn 1 ∞TOKEN per hour of listening. Earn up to 24 extra tokens per day playing Signal Catch.
-      Tokens are backed by Bitcoin and stored in the AI system — no real crypto is handled.
+      Token records remain local to this browser until a shared Infinity ledger is connected.
     </p>
     <div style="display:flex;gap:.5rem;margin-top:.75rem;">
       <button class="hud-btn green full" onclick="openMiniGame();closeModal('wallet-modal')">🎮 Play &amp; Earn</button>
-      <button class="hud-btn orange full" onclick="handleMintToken();closeModal('wallet-modal')">₿ Mint Token</button>
+      <button class="hud-btn orange full" onclick="handleMintToken();closeModal('wallet-modal')">🟡 Mint Token</button>
     </div>
   `;
 }
@@ -1073,7 +985,6 @@ function handleMintToken() {
   }
   AUTH.mintToken(user.username, 'Manual mint');
   updateTokenDisplay();
-  addTx({ icon: '🟡', action: 'Token minted', value: '+1 ∞TOKEN' });
   showToast('∞TOKEN minted to your wallet!', '🟡');
 }
 
@@ -1086,7 +997,6 @@ function handleMushroom() {
   }
   // Mushroom boost: double the next listen-time award window temporarily
   showToast('🍄 Signal BOOST active — 2× tokens for 5 minutes!', '🍄');
-  addTx({ icon: '🍄', action: 'Signal boost activated', value: '+BOOST' });
   // Visual flash on the giro core
   const core = document.querySelector('.giro-core');
   if (core) {
@@ -1108,7 +1018,6 @@ function handleMushroom() {
     updateTokenDisplay();
     if (awarded > 0) {
       showToast(`+${awarded} ∞TOKEN earned for listening!`, '🟡');
-      addTx({ icon: '🟡', action: '1-hour listen reward', value: `+${awarded} ∞TOKEN` });
     }
   }, TICK_MS);
 })();
@@ -1127,7 +1036,6 @@ function openResearchWriter() {
     AUTH.saveResearchArticle(user.username, summary);
     AUTH.mintToken(user.username, 'Research article generated');
     updateTokenDisplay();
-    addTx({ icon: '🔬', action: `Research: ${topic.title}`, value: '+1 ∞TOKEN' });
   }
 }
 
@@ -1210,7 +1118,6 @@ function catchNode() {
     if (awarded > 0) {
       updateTokenDisplay();
       document.getElementById('game-status').textContent = `+1 ∞TOKEN earned!`;
-      addTx({ icon: '🎮', action: 'Signal Catch', value: '+1 ∞TOKEN' });
     } else {
       document.getElementById('game-status').textContent = 'Daily limit (24) reached.';
     }

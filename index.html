@@ -4,8 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ALIEN RADIO · Deep Space Transmissions</title>
-  <meta name="description" content="Alien sounds channel digital radio — futuristic HUD channel scanner with 12 live space radio streams, Bitcoin-harvesting signal architecture and GP Suite AI dashboard." />
+  <meta name="description" content="Alien sounds channel digital radio — futuristic HUD channel scanner with 12 live space radio streams, live no-key metals pricing and a verified GitHub commit feed." />
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .metals-ticker { padding: .5rem 0; }
+    .ticker-track.metals-live-track {
+      animation: none;
+      gap: .65rem;
+      overflow-x: auto;
+      padding: 0 1rem .25rem;
+      scrollbar-width: thin;
+      scroll-snap-type: x proximity;
+    }
+    .metal-widget {
+      width: 225px;
+      height: 106px;
+      flex: 0 0 225px;
+      border: 1px solid rgba(255,136,0,.28);
+      border-radius: 6px;
+      background: #060d1a;
+      scroll-snap-align: start;
+    }
+  </style>
   <!-- Google Fonts preconnect -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -155,7 +175,7 @@
     <div class="header-right">
       <div class="header-status">
         <span class="status-dot"><span class="dot"></span> ONLINE</span>
-        <span class="status-dot"><span class="dot orange"></span> BTC LIVE</span>
+        <span class="status-dot"><span class="dot orange"></span> METALS LIVE · NO KEY</span>
         <span class="status-dot"><span class="dot purple"></span> AI ACTIVE</span>
         <span class="header-time" id="header-time">00:00:00 UTC</span>
       </div>
@@ -170,13 +190,21 @@
   </header>
 
   <!-- ══════════════════════════════════════════
-       BTC TICKER
+       LIVE NO-KEY METALS BOARD
   ══════════════════════════════════════════ -->
-  <div class="btc-ticker">
-    <div class="ticker-track" id="ticker-track">
-      <!-- populated by app.js -->
+  <section class="metals-ticker" aria-label="Live metal prices in US dollars">
+    <div class="ticker-track metals-live-track" id="ticker-track">
+      <iframe class="metal-widget" title="Gold live USD price" src="https://metal-sentinel.com/widget/AU?currency=USD&amp;theme=space" loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <iframe class="metal-widget" title="Silver live USD price" src="https://metal-sentinel.com/widget/AG?currency=USD&amp;theme=space" loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <iframe class="metal-widget" title="Platinum live USD price" src="https://metal-sentinel.com/widget/PT?currency=USD&amp;theme=space" loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <iframe class="metal-widget" title="Palladium live USD price" src="https://metal-sentinel.com/widget/PD?currency=USD&amp;theme=space" loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <iframe class="metal-widget" title="Copper live USD price" src="https://metal-sentinel.com/widget/CU?currency=USD&amp;theme=space" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <iframe class="metal-widget" title="Nickel live USD price" src="https://metal-sentinel.com/widget/NI?currency=USD&amp;theme=space" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <iframe class="metal-widget" title="Aluminum live USD price" src="https://metal-sentinel.com/widget/AL?currency=USD&amp;theme=space" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <iframe class="metal-widget" title="Zinc live USD price" src="https://metal-sentinel.com/widget/ZN?currency=USD&amp;theme=space" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <iframe class="metal-widget" title="Lead live USD price" src="https://metal-sentinel.com/widget/PB?currency=USD&amp;theme=space" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
     </div>
-  </div>
+  </section>
 
   <!-- ══════════════════════════════════════════
        MAIN GRID  [LEFT | CENTER | RIGHT]
@@ -312,7 +340,7 @@
 
     </section>
 
-    <!-- ── RIGHT COLUMN: AI Dashboard + BTC Feed ── -->
+    <!-- ── RIGHT COLUMN: AI Dashboard + verified commit feed ── -->
     <aside class="col-right">
 
       <!-- Giro Quantum Core -->
@@ -349,25 +377,27 @@
         </div>
       </div>
 
-      <!-- Bitcoin Transaction Feed -->
+      <!-- Verified GitHub Commit Feed -->
       <div class="hud-panel mt-2" style="margin-top: 1rem;">
         <div class="panel-header">
           <div class="panel-title-group">
-            <span class="panel-icon">₿</span>
-            <span>Bitcoin Harvest Feed</span>
+            <span class="panel-icon">◈</span>
+            <span>Repository Commit Feed</span>
           </div>
           <span class="panel-badge text-orange" style="color:var(--neon-orange); border-color:rgba(255,136,0,0.4);">
-            <span id="btc-total">0.00000000 BTC</span>
+            <span id="commit-status">LOADING</span>
           </span>
         </div>
         <div class="panel-body">
-          <div class="btc-feed" id="btc-feed">
-            <!-- populated by app.js -->
+          <div class="commit-feed" id="commit-feed">
+            <!-- populated from the public GitHub commits API -->
           </div>
           <hr class="divider" />
-          <button class="hud-btn orange full mt-1" onclick="handleMintToken()">
-            ₿ MINT TOKEN
-          </button>
+          <div class="text-dim" style="font-size:.58rem;margin-top:.45rem;">
+            Verified commits refresh once daily. Metal quotes are delivered live by
+            <a href="https://metal-sentinel.com/widgets" target="_blank" rel="noopener noreferrer" class="text-orange">Metal Sentinel</a>
+            with no signup or API key.
+          </div>
         </div>
       </div>
 
@@ -404,7 +434,7 @@
     <div class="footer-links">
       <a href="#">Channels</a>
       <a href="#">AI Dashboard</a>
-      <a href="#">Bitcoin Feed</a>
+      <a href="#">Commit Feed</a>
       <a href="#">About</a>
     </div>
     <span class="text-dim">SIGNAL LOCKED · 12 CHANNELS · GP SUITE ACTIVE</span>
@@ -432,7 +462,7 @@
       <span class="tab-label">BOOST</span>
     </button>
     <button class="tab-btn tab-mint" onclick="handleMintToken()" data-tooltip="Mint ∞Token">
-      <span class="tab-icon">₿</span>
+      <span class="tab-icon">∞</span>
       <span class="tab-label">MINT</span>
     </button>
   </div>
@@ -485,6 +515,7 @@
 </div><!-- /#app -->
 <script src="auth.js"></script>
 <script src="research.js"></script>
-<script src="app.js"></script>
+<script src="market-feed.js?v=20260812b"></script>
+<script src="app.js?v=20260812"></script>
 </body>
 </html>

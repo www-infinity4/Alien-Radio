@@ -1,23 +1,38 @@
-# 👾 ALIEN RADIO
+# 👾 Alien Radio
 
-**Deep Space Transmissions · Channel Scanner · GP Suite AI Dashboard**
+Deep Space Transmissions · Channel Scanner · GP Suite AI Dashboard
 
-A futuristic sci-fi digital radio website with a HUD-style channel scanner, live spectrum analyzer, GP Suite AI agent dashboard, and a Bitcoin-harvesting transaction feed.
+Alien Radio is a responsive science-fiction radio interface with 12 real internet-radio channels, spectrum visualization, GP Suite agents, a live no-key metals board, and a verified repository commit feed.
 
-## Features
+## Real data feeds
 
-- **Channel Scanner** — 8 alien radio channels with frequency display, signal strength bars, and auto-scan mode
-- **Spectrum Analyzer** — Real-time canvas visualizer with bars, wave, and orbital (circular) modes
-- **GP Suite AI Agents** — Live dashboard showing Gitflow ≋, Gitpulse ♥, Gitarch 🏛, Gitsync ⟲, Gitscan ◈, and Gitpin ∆ working together on the Giro Quantum Core
-- **Bitcoin Harvest Feed** — Every action (channel tune, stream, AI scan) logs a simulated Bitcoin transaction with a hash receipt
-- **BTC Ticker** — Live-scrolling price/hashrate ticker across the top
-- **Quick Tools Panel** — Emoji toolbar (🎷 📻 😎 🟡 🍄 🔬 🎨 ♠️ ♦️) with modal pickers
-- **Responsive Layout** — Three-column HUD on desktop, stacks on mobile
+### Live metals board — no signup and no key
 
-## Stack
+The banner embeds the official free [Metal Sentinel widgets](https://metal-sentinel.com/widgets) for gold, silver, platinum, palladium, copper, nickel, aluminum, zinc, and lead in USD.
 
-Pure HTML + CSS + Vanilla JS — no build tools or dependencies required.
+- The widgets publish real market quotes and refresh independently.
+- No API key, account, prompt, placeholder price, or invented fallback is used.
+- Every quote remains visibly attributed to its provider.
 
-## Run Locally
+### Repository commit feed
 
-Open `index.html` in any modern browser. No server needed.
+The right-side feed retrieves actual commits from the public GitHub API for `www-infinity4/Alien-Radio`. Commit SHA, first message line, author, date, and GitHub link come from the API and are cached for 24 hours.
+
+## Other features retained
+
+- 12-channel radio scanner with real streams and local audio fallback
+- Spectrum analyzer with bars, wave, and orbital modes
+- GP Suite AI agent dashboard
+- Quick tools, local account, Infinity-token wallet, and research interfaces
+- Responsive three-column HUD
+
+## Verification
+
+```bash
+node market-feed.test.js
+node --check market-feed.js
+node --check app.js
+node --check auth.js
+```
+
+The project remains pure HTML, CSS, and JavaScript with no build dependency.
