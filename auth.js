@@ -2,8 +2,7 @@
    Alien Radio — Auth & Wallet System
    auth.js — login / register, SHA-256 passwords, AES-GCM encrypted
              profile storage. Each user gets a wallet with Infinity
-             Tokens (∞TOKEN) conceptually backed by Bitcoin.
-   Ported from www-infinity/Bitcoin-Crusher auth.js
+             Tokens (∞TOKEN) are local browser records pending a shared ledger.
    ===================================================================== */
 /* global window, crypto */
 window.AUTH = (() => {
@@ -67,7 +66,6 @@ window.AUTH = (() => {
   function makeWallet() {
     return {
       infinityTokens:  0,          // ∞TOKEN earned by listening / playing
-      btcBacking:      0.00000000, // notional BTC backing (display only)
       listenSeconds:   0,          // cumulative listening seconds
       lastTokenAward:  null,       // ISO timestamp of last 1-hr token award
       dailyGameTokens: 0,          // tokens earned from games today
@@ -171,7 +169,6 @@ window.AUTH = (() => {
     const newHours = hoursCompleted - awardedHours;
     if (newHours > 0) {
       w.infinityTokens  += newHours;
-      w.btcBacking      += newHours * 0.00000001; // notional satoshi per token
       w._awardedHours    = hoursCompleted;
       w.lastTokenAward   = new Date().toISOString();
     }
@@ -193,7 +190,6 @@ window.AUTH = (() => {
     const canAward = Math.min(amount, 24 - w.dailyGameTokens);
     if (canAward <= 0) return 0;
     w.infinityTokens  += canAward;
-    w.btcBacking      += canAward * 0.00000001;
     w.dailyGameTokens += canAward;
     users[username].wallet = w;
     saveUsers(users);
@@ -206,7 +202,6 @@ window.AUTH = (() => {
     if (!users[username]) return false;
     const w = users[username].wallet || (users[username].wallet = makeWallet());
     w.infinityTokens += 1;
-    w.btcBacking     += 0.00000001;
     users[username].wallet = w;
     saveUsers(users);
     return true;
