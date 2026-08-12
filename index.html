@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ALIEN RADIO · Deep Space Transmissions</title>
-  <meta name="description" content="Alien sounds channel digital radio — futuristic HUD channel scanner with 12 live space radio streams, Bitcoin-harvesting signal architecture and GP Suite AI dashboard." />
+  <meta name="description" content="Alien sounds channel digital radio — futuristic HUD channel scanner with 12 live space radio streams, daily metals pricing and a verified GitHub commit feed." />
   <link rel="stylesheet" href="style.css" />
   <!-- Google Fonts preconnect -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -155,7 +155,7 @@
     <div class="header-right">
       <div class="header-status">
         <span class="status-dot"><span class="dot"></span> ONLINE</span>
-        <span class="status-dot"><span class="dot orange"></span> BTC LIVE</span>
+        <span class="status-dot"><span class="dot orange"></span> METALS DAILY</span>
         <span class="status-dot"><span class="dot purple"></span> AI ACTIVE</span>
         <span class="header-time" id="header-time">00:00:00 UTC</span>
       </div>
@@ -170,9 +170,9 @@
   </header>
 
   <!-- ══════════════════════════════════════════
-       BTC TICKER
+       DAILY METALS TICKER
   ══════════════════════════════════════════ -->
-  <div class="btc-ticker">
+  <div class="metals-ticker">
     <div class="ticker-track" id="ticker-track">
       <!-- populated by app.js -->
     </div>
@@ -312,7 +312,7 @@
 
     </section>
 
-    <!-- ── RIGHT COLUMN: AI Dashboard + BTC Feed ── -->
+    <!-- ── RIGHT COLUMN: AI Dashboard + verified commit feed ── -->
     <aside class="col-right">
 
       <!-- Giro Quantum Core -->
@@ -349,25 +349,26 @@
         </div>
       </div>
 
-      <!-- Bitcoin Transaction Feed -->
+      <!-- Verified GitHub Commit Feed -->
       <div class="hud-panel mt-2" style="margin-top: 1rem;">
         <div class="panel-header">
           <div class="panel-title-group">
-            <span class="panel-icon">₿</span>
-            <span>Bitcoin Harvest Feed</span>
+            <span class="panel-icon">◈</span>
+            <span>Repository Commit Feed</span>
           </div>
           <span class="panel-badge text-orange" style="color:var(--neon-orange); border-color:rgba(255,136,0,0.4);">
-            <span id="btc-total">0.00000000 BTC</span>
+            <span id="commit-status">LOADING</span>
           </span>
         </div>
         <div class="panel-body">
-          <div class="btc-feed" id="btc-feed">
-            <!-- populated by app.js -->
+          <div class="commit-feed" id="commit-feed">
+            <!-- populated from the public GitHub commits API -->
           </div>
           <hr class="divider" />
-          <button class="hud-btn orange full mt-1" onclick="handleMintToken()">
-            ₿ MINT TOKEN
+          <button class="hud-btn orange full mt-1" id="metals-api-config" type="button">
+            ⚙ SET FREE METALS API KEY
           </button>
+          <div class="text-dim" style="font-size:.58rem;margin-top:.45rem;">One Metals.Dev request per browser every 24 hours. The key stays on this device.</div>
         </div>
       </div>
 
@@ -404,7 +405,7 @@
     <div class="footer-links">
       <a href="#">Channels</a>
       <a href="#">AI Dashboard</a>
-      <a href="#">Bitcoin Feed</a>
+      <a href="#">Commit Feed</a>
       <a href="#">About</a>
     </div>
     <span class="text-dim">SIGNAL LOCKED · 12 CHANNELS · GP SUITE ACTIVE</span>
@@ -485,6 +486,7 @@
 </div><!-- /#app -->
 <script src="auth.js"></script>
 <script src="research.js"></script>
-<script src="app.js"></script>
+<script src="market-feed.js?v=20260812"></script>
+<script src="app.js?v=20260812"></script>
 </body>
 </html>
