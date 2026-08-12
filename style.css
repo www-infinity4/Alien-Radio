@@ -166,8 +166,8 @@ body::after {
   letter-spacing: 0.1em;
 }
 
-/* ── Bitcoin ticker ── */
-.btc-ticker {
+/* ── Daily metals ticker ── */
+.metals-ticker {
   background: linear-gradient(90deg, transparent, rgba(255,136,0,0.08), transparent);
   border-top: 1px solid rgba(255,136,0,0.2);
   border-bottom: 1px solid rgba(255,136,0,0.2);
@@ -202,8 +202,8 @@ body::after {
 .ticker-up    { color: var(--neon-green); }
 .ticker-down  { color: var(--neon-red); }
 
-.btc-ticker::before,
-.btc-ticker::after {
+.metals-ticker::before,
+.metals-ticker::after {
   content: '';
   position: absolute;
   top: 0; bottom: 0;
@@ -211,8 +211,8 @@ body::after {
   z-index: 2;
   pointer-events: none;
 }
-.btc-ticker::before { left: 0; background: linear-gradient(90deg, var(--bg-deep), transparent); }
-.btc-ticker::after  { right: 0; background: linear-gradient(-90deg, var(--bg-deep), transparent); }
+.metals-ticker::before { left: 0; background: linear-gradient(90deg, var(--bg-deep), transparent); }
+.metals-ticker::after  { right: 0; background: linear-gradient(-90deg, var(--bg-deep), transparent); }
 
 /* ── Main grid ── */
 .main-grid {
@@ -797,17 +797,17 @@ body::after {
   font-size: 0.9rem;
 }
 
-/* ── Bitcoin transaction feed ── */
-.btc-feed {
+/* ── Verified commit feed ── */
+.commit-feed {
   max-height: 180px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(255,136,0,0.3) transparent;
 }
 
-.btc-feed::-webkit-scrollbar { width: 4px; }
-.btc-feed::-webkit-scrollbar-track { background: transparent; }
-.btc-feed::-webkit-scrollbar-thumb { background: rgba(255,136,0,0.3); border-radius: 2px; }
+.commit-feed::-webkit-scrollbar { width: 4px; }
+.commit-feed::-webkit-scrollbar-track { background: transparent; }
+.commit-feed::-webkit-scrollbar-thumb { background: rgba(255,136,0,0.3); border-radius: 2px; }
 
 .tx-item {
   display: flex;
@@ -1313,14 +1313,6 @@ body::after {
   color: var(--text-dim);
   margin-top: 0.15rem;
 }
-.wallet-btc {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: var(--neon-orange);
-  opacity: 0.7;
-  margin-top: 0.25rem;
-}
-
 .wallet-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1605,3 +1597,8 @@ body { padding-bottom: 72px; }
 /* adjust toast position above token bar */
 #toast-container { bottom: 80px; }
 
+
+/* Real market and repository data */
+.ticker-unit { color: var(--text-dim); font-size: .62rem; }
+.commit-item { color: inherit; text-decoration: none; display: flex; }
+.commit-item:hover { border-color: var(--border-glow); background: rgba(0,255,247,.05); }
