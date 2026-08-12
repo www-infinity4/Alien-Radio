@@ -26,6 +26,18 @@ The right-side feed retrieves actual commits from the public GitHub API for `www
 - Quick tools, local account, Infinity-token wallet, and research interfaces
 - Responsive three-column HUD
 
+## Live research and project-token work row
+
+The enlarged bottom work row now prioritizes useful pages over the former game/boost shortcuts:
+
+- **Project Tokens** opens Gitflow's live commit-to-token project pages.
+- **Live Research** opens an evidence-first Research Robot that queries Crossref and OpenAlex in real time.
+- **Click to Build** chooses a commit-linked work packet and creates a traceable GitHub build task.
+- **Commit Data** jumps to verified repository evidence.
+- **Wallet** keeps the existing local wallet accessible.
+
+The Research Lab keeps observations, hypotheses and decisions in separate fields; exports selected citations as JSON; and hands the selected evidence to a GitHub work item. The completion commit becomes the permanent action-token serial.
+
 ## Verification
 
 ```bash

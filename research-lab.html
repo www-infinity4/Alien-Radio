@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Alien Radio Research Lab</title>
+  <meta name="description" content="Evidence-first research workspace using live scholarly metadata and commit-linked build handoff.">
+  <link rel="stylesheet" href="research-lab.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="index.html" class="brand">👾 <span>ALIEN RADIO</span></a>
+    <nav><a href="index.html">Radio</a><a class="active" href="research-lab.html">Research</a><a href="https://www-infinity4.github.io/Gitflow/token-lab.html">Token Lab</a></nav>
+    <div id="robot-status" class="robot-status"><i></i><span>Research Robot ready</span></div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">LIVE SOURCES · EVIDENCE NOTES · COMMIT HANDOFF</p>
+      <h1>Research that shows where every result came from.</h1>
+      <p>Enter a subject or unusual idea. The Research Robot searches live scholarly indexes, returns traceable citations, and lets you select evidence before creating a build task. It does not manufacture an article from a hidden list.</p>
+      <form id="research-form">
+        <label for="research-query">What should the robot investigate?</label>
+        <div class="query-row"><input id="research-query" required autocomplete="off" placeholder="Example: hydrogen radio-frequency plasma diagnostics"><button>Run live research</button></div>
+      </form>
+    </section>
+
+    <section class="process" aria-label="Research workflow">
+      <article><b>01 · SEARCH</b><span>Crossref and OpenAlex scholarly metadata</span></article>
+      <article><b>02 · VERIFY</b><span>Select useful sources and read the originals</span></article>
+      <article><b>03 · RECORD</b><span>Separate observations, hypotheses and decisions</span></article>
+      <article><b>04 · BUILD</b><span>Create a GitHub work item; its completion commit becomes the token</span></article>
+    </section>
+
+    <section class="research-grid">
+      <section class="results-panel">
+        <div class="section-head"><div><p class="eyebrow">SOURCE RESULTS</p><h2 id="result-title">Awaiting a question</h2></div><span id="result-count">0 selected</span></div>
+        <div id="source-results" class="source-results"><div class="empty">The live results will appear here with title, author, year, publisher and DOI or source URL.</div></div>
+      </section>
+
+      <aside class="notebook">
+        <p class="eyebrow">RESEARCH TOKEN NOTEBOOK</p>
+        <label>Observed evidence<textarea id="observations" placeholder="What do the selected sources directly establish?"></textarea></label>
+        <label>Working hypothesis<textarea id="hypothesis" placeholder="What idea should be tested? Keep this separate from established evidence."></textarea></label>
+        <label>Decision / build output<textarea id="decision" placeholder="What page, calculation, experiment, plan or prototype should be built next?"></textarea></label>
+        <div class="notebook-actions"><button id="build-research" class="primary" disabled>Create build task</button><button id="export-research" disabled>Export record</button></div>
+        <p class="small">The issue is the work order. When the work is completed, its Git commit supplies the permanent action-token serial.</p>
+      </aside>
+    </section>
+  </main>
+  <script src="research-lab.js"></script>
+</body>
+</html>
