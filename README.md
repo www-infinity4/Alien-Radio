@@ -2,19 +2,17 @@
 
 Deep Space Transmissions · Channel Scanner · GP Suite AI Dashboard
 
-Alien Radio is a responsive science-fiction radio interface with 12 real internet-radio channels, spectrum visualization, GP Suite agents, a daily metals banner, and a verified repository commit feed.
+Alien Radio is a responsive science-fiction radio interface with 12 real internet-radio channels, spectrum visualization, GP Suite agents, a live no-key metals board, and a verified repository commit feed.
 
 ## Real data feeds
 
-### Daily metals banner
+### Live metals board — no signup and no key
 
-The banner displays gold, silver, platinum, palladium, copper, nickel, aluminum, zinc, and lead prices from [Metals.Dev](https://metals.dev/docs).
+The banner embeds the official free [Metal Sentinel widgets](https://metal-sentinel.com/widgets) for gold, silver, platinum, palladium, copper, nickel, aluminum, zinc, and lead in USD.
 
-- Create a free Metals.Dev key and select **Set Free Metals API Key** on Alien Radio.
-- The key is saved only in that browser's local storage. Never commit an API key to this repository.
-- Alien Radio makes at most one metals request per browser every 24 hours and reuses the cached response between updates.
-- Precious metals are displayed in USD per troy ounce. Industrial metals are converted from the API's troy-ounce response to USD per pound.
-- Missing or failed data is labeled unavailable or stale; the site does not invent replacement prices.
+- The widgets publish real market quotes and refresh independently.
+- No API key, account, prompt, placeholder price, or invented fallback is used.
+- Every quote remains visibly attributed to its provider.
 
 ### Repository commit feed
 
