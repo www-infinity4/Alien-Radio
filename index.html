@@ -4,8 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ALIEN RADIO · Deep Space Transmissions</title>
-  <meta name="description" content="Alien sounds channel digital radio — futuristic HUD channel scanner with 12 live space radio streams, daily metals pricing and a verified GitHub commit feed." />
+  <meta name="description" content="Alien sounds channel digital radio — futuristic HUD channel scanner with 12 live space radio streams, live no-key metals pricing and a verified GitHub commit feed." />
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .metals-ticker { padding: .5rem 0; }
+    .ticker-track.metals-live-track {
+      animation: none;
+      gap: .65rem;
+      overflow-x: auto;
+      padding: 0 1rem .25rem;
+      scrollbar-width: thin;
+      scroll-snap-type: x proximity;
+    }
+    .metal-widget {
+      width: 225px;
+      height: 106px;
+      flex: 0 0 225px;
+      border: 1px solid rgba(255,136,0,.28);
+      border-radius: 6px;
+      background: #060d1a;
+      scroll-snap-align: start;
+    }
+  </style>
   <!-- Google Fonts preconnect -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -155,7 +175,7 @@
     <div class="header-right">
       <div class="header-status">
         <span class="status-dot"><span class="dot"></span> ONLINE</span>
-        <span class="status-dot"><span class="dot orange"></span> METALS DAILY</span>
+        <span class="status-dot"><span class="dot orange"></span> METALS LIVE · NO KEY</span>
         <span class="status-dot"><span class="dot purple"></span> AI ACTIVE</span>
         <span class="header-time" id="header-time">00:00:00 UTC</span>
       </div>
@@ -170,13 +190,21 @@
   </header>
 
   <!-- ══════════════════════════════════════════
-       DAILY METALS TICKER
+       LIVE NO-KEY METALS BOARD
   ══════════════════════════════════════════ -->
-  <div class="metals-ticker">
-    <div class="ticker-track" id="ticker-track">
-      <!-- populated by app.js -->
+  <section class="metals-ticker" aria-label="Live metal prices in US dollars">
+    <div class="ticker-track metals-live-track" id="ticker-track">
+      <iframe class="metal-widget" title="Gold live USD price" src="https://metal-sentinel.com/widget/AU?currency=USD&amp;theme=space" loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <iframe class="metal-widget" title="Silver live USD price" src="https://metal-sentinel.com/widget/AG?currency=USD&amp;theme=space" loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <iframe class="metal-widget" title="Platinum live USD price" src="https://metal-sentinel.com/widget/PT?currency=USD&amp;theme=space" loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <iframe class="metal-widget" title="Palladium live USD price" src="https://metal-sentinel.com/widget/PD?currency=USD&amp;theme=space" loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <iframe class="metal-widget" title="Copper live USD price" src="https://metal-sentinel.com/widget/CU?currency=USD&amp;theme=space" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <iframe class="metal-widget" title="Nickel live USD price" src="https://metal-sentinel.com/widget/NI?currency=USD&amp;theme=space" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <iframe class="metal-widget" title="Aluminum live USD price" src="https://metal-sentinel.com/widget/AL?currency=USD&amp;theme=space" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <iframe class="metal-widget" title="Zinc live USD price" src="https://metal-sentinel.com/widget/ZN?currency=USD&amp;theme=space" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <iframe class="metal-widget" title="Lead live USD price" src="https://metal-sentinel.com/widget/PB?currency=USD&amp;theme=space" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
     </div>
-  </div>
+  </section>
 
   <!-- ══════════════════════════════════════════
        MAIN GRID  [LEFT | CENTER | RIGHT]
@@ -365,10 +393,11 @@
             <!-- populated from the public GitHub commits API -->
           </div>
           <hr class="divider" />
-          <button class="hud-btn orange full mt-1" id="metals-api-config" type="button">
-            ⚙ SET FREE METALS API KEY
-          </button>
-          <div class="text-dim" style="font-size:.58rem;margin-top:.45rem;">One Metals.Dev request per browser every 24 hours. The key stays on this device.</div>
+          <div class="text-dim" style="font-size:.58rem;margin-top:.45rem;">
+            Verified commits refresh once daily. Metal quotes are delivered live by
+            <a href="https://metal-sentinel.com/widgets" target="_blank" rel="noopener noreferrer" class="text-orange">Metal Sentinel</a>
+            with no signup or API key.
+          </div>
         </div>
       </div>
 
@@ -433,7 +462,7 @@
       <span class="tab-label">BOOST</span>
     </button>
     <button class="tab-btn tab-mint" onclick="handleMintToken()" data-tooltip="Mint ∞Token">
-      <span class="tab-icon">₿</span>
+      <span class="tab-icon">∞</span>
       <span class="tab-label">MINT</span>
     </button>
   </div>
@@ -486,7 +515,7 @@
 </div><!-- /#app -->
 <script src="auth.js"></script>
 <script src="research.js"></script>
-<script src="market-feed.js?v=20260812"></script>
+<script src="market-feed.js?v=20260812b"></script>
 <script src="app.js?v=20260812"></script>
 </body>
 </html>
