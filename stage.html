@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Alien Radio enhanced with the Infinity Star Token Stage, universal conversion marks, Product Token planning, and Avatar Coin station activation.">
+  <title>Alien Radio · Star Token Stage</title>
+  <style>
+    html,body{width:100%;height:100%;margin:0;background:#050913;overflow:hidden}
+    #radioFrame{display:block;width:100%;height:100%;border:0;background:#050913}
+    #stageStatus{position:fixed;z-index:10;right:10px;bottom:10px;padding:.45rem .65rem;border:1px solid rgba(255,230,0,.35);border-radius:999px;background:rgba(5,9,19,.86);color:#ffe600;font:11px ui-monospace,monospace;pointer-events:none;opacity:.88}
+    #stageStatus.ready{color:#00fff7;border-color:rgba(0,255,247,.35)}
+    #stageStatus.error{color:#ff6880;border-color:rgba(255,104,128,.45)}
+  </style>
+</head>
+<body>
+  <iframe id="radioFrame" src="index.html" title="Alien Radio with Infinity Star Token Stage"></iframe>
+  <div id="stageStatus">Loading ⭐ conversion layer…</div>
+  <script>
+    (() => {
+      const frame = document.querySelector('#radioFrame');
+      const status = document.querySelector('#stageStatus');
+
+      frame.addEventListener('load', () => {
+        try {
+          const doc = frame.contentDocument;
+          const win = frame.contentWindow;
+          const originalAdd = doc.addEventListener.bind(doc);
+
+          doc.addEventListener = function(type, listener, options) {
+            if (type === 'DOMContentLoaded') {
+              queueMicrotask(() => listener.call(doc, new win.Event('DOMContentLoaded')));
+              return;
+            }
+            return originalAdd(type, listener, options);
+          };
+
+          const script = doc.createElement('script');
+          script.src = 'star-stage.js';
+          script.addEventListener('load', () => {
+            doc.addEventListener = originalAdd;
+            status.textContent = '⭐ Star conversion layer active';
+            status.className = 'ready';
+            setTimeout(() => { status.style.opacity = '.28'; }, 2600);
+          });
+          script.addEventListener('error', () => {
+            doc.addEventListener = originalAdd;
+            status.textContent = 'Star layer could not load';
+            status.className = 'error';
+          });
+          doc.body.appendChild(script);
+        } catch (error) {
+          status.textContent = 'Star layer blocked: ' + error.message;
+          status.className = 'error';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
