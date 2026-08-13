@@ -15,8 +15,14 @@ assert.match(stage, /id="radioFrame" src="index\.html"/);
 assert.match(engine, /QUALIFIED_SECONDS = 24 \* 60 \* 60/);
 assert.match(engine, /Creator self-use does not produce Avatar Coins/);
 assert.match(engine, /demonstration:Boolean\(demonstration\)/);
+assert.match(engine, /progress\.confirmed % 10 === 0/);
+assert.match(engine, /RADIO_STAR_COIN_COLLECTED/);
+assert.match(engine, /existing radio wallet/);
 assert.equal(manifest.project.id, 'alien-radio');
 assert.equal(manifest.needScore.weights.systemDemand, 35);
 assert.equal(manifest.tokenTypes.find(item => item.id === 'avatar-coin').transferable, false);
+assert.equal(manifest.tokenTypes.find(item => item.id === 'radio-star-coin').transferable, false);
+assert.equal(manifest.shareReward.confirmedSharesPerCoin, 10);
+assert.match(manifest.tokenTypes.find(item => item.id === 'radio-star-coin').listenerTokenRelationship, /Listening tokens continue/);
 
 console.log('current-main Star Token Stage contract: ok');
