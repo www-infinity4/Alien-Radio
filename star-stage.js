@@ -49,6 +49,9 @@
         purpose: 'One station build plus one contingency/version reserve.', createdAt
       }],
       avatarCoins: [],
+      radioStarCoins: [],
+      shareEvents: [],
+      shareProgress: {},
       stations: [{
         id: 'station-alien-radio', name: 'Alien Radio', blueprintId: 'alien-radio-star-v1',
         requiredAvatarCoins: 1, lockedAvatarCoinIds: [], status: 'PROTOTYPE — AVATAR ACTIVATION PENDING', createdAt
@@ -60,7 +63,12 @@
   function load() {
     try {
       const parsed = JSON.parse(localStorage.getItem(KEY) || 'null');
-      if (parsed?.version === 2) return parsed;
+      if (parsed?.version === 2) {
+        parsed.radioStarCoins = Array.isArray(parsed.radioStarCoins) ? parsed.radioStarCoins : [];
+        parsed.shareEvents = Array.isArray(parsed.shareEvents) ? parsed.shareEvents : [];
+        parsed.shareProgress = parsed.shareProgress && typeof parsed.shareProgress === 'object' ? parsed.shareProgress : {};
+        return parsed;
+      }
     } catch (_) {}
     const initial = seed();
     localStorage.setItem(KEY, JSON.stringify(initial));
@@ -173,7 +181,7 @@
     const modal = document.createElement('div'); modal.className = 'modal-overlay'; modal.id = 'star-stage-modal'; modal.setAttribute('aria-hidden', 'true'); modal.setAttribute('role', 'dialog'); modal.setAttribute('aria-modal', 'true');
     modal.innerHTML = `<div class="modal-box star-stage-modal"><div class="modal-title">⭐ Infinity Token Stage · Alien Radio</div><button class="modal-close" id="close-star-stage" aria-label="Close">✕</button><div class="star-stage-tabs" role="tablist"><button class="star-stage-tab active" data-tab="create">AI PRODUCT TOKEN</button><button class="star-stage-tab" data-tab="stations">AVATAR COINS</button><button class="star-stage-tab" data-tab="blueprints">VERSIONS</button><button class="star-stage-tab" data-tab="ledger">LEDGER</button></div>
       <section class="star-stage-panel active" data-panel="create"><div class="star-stage-grid"><form class="star-form" id="star-form"><label>Selected convertible item<input id="context-label" readonly></label><label>Creation or business name<input id="star-name" value="Alien Radio" maxlength="80" required></label><label>Exact Product Token needed<textarea id="star-product" required>AI-assisted radio station identity with channels, creator tools, research, Store Card offers and Avatar Coin activation.</textarea></label><label>Why the system needs it<textarea id="star-need" required>Radio stations need an attributable identity, verified use, a product plan and a station activation unit.</textarea></label><label>Planned station identities<input id="star-stations" type="number" min="1" max="100000" value="1" required></label>${FACTORS.map(([id, label, weight], index) => `<label>${esc(label)} · ${weight}% weight<div class="star-range-row"><input id="factor-${id}" type="range" min="0" max="100" value="${[92,84,88,78,65][index]}"><output id="out-${id}">${[92,84,88,78,65][index]}</output></div></label>`).join('')}<button class="hud-btn green full" type="submit">⭐ CREATE NAMED VERSION</button></form><div class="star-output"><div class="star-kicker">Transparent AI planning logic</div><h3 id="plan-title">Alien Radio Product Token Plan</h3><span class="priority-badge" id="plan-priority"></span><div class="token-plan-list" id="plan-list"></div><div class="chart-stack"><div class="star-chart"><h4>Product need factors</h4><canvas id="need-chart" width="460" height="190"></canvas></div><div class="star-chart"><h4>Token and station supply</h4><canvas id="supply-chart" width="460" height="190"></canvas></div></div><p class="star-stage-footer-note">The static prototype uses visible weighted logic. A protected AI service can later add research and contract evidence without hiding the scoring.</p></div></div></section>
-      <section class="star-stage-panel" data-panel="stations"><div class="star-rule-box"><strong>Avatar Coin rule:</strong> another verified user must actively use the creator's station design for 24 continuous qualified hours. Creator self-use, bots, hidden tabs, idle pages and disconnected playback do not qualify. One Avatar Coin is locked per active station identity.</div><div class="station-status-grid"><div class="station-stat"><span>Blueprints</span><strong id="stat-blueprints">0</strong></div><div class="station-stat"><span>Avatar coins</span><strong id="stat-avatar">0</strong></div><div class="station-stat"><span>Locked</span><strong id="stat-locked">0</strong></div><div class="station-stat"><span>Active stations</span><strong id="stat-active">0</strong></div></div><div class="star-output"><div class="star-kicker">Qualified-use streak</div><h3 id="qualified-title"></h3><div class="avatar-progress"><span id="qualified-progress"></span></div><div class="token-plan-list" id="qualified-details"></div><button class="star-demo-button" id="demo-hour" type="button">Add 1 clearly labeled demonstration hour</button></div><div class="station-card-list" id="station-list"></div></section>
+      <section class="star-stage-panel" data-panel="stations"><div class="star-rule-box"><strong>Two earning paths:</strong> listening continues to collect the existing listener tokens. Confirmed station sharing advances a separate 0/10 cycle; the 10th share creates 1 Radio Star Coin. Avatar Coin remains reserved for another verified user's 24 continuous qualified hours and locks to a station identity.</div><div class="station-status-grid"><div class="station-stat"><span>Blueprints</span><strong id="stat-blueprints">0</strong></div><div class="station-stat"><span>Avatar coins</span><strong id="stat-avatar">0</strong></div><div class="station-stat"><span>Radio Star coins</span><strong id="stat-radio-star">0</strong></div><div class="station-stat"><span>Active stations</span><strong id="stat-active">0</strong></div></div><div class="star-output"><div class="star-kicker">Share the radio star onward</div><h3 id="radio-star-title">0 / 10 confirmed station shares</h3><div class="avatar-progress"><span id="radio-star-progress"></span></div><div class="token-plan-list" id="radio-star-details"></div><button class="star-demo-button" id="share-radio-star" type="button">Share this station</button></div><div class="star-output"><div class="star-kicker">Qualified-use streak</div><h3 id="qualified-title"></h3><div class="avatar-progress"><span id="qualified-progress"></span></div><div class="token-plan-list" id="qualified-details"></div><button class="star-demo-button" id="demo-hour" type="button">Add 1 clearly labeled demonstration hour</button></div><div class="station-card-list" id="station-list"></div></section>
       <section class="star-stage-panel" data-panel="blueprints"><div class="blueprint-list" id="blueprint-list"></div></section><section class="star-stage-panel" data-panel="ledger"><div class="star-ledger" id="star-ledger"></div></section></div>`;
     document.body.appendChild(modal);
     modal.querySelector('#close-star-stage').addEventListener('click', close);
@@ -183,6 +191,7 @@
     modal.querySelectorAll('input[type="range"]').forEach(input => input.addEventListener('input', () => { modal.querySelector(`#out-${input.id.replace('factor-','')}`).textContent = input.value; renderPlan(); }));
     ['star-name','star-product','star-need','star-stations'].forEach(id => modal.querySelector(`#${id}`).addEventListener('input', renderPlan));
     modal.querySelector('#demo-hour').addEventListener('click', addDemoHour);
+    modal.querySelector('#share-radio-star').addEventListener('click', shareRadioStar);
   }
 
   function open(tab = 'create') {
@@ -257,9 +266,85 @@
     title.textContent=creatorMatch?'Creator self-use does not produce Avatar Coins.':isQualifiedPlayback()?`${currentChannel()} qualified-use streak is running.`:'Play the station in a visible tab to continue the streak.';
     document.querySelector('#qualified-progress').style.width=`${pct}%`; document.querySelector('#qualified-details').innerHTML=`<div class="token-plan-row"><span>Verified listener</span><strong>${esc(user)}</strong></div><div class="token-plan-row"><span>Blueprint creator</span><strong>${esc(blueprint.creator)}</strong></div><div class="token-plan-row"><span>Continuous qualified use</span><strong>${hours} / 24 hours</strong></div><div class="token-plan-row"><span>Demonstration time</span><strong>${((record.demoSeconds||0)/3600).toFixed(0)} / 24 demo hours</strong></div>`;
   }
+  function shareProgressFor(user, blueprintId) {
+    const key = blueprintId + '::' + user;
+    if (!store.shareProgress[key]) store.shareProgress[key] = { confirmed: 0, awarded: 0, lastConfirmedAt: null };
+    return store.shareProgress[key];
+  }
+  function renderRadioStar() {
+    const user = username();
+    const title = document.querySelector('#radio-star-title');
+    const bar = document.querySelector('#radio-star-progress');
+    const details = document.querySelector('#radio-star-details');
+    if (!title || !bar || !details) return;
+    if (!user) {
+      title.textContent = 'Sign in to share the station and collect Radio Star Coins.';
+      bar.style.width = '0%';
+      details.innerHTML = '';
+      return;
+    }
+    const blueprint = latestBlueprint();
+    const progress = shareProgressFor(user, blueprint.id);
+    const cycle = progress.confirmed % 10;
+    title.textContent = cycle + ' / 10 confirmed station shares';
+    bar.style.width = (cycle * 10) + '%';
+    details.innerHTML = '<div class="token-plan-row"><span>Listening rewards</span><strong>Continue collecting through the existing radio wallet</strong></div><div class="token-plan-row"><span>Share reward</span><strong>1 Radio Star Coin on every 10th confirmed share</strong></div><div class="token-plan-row"><span>Your Radio Star Coins</span><strong>' + store.radioStarCoins.filter(c => c.owner === user).length + '</strong></div>';
+  }
+  function recordRadioStarShare(user, method, shareUrl) {
+    const blueprint = latestBlueprint();
+    const progress = shareProgressFor(user, blueprint.id);
+    const now = Date.now();
+    if (progress.lastConfirmedAt && now - new Date(progress.lastConfirmedAt).getTime() < 5 * 60 * 1000) {
+      window.showToast?.('This station share was already counted recently. Try another share after the cooldown.', '⭐');
+      return false;
+    }
+    progress.confirmed += 1;
+    progress.lastConfirmedAt = iso();
+    const shareEvent = { id: uid('radio-share'), owner: user, blueprintId: blueprint.id, stationId: store.stations.find(s => s.blueprintId === blueprint.id)?.id || null, method, url: shareUrl, confirmedAt: progress.lastConfirmedAt };
+    store.shareEvents.unshift(shareEvent);
+    store.shareEvents = store.shareEvents.slice(0, 250);
+    if (progress.confirmed % 10 === 0) {
+      progress.awarded += 1;
+      const coin = { id: uid('radio-star'), owner: user, blueprintId: blueprint.id, sourceShareEventId: shareEvent.id, cycle: progress.awarded, status: 'COLLECTED — RADIO STAR SHARE REWARD', createdAt: iso() };
+      store.radioStarCoins.unshift(coin);
+      event('RADIO_STAR_COIN_COLLECTED', user + ' completed 10 confirmed station shares while listening rewards remain separate.', '1 Radio Star Coin');
+      window.showToast?.('⭐ Radio Star Coin collected on the 10th confirmed share', '⭐');
+    } else {
+      event('RADIO_STAR_SHARE_CONFIRMED', user + ' shared ' + blueprint.name + ' by ' + method + '.', (progress.confirmed % 10) + '/10');
+      window.showToast?.('⭐ Station share confirmed: ' + (progress.confirmed % 10) + '/10', '⭐');
+    }
+    save();
+    renderRadioStar();
+    renderLedger();
+    return true;
+  }
+  async function shareRadioStar() {
+    const user = requireUser();
+    if (!user) return;
+    const blueprint = latestBlueprint();
+    const shareUrl = new URL('stage.html', location.href).href;
+    const payload = { title: blueprint.name + ' on Alien Radio', text: 'Listen to ' + currentChannel() + ' and carry this radio star onward.', url: shareUrl };
+    if (navigator.share) {
+      try {
+        await navigator.share(payload);
+        recordRadioStarShare(user, 'native_share', shareUrl);
+      } catch (error) {
+        if (error?.name !== 'AbortError') window.showToast?.('The share could not be completed.', '⭐');
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(payload.text + '\n' + shareUrl);
+      recordRadioStarShare(user, 'copy_link', shareUrl);
+      window.showToast?.('Station link copied and share progress recorded.', '⭐');
+    } catch (_) {
+      window.showToast?.('Sharing is unavailable in this browser.', '⭐');
+    }
+  }
+
   function renderStations() {
     const locked=store.avatarCoins.filter(c=>c.lockedStationId).length, active=store.stations.filter(s=>s.status.startsWith('ACTIVE')).length;
-    document.querySelector('#stat-blueprints').textContent=store.blueprints.length; document.querySelector('#stat-avatar').textContent=store.avatarCoins.length; document.querySelector('#stat-locked').textContent=locked; document.querySelector('#stat-active').textContent=active; document.querySelector('#tab-avatar-count').textContent=store.avatarCoins.length; renderQualified();
+    document.querySelector('#stat-blueprints').textContent=store.blueprints.length; document.querySelector('#stat-avatar').textContent=store.avatarCoins.length; document.querySelector('#stat-radio-star').textContent=store.radioStarCoins.length; document.querySelector('#stat-active').textContent=active; document.querySelector('#tab-avatar-count').textContent=store.avatarCoins.length; renderRadioStar(); renderQualified();
     document.querySelector('#station-list').innerHTML=store.stations.map(s=>`<article class="station-card convertible-star-host"><div class="station-card-head"><h4>${esc(s.name)}</h4><span class="station-state">${esc(s.status)}</span></div><p>Requires ${s.requiredAvatarCoins} Avatar Coin · locked ${s.lockedAvatarCoinIds.length}. Blueprint: ${esc(store.blueprints.find(b=>b.id===s.blueprintId)?.name||s.blueprintId)}</p><button class="conversion-star-mark station-inline-mark" type="button" data-station-id="${esc(s.id)}" aria-label="Open station conversion portal">⭐</button></article>`).join('');
     document.querySelectorAll('[data-station-id]').forEach(b=>b.addEventListener('click',()=>{const s=store.stations.find(x=>x.id===b.dataset.stationId); activeContext={type:'station',id:s.id,label:s.name}; selectTab('create'); renderPlan();}));
   }
@@ -275,7 +360,7 @@
     injectModal(); injectEntryPoints(); markConvertibleItems();
     const observer=new MutationObserver(()=>markConvertibleItems()); observer.observe(document.body,{childList:true,subtree:true});
     usageTimer=setInterval(tickUsage,TICK_SECONDS*1000); renderAll();
-    window.ALIEN_STAR_STAGE={open,markConvertibleItems,getState:()=>JSON.parse(JSON.stringify(store))};
+    window.ALIEN_STAR_STAGE={open,markConvertibleItems,recordRadioStarShare,getState:()=>JSON.parse(JSON.stringify(store))};
   }
   document.addEventListener('DOMContentLoaded',init);
 })();
