@@ -1,0 +1,99 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "prototype",
+  "notice": "These are local software records and planning units. They are not money, deposits, securities, cryptocurrency, guaranteed revenue, or proof of legal ownership.",
+  "project": {
+    "id": "alien-radio",
+    "name": "Alien Radio",
+    "repository": "www-infinity4/Alien-Radio",
+    "creationIcon": "⭐",
+    "creationIconMeaning": "Open the editable creation portal, version history, conversion plan, and ancestry. It is not a favorite button."
+  },
+  "tokenTypes": [
+    {
+      "id": "product-token",
+      "name": "Product Token",
+      "purpose": "A typed claim or production plan for the exact product or service the Infinity system needs.",
+      "transferable": false,
+      "mintRule": "Created from an approved, capacity-backed product plan."
+    },
+    {
+      "id": "star-blueprint",
+      "name": "Star Blueprint",
+      "symbol": "⭐",
+      "purpose": "The editable, attributable, reversible creation record for Alien Radio or another station design.",
+      "transferable": false,
+      "mintRule": "Created when a user saves a named version of a station or product design."
+    },
+    {
+      "id": "radio-star-coin",
+      "name": "Radio Star Coin",
+      "purpose": "A station-sharing participation record collected in addition to the existing Alien Radio listening tokens.",
+      "transferable": false,
+      "mintRule": "One Radio Star Coin is created on each 10th confirmed station-share action after the per-station cooldown.",
+      "listenerTokenRelationship": "Additive. Listening tokens continue under the existing radio wallet rules and are not replaced."
+    },
+    {
+      "id": "avatar-coin",
+      "name": "Avatar Coin",
+      "purpose": "A station-identity activation unit locked to one operating radio-station identity.",
+      "transferable": false,
+      "mintRule": "One Avatar Coin is produced when another verified user actively uses the creator's station design for 24 continuous qualified hours.",
+      "stationRequirement": "One locked Avatar Coin per active radio-station identity."
+    },
+    {
+      "id": "infinity-unit",
+      "name": "Infinity Unit",
+      "purpose": "General settlement and transfer unit handled by the wider Infinity clearing system.",
+      "transferable": true,
+      "mintRule": "Not issued by Alien Radio Token Studio."
+    }
+  ],
+  "needScore": {
+    "weights": {
+      "systemDemand": 35,
+      "scarcity": 25,
+      "humanUsefulness": 20,
+      "productionReadiness": 10,
+      "localCapacity": 10
+    },
+    "bands": [
+      {
+        "min": 80,
+        "label": "Critical product priority"
+      },
+      {
+        "min": 60,
+        "label": "High product priority"
+      },
+      {
+        "min": 40,
+        "label": "Build and verify"
+      },
+      {
+        "min": 0,
+        "label": "Research before production"
+      }
+    ]
+  },
+  "alienRadioSeed": {
+    "blueprintId": "alien-radio-star-v1",
+    "creator": "Kris",
+    "name": "Alien Radio Star Blueprint",
+    "product": "A complete AI-assisted radio station identity, channel system, research engine, creator world, and Avatar Coin production path.",
+    "stationAvatarCoinRequirement": 1,
+    "qualifiedUseHoursPerAvatarCoin": 24,
+    "continuousUse": true,
+    "verifiedOtherUserRequired": true
+  },
+  "shareReward": {
+    "confirmedSharesPerCoin": 10,
+    "reward": "1 Radio Star Coin",
+    "cooldownSeconds": 300,
+    "qualifyingMethods": [
+      "completed native share",
+      "successful exact-link copy"
+    ],
+    "canceledOrFailedActionsCount": false
+  }
+}
