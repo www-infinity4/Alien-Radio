@@ -26,6 +26,14 @@
       "mintRule": "Created when a user saves a named version of a station or product design."
     },
     {
+      "id": "radio-star-coin",
+      "name": "Radio Star Coin",
+      "purpose": "A station-sharing participation record collected in addition to the existing Alien Radio listening tokens.",
+      "transferable": false,
+      "mintRule": "One Radio Star Coin is created on each 10th confirmed station-share action after the per-station cooldown.",
+      "listenerTokenRelationship": "Additive. Listening tokens continue under the existing radio wallet rules and are not replaced."
+    },
+    {
       "id": "avatar-coin",
       "name": "Avatar Coin",
       "purpose": "A station-identity activation unit locked to one operating radio-station identity.",
@@ -50,10 +58,22 @@
       "localCapacity": 10
     },
     "bands": [
-      { "min": 80, "label": "Critical product priority" },
-      { "min": 60, "label": "High product priority" },
-      { "min": 40, "label": "Build and verify" },
-      { "min": 0, "label": "Research before production" }
+      {
+        "min": 80,
+        "label": "Critical product priority"
+      },
+      {
+        "min": 60,
+        "label": "High product priority"
+      },
+      {
+        "min": 40,
+        "label": "Build and verify"
+      },
+      {
+        "min": 0,
+        "label": "Research before production"
+      }
     ]
   },
   "alienRadioSeed": {
@@ -65,5 +85,15 @@
     "qualifiedUseHoursPerAvatarCoin": 24,
     "continuousUse": true,
     "verifiedOtherUserRequired": true
+  },
+  "shareReward": {
+    "confirmedSharesPerCoin": 10,
+    "reward": "1 Radio Star Coin",
+    "cooldownSeconds": 300,
+    "qualifyingMethods": [
+      "completed native share",
+      "successful exact-link copy"
+    ],
+    "canceledOrFailedActionsCount": false
   }
 }
