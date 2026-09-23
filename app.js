@@ -783,8 +783,17 @@ function init() {
   animateMeters();
   setInterval(animateMeters, 2000);
 
-  // Select first channel
-  selectChannel(0);
+  // Select first channel without forcing autoplay during page initialization.
+  // Android requires the first radio play() call to happen directly from a user gesture.
+  const first = CHANNELS[0];
+  state.activeChannel = 0;
+  document.getElementById('freq-display').textContent = first.freq;
+  document.getElementById('channel-name').textContent = first.name;
+  document.getElementById('np-channel').textContent = first.genre;
+  document.getElementById('np-title').textContent = first.name + ' BROADCAST';
+  document.getElementById('np-artist').textContent = 'Deep Space Network · Alien Radio';
+  updateSignalBars(first.signal);
+  document.querySelectorAll('.channel-item').forEach((el, i) => el.classList.toggle('active', i === 0));
 
   // Volume slider
   const volSlider = document.getElementById('vol-slider');
