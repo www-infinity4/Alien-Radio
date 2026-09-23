@@ -11,74 +11,74 @@
 const CHANNELS = [
   {
     id: 1,  name: 'ANDROMEDA',     freq: '88.1',  color: '#00fff7', signal: 92,
-    genre: 'Peaceful Piano · Instrumental · YourClassical',
-    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
+    genre: 'Internet Archive · Piano · Loop',
+    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
     synthType: 'spaceHum',
   },
   {
     id: 2,  name: 'NEBULA-7',      freq: '91.5',  color: '#cc44ff', signal: 87,
-    genre: 'Peaceful Piano · Instrumental · YourClassical',
-    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
+    genre: 'Internet Archive · Piano · Loop',
+    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
     synthType: 'cosmicPad',
   },
   {
     id: 3,  name: 'PULSAR BEAT',   freq: '94.3',  color: '#00ff88', signal: 78,
-    genre: 'Peaceful Piano · Instrumental · YourClassical',
-    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
+    genre: 'Internet Archive · Piano · Loop',
+    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
     synthType: 'pulsarBeat',
   },
   {
     id: 4,  name: 'ZETA WAVE',     freq: '97.7',  color: '#ff8800', signal: 95,
-    genre: 'Peaceful Piano · Instrumental · YourClassical',
-    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
+    genre: 'Internet Archive · Piano · Loop',
+    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
     synthType: 'ionStorm',
   },
   {
     id: 5,  name: 'VOID SIGNAL',   freq: '101.1', color: '#0088ff', signal: 65,
-    genre: 'Peaceful Piano · Instrumental · YourClassical',
-    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
+    genre: 'Internet Archive · Piano · Loop',
+    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
     synthType: 'voidDrone',
   },
   {
     id: 6,  name: 'SOLAR DRIFT',   freq: '104.5', color: '#ff2244', signal: 83,
-    genre: 'Peaceful Piano · Instrumental · YourClassical',
-    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
+    genre: 'Internet Archive · Piano · Loop',
+    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
     synthType: 'solarDrift',
   },
   {
     id: 7,  name: 'QUANTUM FOLD',  freq: '107.9', color: '#ffe600', signal: 71,
-    genre: 'Peaceful Piano · Instrumental · YourClassical',
-    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
+    genre: 'Internet Archive · Piano · Loop',
+    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
     synthType: 'quantumFM',
   },
   {
     id: 8,  name: 'HYPERDRIVE FM', freq: '110.3', color: '#cc44ff', signal: 89,
-    genre: 'Peaceful Piano · Instrumental · YourClassical',
-    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
+    genre: 'Internet Archive · Piano · Loop',
+    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
     synthType: 'hyperFM',
   },
   {
     id: 9,  name: 'STARGAZE',      freq: '113.7', color: '#ff66aa', signal: 76,
-    genre: 'Peaceful Piano · Instrumental · YourClassical',
-    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
+    genre: 'Internet Archive · Piano · Loop',
+    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
     synthType: 'cosmicPad',
   },
   {
     id: 10, name: 'WARP CORE',     freq: '116.1', color: '#44ffcc', signal: 88,
-    genre: 'Peaceful Piano · Instrumental · YourClassical',
-    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
+    genre: 'Internet Archive · Piano · Loop',
+    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
     synthType: 'quantumFM',
   },
   {
     id: 11, name: 'INTERGALACTIC', freq: '119.5', color: '#ff4400', signal: 94,
-    genre: 'Peaceful Piano · Instrumental · YourClassical',
-    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
+    genre: 'Internet Archive · Piano · Loop',
+    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
     synthType: 'hyperFM',
   },
   {
     id: 12, name: 'DARK MATTER',   freq: '122.0', color: '#8844ff', signal: 61,
-    genre: 'Peaceful Piano · Instrumental · YourClassical',
-    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
+    genre: 'Internet Archive · Piano · Loop',
+    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
     synthType: 'voidDrone',
   },
 ];
@@ -296,6 +296,7 @@ function startStream(url, fallbackSynthType) {
   el.preload = 'auto';
   el.src = url;
   el.volume = state.volume / 100;
+  el.loop = true;
   streamAudioEl = el;
 
   const playStream = () => {
