@@ -11,74 +11,74 @@
 const CHANNELS = [
   {
     id: 1,  name: 'ANDROMEDA',     freq: '88.1',  color: '#00fff7', signal: 92,
-    genre: 'Deep Space Ambient · SomaFM Drone Zone',
-    streamUrl: 'https://ice5.somafm.com/dronezone-128-mp3',
+    genre: 'Peaceful Piano · Instrumental · YourClassical',
+    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
     synthType: 'spaceHum',
   },
   {
     id: 2,  name: 'NEBULA-7',      freq: '91.5',  color: '#cc44ff', signal: 87,
-    genre: 'Space Station Soma · SomaFM',
-    streamUrl: 'https://ice.somafm.com/spacestation',
+    genre: 'Peaceful Piano · Instrumental · YourClassical',
+    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
     synthType: 'cosmicPad',
   },
   {
     id: 3,  name: 'PULSAR BEAT',   freq: '94.3',  color: '#00ff88', signal: 78,
-    genre: 'Groove Salad · SomaFM Chill',
-    streamUrl: 'https://ice5.somafm.com/groovesalad-128-mp3',
+    genre: 'Peaceful Piano · Instrumental · YourClassical',
+    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
     synthType: 'pulsarBeat',
   },
   {
     id: 4,  name: 'ZETA WAVE',     freq: '97.7',  color: '#ff8800', signal: 95,
-    genre: 'Beat Blender · SomaFM Electronic',
-    streamUrl: 'https://ice5.somafm.com/beatblender-128-mp3',
+    genre: 'Peaceful Piano · Instrumental · YourClassical',
+    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
     synthType: 'ionStorm',
   },
   {
     id: 5,  name: 'VOID SIGNAL',   freq: '101.1', color: '#0088ff', signal: 65,
-    genre: 'Mission Control · SomaFM',
-    streamUrl: 'https://ice5.somafm.com/missioncontrol-128-mp3',
+    genre: 'Peaceful Piano · Instrumental · YourClassical',
+    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
     synthType: 'voidDrone',
   },
   {
     id: 6,  name: 'SOLAR DRIFT',   freq: '104.5', color: '#ff2244', signal: 83,
-    genre: 'Fluid · SomaFM Ambient IDM',
-    streamUrl: 'https://ice5.somafm.com/fluid-128-mp3',
+    genre: 'Peaceful Piano · Instrumental · YourClassical',
+    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
     synthType: 'solarDrift',
   },
   {
     id: 7,  name: 'QUANTUM FOLD',  freq: '107.9', color: '#ffe600', signal: 71,
-    genre: 'Lush · SomaFM Chilled Beats',
-    streamUrl: 'https://ice.somafm.com/lush',
+    genre: 'Peaceful Piano · Instrumental · YourClassical',
+    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
     synthType: 'quantumFM',
   },
   {
     id: 8,  name: 'HYPERDRIVE FM', freq: '110.3', color: '#cc44ff', signal: 89,
-    genre: 'Suburbs of Goa · SomaFM Psytrance',
-    streamUrl: 'https://ice.somafm.com/suburbsofgoa',
+    genre: 'Peaceful Piano · Instrumental · YourClassical',
+    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
     synthType: 'hyperFM',
   },
   {
     id: 9,  name: 'STARGAZE',      freq: '113.7', color: '#ff66aa', signal: 76,
-    genre: 'Digitalis · SomaFM Indie Electronic',
-    streamUrl: 'https://ice.somafm.com/digitalis',
+    genre: 'Peaceful Piano · Instrumental · YourClassical',
+    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
     synthType: 'cosmicPad',
   },
   {
     id: 10, name: 'WARP CORE',     freq: '116.1', color: '#44ffcc', signal: 88,
-    genre: 'Deep Space One · SomaFM Electro',
-    streamUrl: 'https://ice.somafm.com/deepspaceone',
+    genre: 'Peaceful Piano · Instrumental · YourClassical',
+    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
     synthType: 'quantumFM',
   },
   {
     id: 11, name: 'INTERGALACTIC', freq: '119.5', color: '#ff4400', signal: 94,
-    genre: 'Intergalactic FM · Electronic / Techno',
-    streamUrl: 'https://listen.intergalactic.fm/main.mp3',
+    genre: 'Peaceful Piano · Instrumental · YourClassical',
+    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
     synthType: 'hyperFM',
   },
   {
     id: 12, name: 'DARK MATTER',   freq: '122.0', color: '#8844ff', signal: 61,
-    genre: 'Radio Paradise Mellow Mix · Ambient',
-    streamUrl: 'https://stream.radioparadise.com/mellow-320',
+    genre: 'Peaceful Piano · Instrumental · YourClassical',
+    streamUrl: 'https://peacefulpiano.stream.publicradio.org/peacefulpiano.mp3',
     synthType: 'voidDrone',
   },
 ];
@@ -305,8 +305,7 @@ function startStream(url, fallbackSynthType) {
         showToast('Tap play once to start the radio', '🔇');
       } else {
         streamAudioEl = null;
-        startSynth(fallbackSynthType);
-        showToast('Radio stream unavailable · using synth', '🎛');
+        showToast('Piano stream unavailable · please try again', '🔇');
       }
     });
   };
@@ -314,8 +313,7 @@ function startStream(url, fallbackSynthType) {
   el.addEventListener('error', () => {
     if (el !== streamAudioEl) return;
     streamAudioEl = null;
-    startSynth(fallbackSynthType);
-    showToast('Radio stream unavailable · using synth', '🎛');
+    showToast('Piano stream unavailable · please try again', '🔇');
   }, { once: true });
 
   playStream();
