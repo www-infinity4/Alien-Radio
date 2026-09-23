@@ -338,35 +338,30 @@ function startAudio(channelIdx) {
 
 function startStream(url, fallbackSynthType) {
   const el = new Audio();
-  el.crossOrigin = 'anonymous';
-  el.preload = 'none';
+  // Play the radio stream directly. Routing cross-origin SomaFM audio through
+  // Web Audio can produce silence in mobile browsers even when the stream works.
+  el.preload = 'auto';
   el.src = url;
+  el.volume = state.volume / 100;
   streamAudioEl = el;
 
-  el.addEventListener('canplay', () => {
-    // Guard: ignore stale events if the user already switched to another channel
+  const playStream = () => {
     if (el !== streamAudioEl) return;
-    ensureAudioContext();
-    if (!streamMediaSrc) {
-      streamMediaSrc = audioCtx.createMediaElementSource(el);
-      streamMediaSrc.connect(analyserNode);
-    }
     el.play().catch(err => {
       if (err.name === 'NotAllowedError') {
-        showToast('Click play to start stream (autoplay blocked)', '🔇');
+        showToast('Tap play once to start the radio', '🔇');
       }
     });
-  }, { once: true });
+  };
 
   el.addEventListener('error', () => {
-    // Guard: ignore stale events from a previously replaced stream element
     if (el !== streamAudioEl) return;
     streamAudioEl = null;
     startSynth(fallbackSynthType);
-    showToast(`Stream unavailable (${url.split('/').pop()}) · using synth`, '🎛');
+    showToast('Radio stream unavailable · using synth', '🎛');
   }, { once: true });
 
-  el.load();
+  playStream();
 }
 
 function startSynth(synthType) {
