@@ -226,39 +226,26 @@ function startAudio(channelIdx) {
 }
 
 function startStream(url, fallbackSynthType) {
-  const el = new Audio();
+  // Keep Infinity Radio deliberately simple: one long piano programme,
+  // played continuously and looped by the browser. No clock scheduler.
+  const LONG_PIANO_PROGRAMME =
+    'https://upload.wikimedia.org/wikipedia/commons/8/8d/Piano_Sonata_No._7_%28Beethoven%29%2C_First_Movement_2.ogg';
+
+  const el = new Audio(LONG_PIANO_PROGRAMME);
   el.preload = 'auto';
   el.volume = state.volume / 100;
-  el.loop = false;
+  el.loop = true;
   streamAudioEl = el;
 
-  const sources = [
-    'https://upload.wikimedia.org/wikipedia/commons/8/8d/Piano_Sonata_No._7_%28Beethoven%29%2C_First_Movement_2.ogg',
-    'https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f5/Clair_de_lune_%28Claude_Debussy%29_Suite_bergamasque.ogg/Clair_de_lune_%28Claude_Debussy%29_Suite_bergamasque.ogg.mp3',
-    'https://upload.wikimedia.org/wikipedia/commons/transcoded/5/5f/Moonlight.ogg/Moonlight.ogg.mp3'
-  ];
-  let sourceIndex = Math.floor(Date.now() / 300000) % sources.length;
-
-  function playSource(index) {
-    if (el !== streamAudioEl || !state.isPlaying) return;
-    sourceIndex = ((index % sources.length) + sources.length) % sources.length;
-    el.src = sources[sourceIndex];
-    el.load();
-    el.play().catch(() => {
-      setTimeout(() => {
-        if (el === streamAudioEl && state.isPlaying) playSource(sourceIndex + 1);
-      }, 1000);
-    });
-  }
-
-  el.addEventListener('ended', () => playSource(sourceIndex + 1));
   el.addEventListener('error', () => {
-    setTimeout(() => {
-      if (el === streamAudioEl && state.isPlaying) playSource(sourceIndex + 1);
-    }, 500);
+    if (el === streamAudioEl && state.isPlaying) {
+      showToast('Piano source unavailable', '🔇');
+    }
   });
 
-  playSource(sourceIndex);
+  el.play().catch(() => {
+    showToast('Tap Play once more to start piano', '▶️');
+  });
 }
 
 function startSynth() {
