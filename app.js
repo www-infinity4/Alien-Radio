@@ -12,7 +12,7 @@ const CHANNELS = [
   {
     id: 1, name: 'PIANO', freq: '88.1', color: '#00fff7', signal: 100,
     genre: 'Piano Radio',
-    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/5/5f/Beethoven_hammerklavier_1.ogg/Beethoven_hammerklavier_1.ogg.mp3',
+    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/8d/Piano_Sonata_No._7_%28Beethoven%29%2C_First_Movement_2.ogg',
     synthType: 'cosmicPad',
   },
 ];
