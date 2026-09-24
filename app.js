@@ -12,7 +12,7 @@ const CHANNELS = [
   {
     id: 1, name: 'PIANO', freq: '88.1', color: '#00fff7', signal: 100,
     genre: 'Piano Radio',
-    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
+    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f0/Moonlight.ogg',
     synthType: 'cosmicPad',
   },
 ];
