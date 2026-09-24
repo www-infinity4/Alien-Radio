@@ -12,73 +12,73 @@ const CHANNELS = [
   {
     id: 1,  name: 'ANDROMEDA',     freq: '88.1',  color: '#00fff7', signal: 92,
     genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
+    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
     synthType: 'spaceHum',
   },
   {
     id: 2,  name: 'NEBULA-7',      freq: '91.5',  color: '#cc44ff', signal: 87,
     genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
+    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
     synthType: 'cosmicPad',
   },
   {
     id: 3,  name: 'PULSAR BEAT',   freq: '94.3',  color: '#00ff88', signal: 78,
     genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
+    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
     synthType: 'pulsarBeat',
   },
   {
     id: 4,  name: 'ZETA WAVE',     freq: '97.7',  color: '#ff8800', signal: 95,
     genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
+    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
     synthType: 'ionStorm',
   },
   {
     id: 5,  name: 'VOID SIGNAL',   freq: '101.1', color: '#0088ff', signal: 65,
     genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
+    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
     synthType: 'voidDrone',
   },
   {
     id: 6,  name: 'SOLAR DRIFT',   freq: '104.5', color: '#ff2244', signal: 83,
     genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
+    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
     synthType: 'solarDrift',
   },
   {
     id: 7,  name: 'QUANTUM FOLD',  freq: '107.9', color: '#ffe600', signal: 71,
     genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
+    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
     synthType: 'quantumFM',
   },
   {
     id: 8,  name: 'HYPERDRIVE FM', freq: '110.3', color: '#cc44ff', signal: 89,
     genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
+    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
     synthType: 'hyperFM',
   },
   {
     id: 9,  name: 'STARGAZE',      freq: '113.7', color: '#ff66aa', signal: 76,
     genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
+    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
     synthType: 'cosmicPad',
   },
   {
     id: 10, name: 'WARP CORE',     freq: '116.1', color: '#44ffcc', signal: 88,
     genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
+    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
     synthType: 'quantumFM',
   },
   {
     id: 11, name: 'INTERGALACTIC', freq: '119.5', color: '#ff4400', signal: 94,
     genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
+    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
     synthType: 'hyperFM',
   },
   {
     id: 12, name: 'DARK MATTER',   freq: '122.0', color: '#8844ff', signal: 61,
     genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
+    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
     synthType: 'voidDrone',
   },
 ];
@@ -290,34 +290,47 @@ function startAudio(channelIdx) {
 }
 
 function startStream(url, fallbackSynthType) {
+  const BACKUP_PIANO_URL = 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3';
+  const sources = [...new Set([url, BACKUP_PIANO_URL])];
+  let sourceIndex = 0;
   const el = new Audio();
-  // Keep live radio on the native HTML5 audio path. Cross-origin radio streams
-  // can go silent on Android when they are routed through Web Audio/CORS.
+
+  // Keep piano playback on native HTML5 audio. This is more reliable on Android
+  // than routing cross-origin media through Web Audio/CORS.
   el.preload = 'auto';
-  el.src = url;
   el.volume = state.volume / 100;
   el.loop = true;
   streamAudioEl = el;
 
-  const playStream = () => {
+  const trySource = () => {
     if (el !== streamAudioEl) return;
+    el.src = sources[sourceIndex];
+    el.load();
     el.play().catch(err => {
       if (err.name === 'NotAllowedError') {
         showToast('Tap play once to start the radio', '🔇');
+      } else if (sourceIndex + 1 < sources.length) {
+        sourceIndex++;
+        trySource();
       } else {
         streamAudioEl = null;
-        showToast('Piano stream unavailable · please try again', '🔇');
+        showToast('Piano sources unavailable · please try again', '🔇');
       }
     });
   };
 
   el.addEventListener('error', () => {
     if (el !== streamAudioEl) return;
-    streamAudioEl = null;
-    showToast('Piano stream unavailable · please try again', '🔇');
-  }, { once: true });
+    if (sourceIndex + 1 < sources.length) {
+      sourceIndex++;
+      trySource();
+    } else {
+      streamAudioEl = null;
+      showToast('Piano sources unavailable · please try again', '🔇');
+    }
+  });
 
-  playStream();
+  trySource();
 }
 
 function startSynth(synthType) {
