@@ -1,321 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ALIEN RADIO · Deep Space Transmissions</title>
-  <meta name="description" content="Alien sounds channel digital radio — futuristic HUD channel scanner with 12 live space radio streams, live no-key metals pricing and a verified GitHub commit feed." />
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    .metals-ticker { padding: .5rem 0; }
-    .ticker-track.metals-live-track {
-      animation: none;
-      gap: .65rem;
-      overflow-x: auto;
-      padding: 0 1rem .25rem;
-      scrollbar-width: thin;
-      scroll-snap-type: x proximity;
-    }
-    .metal-widget {
-      width: 225px;
-      height: 106px;
-      flex: 0 0 225px;
-      border: 1px solid rgba(255,136,0,.28);
-      border-radius: 6px;
-      background: #060d1a;
-      scroll-snap-align: start;
-    }
-  </style>
-  <!-- Google Fonts preconnect -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Infinity Radio</title>
+<meta name="description" content="Infinity Radio classical piano with live precious and industrial metal prices.">
+<link rel="stylesheet" href="style.css">
+<style>
+body{margin:0;background:#020812;color:#dff;font-family:Arial,sans-serif}
+.radio-shell{max-width:760px;margin:auto;padding:14px}
+.radio-title{text-align:center;font-size:28px;letter-spacing:4px;margin:12px 0 18px}
+.metals{display:flex;gap:10px;overflow-x:auto;padding-bottom:12px}
+.metal-widget{width:225px;height:106px;flex:0 0 225px;border:1px solid #314457;border-radius:8px;background:#06101d}
+.player{margin-top:18px;border:1px solid #21465b;border-radius:14px;padding:28px 18px;text-align:center;background:#071426}
+.player h1{font-size:22px;letter-spacing:2px;margin:0 0 8px}.player p{opacity:.72}
+#play-btn{width:76px;height:76px;border-radius:50%;border:1px solid #16d9d1;background:#092438;color:white;font-size:30px;margin-top:15px}
+</style>
 </head>
 <body>
-<div id="app">
-
-  <!-- ══════════════════════════════════════════
-       HAMBURGER DRAWER
-  ══════════════════════════════════════════ -->
-  <div class="ham-overlay" id="hamOverlay"></div>
-  <nav class="ham-drawer" id="hamDrawer" aria-label="Navigation" aria-hidden="true">
-    <div class="ham-head">
-      <span class="ham-brand">👾 Alien Radio</span>
-      <button class="ham-close" id="hamClose" aria-label="Close menu">✕</button>
-    </div>
-    <div class="ham-section-label">🔬 Research</div>
-    <a class="ham-link" href="#" onclick="closeHamburger();openResearchWriter();return false;">✍️ Research Article Writer</a>
-    <a class="ham-link" href="#" onclick="closeHamburger();showResearchLibrary();return false;">📚 Research Library</a>
-    <div class="ham-divider"></div>
-    <div class="ham-section-label">🟡 Token Wallet</div>
-    <a class="ham-link" href="#" onclick="closeHamburger();openModal('wallet-modal');return false;">💼 My Wallet</a>
-    <a class="ham-link" href="stage.html">⭐ Star Token Stage</a>
-    <a class="ham-link" href="#" onclick="closeHamburger();openMiniGame();return false;">🎮 Play &amp; Earn</a>
-    <div class="ham-divider"></div>
-    <div class="ham-section-label">🌐 Links</div>
-    <a class="ham-link" href="https://archive.org/search?query=television+radio+vintage" target="_blank" rel="noopener noreferrer">🗄️ Archive.org TV &amp; Radio</a>
-    <a class="ham-link" href="https://www.youtube.com/results?search_query=vintage+television+shows" target="_blank" rel="noopener noreferrer">▶ YouTube Vintage TV</a>
-    <a class="ham-link" href="https://github.com/www-infinity4/Alien-Radio" target="_blank" rel="noopener noreferrer">📁 GitHub Repo</a>
-    <div class="ham-divider"></div>
-    <div class="ham-footer">∞ Alien Radio · GP Suite AI</div>
-  </nav>
-
-  <!-- ══════════════════════════════════════════
-       LOGIN MODAL
-  ══════════════════════════════════════════ -->
-  <div class="modal-overlay" id="login-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="loginModalTitle">
-    <div class="modal-box auth-modal">
-      <div class="modal-title" id="loginModalTitle">🔐 Account</div>
-      <button class="modal-close" onclick="closeModal('login-modal')" aria-label="Close">✕</button>
-      <!-- Tabs -->
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Sign In</button>
-        <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Sign Up</button>
-      </div>
-      <!-- Login form -->
-      <div id="loginForm">
-        <div class="auth-form-grid">
-          <label class="auth-label">Username / Email</label>
-          <input class="auth-input" id="loginUser" type="text" autocomplete="username" placeholder="Kris or email" />
-          <label class="auth-label">Password</label>
-          <input class="auth-input" id="loginPass" type="password" autocomplete="current-password" placeholder="••••••••" />
-        </div>
-        <div class="auth-actions">
-          <button class="hud-btn green full" id="btnLogin" onclick="handleLogin()">Sign In</button>
-        </div>
-        <div class="auth-msg" id="loginMsg"></div>
-      </div>
-      <!-- Register form -->
-      <div id="registerForm" style="display:none">
-        <div class="auth-form-grid">
-          <label class="auth-label">Username</label>
-          <input class="auth-input" id="regUser" type="text" autocomplete="username" placeholder="YourName" />
-          <label class="auth-label">Email</label>
-          <input class="auth-input" id="regEmail" type="email" autocomplete="email" placeholder="you@example.com" />
-          <label class="auth-label">Password</label>
-          <input class="auth-input" id="regPass" type="password" autocomplete="new-password" placeholder="min 4 chars" />
-        </div>
-        <div class="auth-actions">
-          <button class="hud-btn green full" id="btnRegister" onclick="handleRegister()">Create Account</button>
-        </div>
-        <div class="auth-msg" id="registerMsg"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════
-       WALLET MODAL
-  ══════════════════════════════════════════ -->
-  <div class="modal-overlay" id="wallet-modal" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="modal-box wallet-modal-box">
-      <div class="modal-title">💼 My Infinity Wallet</div>
-      <button class="modal-close" onclick="closeModal('wallet-modal')" aria-label="Close">✕</button>
-      <div id="wallet-content">
-        <div class="wallet-not-logged">Sign in to view your wallet.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════
-       RESEARCH VIEWER MODAL
-  ══════════════════════════════════════════ -->
-  <div class="modal-overlay research-overlay" id="research-modal" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="modal-box research-modal-box">
-      <div class="modal-title">🔬 TV &amp; Radio Research Article</div>
-      <button class="modal-close" onclick="closeModal('research-modal')" aria-label="Close">✕</button>
-      <div class="research-modal-body" id="research-modal-body">
-        <!-- filled dynamically -->
-      </div>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════
-       MINI-GAME MODAL
-  ══════════════════════════════════════════ -->
-  <div class="modal-overlay" id="minigame-modal" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="modal-box minigame-box">
-      <div class="modal-title">🎮 Signal Catch — Earn ∞Tokens</div>
-      <button class="modal-close" onclick="closeModal('minigame-modal')" aria-label="Close">✕</button>
-      <div class="minigame-body">
-        <p class="text-dim" style="margin-bottom:.75rem;font-size:.8rem;">Catch the orbiting signal nodes before they escape. Each catch = 1 ∞TOKEN (max 24/day).</p>
-        <div class="minigame-arena" id="minigame-arena">
-          <div class="minigame-node" id="minigame-node" onclick="catchNode()">📡</div>
-        </div>
-        <div class="minigame-stats">
-          <span>Score: <strong id="game-score">0</strong></span>
-          <span>Today: <strong id="game-today">0</strong>/24 tokens</span>
-          <span id="game-status" class="text-dim"></span>
-        </div>
-        <button class="hud-btn green full mt-1" onclick="startMiniGame()">▶ Start Game</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════
-       HEADER
-  ══════════════════════════════════════════ -->
-  <header class="site-header">
-    <div class="header-left">
-      <!-- Hamburger -->
-      <button class="ham-btn" id="hamBtn" onclick="openHamburger()" aria-label="Open menu" aria-expanded="false" aria-controls="hamDrawer">
-        <span class="ham-icon">☰</span>
-      </button>
-      <div class="logo">
-        <span class="logo-symbol">👾</span>
-        <div>
-          <div class="logo-title">ALIEN RADIO</div>
-          <div class="logo-subtitle">Deep Space Transmissions · GP Suite AI</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="header-right">
-      <div class="header-status">
-        <span class="status-dot"><span class="dot"></span> ONLINE</span>
-        <span class="status-dot"><span class="dot orange"></span> METALS LIVE · NO KEY</span>
-        <span class="status-dot"><span class="dot purple"></span> AI ACTIVE</span>
-        <span class="header-time" id="header-time">00:00:00 UTC</span>
-      </div>
-      <!-- User badge (shown when logged in) -->
-      <div class="user-badge" id="user-badge" style="display:none">
-        <span class="user-badge-name" id="user-badge-name"></span>
-        <span class="user-token-count" id="user-token-count">0 ∞</span>
-        <button class="hud-btn" style="padding:.2rem .5rem;font-size:.6rem;" onclick="AUTH.logout();onAuthChange()">Sign Out</button>
-      </div>
-      <button class="hud-btn" id="loginBtn" onclick="openModal('login-modal')" style="font-size:.65rem;">🔐 Sign In</button>
-    </div>
-  </header>
-
-  <!-- ══════════════════════════════════════════
-       LIVE NO-KEY METALS BOARD
-  ══════════════════════════════════════════ -->
-  <section class="metals-ticker" aria-label="Live metal prices in US dollars">
-    <div class="ticker-track metals-live-track" id="ticker-track">
-      <iframe class="metal-widget" title="Gold live USD price" src="https://metal-sentinel.com/widget/AU?currency=USD&amp;theme=space" loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-      <iframe class="metal-widget" title="Silver live USD price" src="https://metal-sentinel.com/widget/AG?currency=USD&amp;theme=space" loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-      <iframe class="metal-widget" title="Platinum live USD price" src="https://metal-sentinel.com/widget/PT?currency=USD&amp;theme=space" loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-      <iframe class="metal-widget" title="Palladium live USD price" src="https://metal-sentinel.com/widget/PD?currency=USD&amp;theme=space" loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-      <iframe class="metal-widget" title="Copper live USD price" src="https://metal-sentinel.com/widget/CU?currency=USD&amp;theme=space" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-      <iframe class="metal-widget" title="Nickel live USD price" src="https://metal-sentinel.com/widget/NI?currency=USD&amp;theme=space" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-      <iframe class="metal-widget" title="Aluminum live USD price" src="https://metal-sentinel.com/widget/AL?currency=USD&amp;theme=space" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-      <iframe class="metal-widget" title="Zinc live USD price" src="https://metal-sentinel.com/widget/ZN?currency=USD&amp;theme=space" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-      <iframe class="metal-widget" title="Lead live USD price" src="https://metal-sentinel.com/widget/PB?currency=USD&amp;theme=space" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-    </div>
-  </section>
-
-  <!-- SINGLE PIANO STATION -->
-  <main class="container" style="padding:1rem;">
-    <section class="now-playing-card" style="max-width:720px;margin:0 auto;display:block;text-align:center;padding:1.5rem;">
-      <div class="np-info">
-        <div class="np-channel" id="np-channel">PIANO RADIO</div>
-        <div class="np-title" id="np-title" style="font-size:1.35rem;margin:.65rem 0;">PIANO</div>
-        <div class="np-artist" id="np-artist" style="font-size:.9rem;">Alien Radio · Instrumental Piano</div>
-      </div>
-      <div class="np-controls" style="justify-content:center;margin-top:1rem;">
-        <button class="np-btn play-btn" id="play-btn" type="button" onclick="togglePlay()" aria-label="Play or pause piano" style="width:72px;height:72px;font-size:2rem;">▶</button>
-      </div>
-      <div id="piano-status" style="margin-top:1rem;font-size:1rem;">Piano Radio</div>
-      <div id="freq-display" hidden>88.1</div>
-      <div id="channel-name" hidden>PIANO</div>
-      <div id="signal-bars" hidden></div>
-      <ul id="channel-list" hidden></ul>
-      <div id="sig-meter-signal" hidden></div>
-    </section>
-  </main>
-
-  <!-- ══════════════════════════════════════════
-       FOOTER
-  ══════════════════════════════════════════ -->
-  <footer class="site-footer">
-    <span>© ALIEN RADIO · GP Suite AI · Deep Space Network</span>
-    <div class="footer-links">
-      <a href="#">Channels</a>
-      <a href="#">AI Dashboard</a>
-      <a href="#">Commit Feed</a>
-      <a href="#">About</a>
-    </div>
-    <span class="text-dim">PIANO RADIO · CONTINUOUS PLAY</span>
-  </footer>
-
-  <!-- ══════════════════════════════════════════
-       TOKEN ACTION BAR (sticky bottom)
-  ══════════════════════════════════════════ -->
-  <div class="token-action-bar" id="token-action-bar">
-    <a class="tab-btn tab-projects" href="https://www-infinity4.github.io/Gitflow/token-lab.html" data-tooltip="Open Commit-Linked Project Pages">
-      <span class="tab-icon">◈</span>
-      <span class="tab-label">PROJECT TOKENS</span>
-    </a>
-    <a class="tab-btn tab-research" href="research-lab.html" data-tooltip="Live Evidence Research">
-      <span class="tab-icon">🔬</span>
-      <span class="tab-label">LIVE RESEARCH</span>
-    </a>
-    <a class="tab-btn tab-build" href="https://www-infinity4.github.io/Gitflow/token-lab.html" data-tooltip="Choose Real Work to Build">
-      <span class="tab-icon">🧱</span>
-      <span class="tab-label">CLICK TO BUILD</span>
-    </a>
-    <a class="tab-btn tab-commits" href="#commit-feed" data-tooltip="Verified Commit Evidence">
-      <span class="tab-icon">⌁</span>
-      <span class="tab-label">COMMIT DATA</span>
-    </a>
-    <button class="tab-btn tab-token" onclick="openModal('wallet-modal')" data-tooltip="My Infinity Wallet">
-      <span class="tab-icon">🟡</span>
-      <span class="tab-label">WALLET</span>
-      <span class="tab-count" id="tab-token-count">0</span>
-    </button>
-  </div>
-
-  <!-- ══════════════════════════════════════════
-       TOAST CONTAINER
-  ══════════════════════════════════════════ -->
-  <div id="toast-container"></div>
-
-  <!-- ══════════════════════════════════════════
-       MODAL: Radio Type Picker
-  ══════════════════════════════════════════ -->
-  <div class="modal-overlay" id="radio-type-modal">
-    <div class="modal-box">
-      <div class="modal-title">🎷 Add Media Stream</div>
-      <button class="modal-close" onclick="closeModal('radio-type-modal')">✕</button>
-      <ul class="modal-option-list">
-        <li class="modal-option" onclick="handleModalOption('Alien Radio')">
-          <span class="option-icon">📻</span>
-          <div>
-            <div class="option-label">Alien Radio</div>
-            <div class="option-desc">Deep space channel scanner · 12 channels</div>
-          </div>
-        </li>
-        <li class="modal-option" onclick="handleModalOption('Infinity TV')">
-          <span class="option-icon">📺</span>
-          <div>
-            <div class="option-label">Infinity TV</div>
-            <div class="option-desc">Video streams from across the universe</div>
-          </div>
-        </li>
-        <li class="modal-option" onclick="handleModalOption('Image Gallery')">
-          <span class="option-icon">🖼️</span>
-          <div>
-            <div class="option-label">Image Gallery</div>
-            <div class="option-desc">Curated alien imagery from the void</div>
-          </div>
-        </li>
-        <li class="modal-option" onclick="handleModalOption('RSS Feed')">
-          <span class="option-icon">📡</span>
-          <div>
-            <div class="option-label">RSS Signal Feed</div>
-            <div class="option-desc">Live signal broadcasts from the network</div>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-</div><!-- /#app -->
-<script src="auth.js"></script>
-<script src="research.js"></script>
-<script src="market-feed.js?v=20260812b"></script>
-<script src="app.js?v=20260924-classical-mp3-2"></script>
-<script src="https://www-infinity4.github.io/Mint-For-Infinity/infinity-wallet-menu.js?v=20260814-menu2"></script></body>
+<div class="radio-shell">
+<div class="radio-title">INFINITY RADIO</div>
+<section class="metals" aria-label="Live metal prices">
+<iframe class="metal-widget" title="Gold" src="https://metal-sentinel.com/widget/AU?currency=USD&amp;theme=space"></iframe>
+<iframe class="metal-widget" title="Silver" src="https://metal-sentinel.com/widget/AG?currency=USD&amp;theme=space"></iframe>
+<iframe class="metal-widget" title="Platinum" src="https://metal-sentinel.com/widget/PT?currency=USD&amp;theme=space"></iframe>
+<iframe class="metal-widget" title="Palladium" src="https://metal-sentinel.com/widget/PD?currency=USD&amp;theme=space"></iframe>
+<iframe class="metal-widget" title="Copper" src="https://metal-sentinel.com/widget/CU?currency=USD&amp;theme=space"></iframe>
+<iframe class="metal-widget" title="Nickel" src="https://metal-sentinel.com/widget/NI?currency=USD&amp;theme=space"></iframe>
+<iframe class="metal-widget" title="Aluminum" src="https://metal-sentinel.com/widget/AL?currency=USD&amp;theme=space"></iframe>
+<iframe class="metal-widget" title="Zinc" src="https://metal-sentinel.com/widget/ZN?currency=USD&amp;theme=space"></iframe>
+<iframe class="metal-widget" title="Lead" src="https://metal-sentinel.com/widget/PB?currency=USD&amp;theme=space"></iframe>
+</section>
+<main class="player">
+<div id="np-channel">CLASSICAL PIANO</div>
+<h1 id="np-title">INFINITY RADIO</h1>
+<p id="np-artist">Continuous classical piano</p>
+<button id="play-btn" type="button" onclick="togglePlay()" aria-label="Play or pause">▶</button>
+<div id="piano-status">Piano Radio</div>
+<div id="freq-display" hidden>88.1</div><div id="channel-name" hidden>PIANO</div><div id="signal-bars" hidden></div><ul id="channel-list" hidden></ul><div id="sig-meter-signal" hidden></div>
+</main>
+</div>
+<script src="app.js?v=20260924-infinity-radio1"></script>
+</body>
 </html>
