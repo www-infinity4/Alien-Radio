@@ -210,17 +210,19 @@ function stopAudio() {
     try { node.disconnect(); } catch (e) {}
   });
   activeAudioNodes = [];
+  if (audioCtx) {
+    try { audioCtx.close(); } catch (e) {}
+    audioCtx = null;
+    analyserNode = null;
+    masterGainNode = null;
+    fftBuffer = null;
+  }
 }
 
 function startAudio(channelIdx) {
   stopAudio();
-  ensureAudioContext();
   const ch = CHANNELS[channelIdx] || CHANNELS[0];
-  if (ch.streamUrl) {
-    startStream(ch.streamUrl, ch.synthType || 'spaceHum');
-  } else {
-    startSynth(ch.synthType || 'spaceHum');
-  }
+  if (ch && ch.streamUrl) startStream(ch.streamUrl);
 }
 
 function startStream(url, fallbackSynthType) {
@@ -266,20 +268,9 @@ function startStream(url, fallbackSynthType) {
   playTrack();
 }
 
-function startSynth(synthType) {
-  const profile = SYNTH_PROFILES[synthType] || SYNTH_PROFILES.spaceHum;
-  const dest = analyserNode;
-  const builders = {
-    spaceHum:   () => buildSpaceHum(profile, dest),
-    cosmicPad:  () => buildCosmicPad(profile, dest),
-    pulsarBeat: () => buildPulsarBeat(profile, dest),
-    ionStorm:   () => buildIonStorm(profile, dest),
-    voidDrone:  () => buildVoidDrone(profile, dest),
-    solarDrift: () => buildSolarDrift(profile, dest),
-    quantumFM:  () => buildQuantumFM(profile, dest),
-    hyperFM:    () => buildHyperFM(profile, dest),
-  };
-  (builders[synthType] || builders.spaceHum)();
+function startSynth() {
+  // Disabled permanently in piano-only Alien Radio.
+  return;
 }
 
 // Node factory helpers
