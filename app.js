@@ -130,7 +130,7 @@ function togglePlay() {
   if (art) art.classList.toggle('playing', state.isPlaying);
   if (state.isPlaying) {
     startAudio(state.activeChannel);
-    startVisualizer();
+    // No flashing visualizer in piano-only mode.
   } else {
     stopAudio();
     stopVisualizer();
@@ -224,43 +224,36 @@ function startAudio(channelIdx) {
 }
 
 function startStream(url, fallbackSynthType) {
-  const BACKUP_PIANO_URL = 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3';
-  const sources = [...new Set([url, BACKUP_PIANO_URL])];
-  let sourceIndex = 0;
   const el = new Audio();
-
-  // Native HTML5 audio is the most reliable path for cross-origin music on Android.
-  el.preload = 'metadata';
+  el.preload = 'auto';
   el.volume = state.volume / 100;
   el.loop = true;
   streamAudioEl = el;
 
-  const failOver = () => {
+  // Piano only. Never substitute the synthetic drone/noise generator.
+  el.addEventListener('error', () => {
     if (el !== streamAudioEl) return;
-    if (sourceIndex + 1 < sources.length) {
-      sourceIndex++;
-      el.src = sources[sourceIndex];
-      el.load();
-      void el.play().catch(() => {});
-      return;
-    }
-
-    // If every remote recording fails, keep Alien Radio audible instead of dead.
+    el.pause();
     streamAudioEl = null;
-    startSynth(fallbackSynthType || 'cosmicPad');
-    showToast('Remote piano unavailable · playing Alien Radio backup', '📻');
-  };
+    state.isPlaying = false;
+    const btn = document.getElementById('play-btn');
+    if (btn) btn.textContent = '▶';
+    showToast('Piano recording could not load', '🎹');
+  }, { once: true });
 
-  el.addEventListener('error', failOver);
-
-  el.src = sources[sourceIndex];
+  el.src = url;
   el.load();
   el.play().catch(err => {
     if (err.name === 'NotAllowedError') {
-      showToast('Tap play once to start the radio', '🔇');
-    } else {
-      failOver();
+      showToast('Tap the piano button to play', '🎹');
+      return;
     }
+    el.pause();
+    streamAudioEl = null;
+    state.isPlaying = false;
+    const btn = document.getElementById('play-btn');
+    if (btn) btn.textContent = '▶';
+    showToast('Piano recording could not play', '🎹');
   });
 }
 
