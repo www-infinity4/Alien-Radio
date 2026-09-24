@@ -12,7 +12,7 @@ const CHANNELS = [
   {
     id: 1, name: 'PIANO', freq: '88.1', color: '#00fff7', signal: 100,
     genre: 'Piano Radio',
-    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f0/Moonlight.ogg',
+    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/5/5f/Beethoven_hammerklavier_1.ogg/Beethoven_hammerklavier_1.ogg.mp3',
     synthType: 'cosmicPad',
   },
 ];
