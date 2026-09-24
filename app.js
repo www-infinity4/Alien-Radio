@@ -233,16 +233,11 @@ function startStream(url, fallbackSynthType) {
   streamAudioEl = el;
 
   const sources = [
-    url,
-    'https://upload.wikimedia.org/wikipedia/commons/4/41/Mozart%2C_Wolfgang_Amadeus_%E2%80%94_Piano_Sonata_No._10_in_C_major%2C_K._330_%E2%80%94_1st_movement_%E2%80%94_Bui-Nguyen_Trieu-Tuong_%E2%80%94_MusOpen_Project.mp3',
-    'https://upload.wikimedia.org/wikipedia/commons/transcoded/9/9b/Mozart_-_Piano_Sonata_No._11_in_A_major_-_II._Allegro_moderato.ogg/Mozart_-_Piano_Sonata_No._11_in_A_major_-_II._Allegro_moderato.ogg.mp3',
-    'https://upload.wikimedia.org/wikipedia/commons/transcoded/3/36/Mozart_K448.ogg/Mozart_K448.ogg.mp3',
     'https://upload.wikimedia.org/wikipedia/commons/5/50/Nocturne_Op._9_no._2_in_E_flat_major.mp3',
-    'https://upload.wikimedia.org/wikipedia/commons/5/51/PolonaiseOp.71No.2InBFlatMajor.mp3',
-    'https://upload.wikimedia.org/wikipedia/commons/a/a9/WaltzB.46InEFlatMajor.mp3',
-    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+    'https://upload.wikimedia.org/wikipedia/commons/a/a9/WaltzB.46InEFlatMajor.mp3'
   ];
   let sourceIndex = 0;
+  const TEST_SEGMENT_SECONDS = 300;
 
   const trySource = () => {
     if (el !== streamAudioEl) return;
@@ -254,6 +249,14 @@ function startStream(url, fallbackSynthType) {
       else showToast('Audio source unavailable', '🔇');
     });
   };
+
+  el.addEventListener('timeupdate', () => {
+    if (el !== streamAudioEl) return;
+    if (el.currentTime >= TEST_SEGMENT_SECONDS) {
+      sourceIndex = (sourceIndex + 1) % sources.length;
+      trySource();
+    }
+  });
 
   el.addEventListener('ended', () => {
     if (el !== streamAudioEl) return;
