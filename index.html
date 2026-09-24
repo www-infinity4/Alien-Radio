@@ -214,50 +214,10 @@
         <div class="np-title" id="np-title" style="font-size:1.35rem;margin:.65rem 0;">PIANO</div>
         <div class="np-artist" id="np-artist" style="font-size:.9rem;">Alien Radio · Instrumental Piano</div>
       </div>
-      <audio id="piano-radio" preload="metadata" playsinline
-        src="https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3"></audio>
-      <div class="np-controls" style="justify-content:center;margin-top:1rem;">
-        <button class="np-btn play-btn" id="piano-direct-play" type="button" aria-label="Play or pause piano" style="width:72px;height:72px;font-size:2rem;">▶</button>
-      </div>
-      <div id="piano-status" style="margin-top:1rem;font-size:1rem;">Ready</div>
-      <script>
-        (() => {
-          const audio = document.getElementById('piano-radio');
-          const button = document.getElementById('piano-direct-play');
-          const status = document.getElementById('piano-status');
-          if (!audio || !button) return;
-          audio.volume = 1;
-          button.addEventListener('click', async () => {
-            if (!audio.paused) {
-              audio.pause();
-              button.textContent = '▶';
-              status.textContent = 'Paused';
-              return;
-            }
-            status.textContent = 'Starting piano…';
-            try {
-              await audio.play();
-              button.textContent = '❚❚';
-              status.textContent = 'Playing';
-            } catch (err) {
-              button.textContent = '▶';
-              status.textContent = 'Piano could not start';
-            }
-          });
-          audio.addEventListener('playing', () => {
-            button.textContent = '❚❚';
-            status.textContent = 'Playing';
-          });
-          audio.addEventListener('ended', () => {
-            audio.currentTime = 0;
-            void audio.play();
-          });
-          audio.addEventListener('error', () => {
-            button.textContent = '▶';
-            status.textContent = 'Piano recording unavailable';
-          });
-        })();
-      </script>
+      <audio id="piano-radio" preload="metadata" playsinline controls style="width:100%;max-width:420px;margin-top:1rem;">
+        <source src="https://ia803400.us.archive.org/2/items/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3" type="audio/mpeg">
+      </audio>
+      <div id="piano-status" style="margin-top:1rem;font-size:1rem;">Piano Radio</div>
       <div id="freq-display" hidden>88.1</div>
       <div id="channel-name" hidden>PIANO</div>
       <div id="signal-bars" hidden></div>
@@ -356,6 +316,6 @@
 <script src="auth.js"></script>
 <script src="research.js"></script>
 <script src="market-feed.js?v=20260812b"></script>
-<script src="app.js?v=20260924-piano4"></script>
+<script src="app.js?v=20260924-piano5"></script>
 <script src="https://www-infinity4.github.io/Mint-For-Infinity/infinity-wallet-menu.js?v=20260814-menu2"></script></body>
 </html>
