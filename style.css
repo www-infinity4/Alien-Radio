@@ -1617,3 +1617,10 @@ body { padding-bottom: 94px; }
 .ticker-unit { color: var(--text-dim); font-size: .62rem; }
 .commit-item { color: inherit; text-decoration: none; display: flex; }
 .commit-item:hover { border-color: var(--border-glow); background: rgba(0,255,247,.05); }
+
+
+/* Piano-only mode: no blinking, spinning, pulsing, scanning, or flicker. */
+.logo-symbol, .dot, .np-art, .giro-ring, .scan-line,
+.ring-1, .ring-2, .ring-3, .ticker-track {
+  animation: none !important;
+}
