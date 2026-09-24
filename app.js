@@ -295,42 +295,39 @@ function startStream(url, fallbackSynthType) {
   let sourceIndex = 0;
   const el = new Audio();
 
-  // Keep piano playback on native HTML5 audio. This is more reliable on Android
-  // than routing cross-origin media through Web Audio/CORS.
-  el.preload = 'auto';
+  // Native HTML5 audio is the most reliable path for cross-origin music on Android.
+  el.preload = 'metadata';
   el.volume = state.volume / 100;
   el.loop = true;
   streamAudioEl = el;
 
-  const trySource = () => {
-    if (el !== streamAudioEl) return;
-    el.src = sources[sourceIndex];
-    el.load();
-    el.play().catch(err => {
-      if (err.name === 'NotAllowedError') {
-        showToast('Tap play once to start the radio', '🔇');
-      } else if (sourceIndex + 1 < sources.length) {
-        sourceIndex++;
-        trySource();
-      } else {
-        streamAudioEl = null;
-        showToast('Piano sources unavailable · please try again', '🔇');
-      }
-    });
-  };
-
-  el.addEventListener('error', () => {
+  const failOver = () => {
     if (el !== streamAudioEl) return;
     if (sourceIndex + 1 < sources.length) {
       sourceIndex++;
-      trySource();
+      el.src = sources[sourceIndex];
+      el.load();
+      void el.play().catch(() => {});
+      return;
+    }
+
+    // If every remote recording fails, keep Alien Radio audible instead of dead.
+    streamAudioEl = null;
+    startSynth(fallbackSynthType || 'cosmicPad');
+    showToast('Remote piano unavailable · playing Alien Radio backup', '📻');
+  };
+
+  el.addEventListener('error', failOver);
+
+  el.src = sources[sourceIndex];
+  el.load();
+  el.play().catch(err => {
+    if (err.name === 'NotAllowedError') {
+      showToast('Tap play once to start the radio', '🔇');
     } else {
-      streamAudioEl = null;
-      showToast('Piano sources unavailable · please try again', '🔇');
+      failOver();
     }
   });
-
-  trySource();
 }
 
 function startSynth(synthType) {
