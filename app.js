@@ -227,33 +227,36 @@ function startAudio(channelIdx) {
 
 function startStream(url, fallbackSynthType) {
   const el = new Audio();
-  // Keep live radio on the native HTML5 audio path. Cross-origin radio streams
-  // can go silent on Android when they are routed through Web Audio/CORS.
   el.preload = 'auto';
-  el.src = url;
   el.volume = state.volume / 100;
   el.loop = true;
   streamAudioEl = el;
 
-  const playStream = () => {
+  const sources = [
+    url,
+    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+  ];
+  let sourceIndex = 0;
+
+  const trySource = () => {
     if (el !== streamAudioEl) return;
-    el.play().catch(err => {
-      if (err.name === 'NotAllowedError') {
-        showToast('Tap play once to start the radio', '🔇');
-      } else {
-        streamAudioEl = null;
-        showToast('Piano stream unavailable · please try again', '🔇');
-      }
+    el.src = sources[sourceIndex];
+    el.load();
+    el.play().catch(() => {
+      sourceIndex += 1;
+      if (sourceIndex < sources.length) trySource();
+      else showToast('Audio source unavailable', '🔇');
     });
   };
 
   el.addEventListener('error', () => {
     if (el !== streamAudioEl) return;
-    streamAudioEl = null;
-    showToast('Piano stream unavailable · please try again', '🔇');
-  }, { once: true });
+    sourceIndex += 1;
+    if (sourceIndex < sources.length) trySource();
+    else showToast('Audio source unavailable', '🔇');
+  });
 
-  playStream();
+  trySource();
 }
 
 function startSynth() {
