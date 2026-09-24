@@ -10,76 +10,10 @@
 ── */
 const CHANNELS = [
   {
-    id: 1,  name: 'ANDROMEDA',     freq: '88.1',  color: '#00fff7', signal: 92,
-    genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
-    synthType: 'spaceHum',
-  },
-  {
-    id: 2,  name: 'NEBULA-7',      freq: '91.5',  color: '#cc44ff', signal: 87,
-    genre: 'Internet Archive · Piano · Loop',
+    id: 1, name: 'PIANO', freq: '88.1', color: '#00fff7', signal: 100,
+    genre: 'Piano Radio',
     streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
     synthType: 'cosmicPad',
-  },
-  {
-    id: 3,  name: 'PULSAR BEAT',   freq: '94.3',  color: '#00ff88', signal: 78,
-    genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
-    synthType: 'pulsarBeat',
-  },
-  {
-    id: 4,  name: 'ZETA WAVE',     freq: '97.7',  color: '#ff8800', signal: 95,
-    genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
-    synthType: 'ionStorm',
-  },
-  {
-    id: 5,  name: 'VOID SIGNAL',   freq: '101.1', color: '#0088ff', signal: 65,
-    genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
-    synthType: 'voidDrone',
-  },
-  {
-    id: 6,  name: 'SOLAR DRIFT',   freq: '104.5', color: '#ff2244', signal: 83,
-    genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
-    synthType: 'solarDrift',
-  },
-  {
-    id: 7,  name: 'QUANTUM FOLD',  freq: '107.9', color: '#ffe600', signal: 71,
-    genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
-    synthType: 'quantumFM',
-  },
-  {
-    id: 8,  name: 'HYPERDRIVE FM', freq: '110.3', color: '#cc44ff', signal: 89,
-    genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
-    synthType: 'hyperFM',
-  },
-  {
-    id: 9,  name: 'STARGAZE',      freq: '113.7', color: '#ff66aa', signal: 76,
-    genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
-    synthType: 'cosmicPad',
-  },
-  {
-    id: 10, name: 'WARP CORE',     freq: '116.1', color: '#44ffcc', signal: 88,
-    genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
-    synthType: 'quantumFM',
-  },
-  {
-    id: 11, name: 'INTERGALACTIC', freq: '119.5', color: '#ff4400', signal: 94,
-    genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
-    synthType: 'hyperFM',
-  },
-  {
-    id: 12, name: 'DARK MATTER',   freq: '122.0', color: '#8844ff', signal: 61,
-    genre: 'Internet Archive · Piano · Loop',
-    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg/Piano_Sonata_N%C2%B0_1_-_1._Allegro_%28Beethoven%2C_Schnabel%29.ogg.mp3',
-    synthType: 'voidDrone',
   },
 ];
 
@@ -777,20 +711,14 @@ function init() {
   AlienMarketFeed.init();
   buildChannelList();
   buildAIDashboard();
-  startVisualizer();
-  animateMiniWave();
+  // Quiet single-station mode: no constantly flashing visualizers.
+  stopVisualizer();
 
   // Clock
   updateClock();
   setInterval(updateClock, 1000);
 
-  // AI animation
-  animateAI();
-  setInterval(animateAI, 3000);
-
-  // Signal meters
-  animateMeters();
-  setInterval(animateMeters, 2000);
+  // Quiet single-station mode: leave diagnostic/signal displays static.
 
   // Select first channel without forcing autoplay during page initialization.
   // Android requires the first radio play() call to happen directly from a user gesture.
