@@ -226,46 +226,34 @@ function startAudio(channelIdx) {
 }
 
 function startStream(url, fallbackSynthType) {
-  // Continuous piano station: play Internet Archive recordings one after another.
-  const playlist = [
-    'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
-    url
-  ].filter((item, index, all) => item && all.indexOf(item) === index);
-
-  let track = 0;
   const el = new Audio();
+  // Keep live radio on the native HTML5 audio path. Cross-origin radio streams
+  // can go silent on Android when they are routed through Web Audio/CORS.
   el.preload = 'auto';
-  el.volume = 1;
+  el.src = url;
+  el.volume = state.volume / 100;
+  el.loop = true;
   streamAudioEl = el;
 
-  const status = () => document.getElementById('piano-status');
-
-  const playTrack = () => {
+  const playStream = () => {
     if (el !== streamAudioEl) return;
-    el.src = playlist[track];
-    el.load();
-    el.play().then(() => {
-      const s = status();
-      if (s) s.textContent = 'Piano playing continuously';
-    }).catch(err => {
+    el.play().catch(err => {
       if (err.name === 'NotAllowedError') {
-        const s = status();
-        if (s) s.textContent = 'Tap ▶ once to start piano';
-        return;
+        showToast('Tap play once to start the radio', '🔇');
+      } else {
+        streamAudioEl = null;
+        showToast('Piano stream unavailable · please try again', '🔇');
       }
-      nextTrack();
     });
   };
 
-  const nextTrack = () => {
+  el.addEventListener('error', () => {
     if (el !== streamAudioEl) return;
-    track = (track + 1) % playlist.length;
-    playTrack();
-  };
+    streamAudioEl = null;
+    showToast('Piano stream unavailable · please try again', '🔇');
+  }, { once: true });
 
-  el.addEventListener('ended', nextTrack);
-  el.addEventListener('error', nextTrack);
-  playTrack();
+  playStream();
 }
 
 function startSynth() {
