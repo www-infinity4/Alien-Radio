@@ -232,6 +232,9 @@ function startStream(url, fallbackSynthType) {
   el.loop = false;
   streamAudioEl = el;
 
+  // Infinity Radio is a clock-synchronised piano station. Each five-minute
+  // slot has a scheduled piano recording, so pressing Play joins the current
+  // programme instead of restarting song one every time.
   const sources = [
     'https://upload.wikimedia.org/wikipedia/commons/5/50/Nocturne_Op._9_no._2_in_E_flat_major.mp3',
     'https://upload.wikimedia.org/wikipedia/commons/8/8b/Prelude_Op._28_no._17.mp3',
@@ -244,42 +247,85 @@ function startStream(url, fallbackSynthType) {
     'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8d/Piano_Sonata_No._7_%28Beethoven%29%2C_First_Movement.ogg/Piano_Sonata_No._7_%28Beethoven%29%2C_First_Movement.ogg.mp3',
     'https://upload.wikimedia.org/wikipedia/commons/transcoded/5/5f/Moonlight.ogg/Moonlight.ogg.mp3'
   ];
-  let sourceIndex = 0;
-  const TEST_SEGMENT_SECONDS = 300;
+  const SLOT_SECONDS = 300;
+  const SLOTS_PER_DAY = 24 * 60 * 60 / SLOT_SECONDS;
+  let loadedSlot = -1;
+  let retryTimer = null;
+  let syncTimer = null;
 
-  const trySource = () => {
-    if (el !== streamAudioEl) return;
-    el.src = sources[sourceIndex];
-    el.load();
-    el.play().catch(() => {
-      sourceIndex += 1;
-      if (sourceIndex < sources.length) trySource();
-      else showToast('Audio source unavailable', '🔇');
-    });
-  };
+  function scheduleNow() {
+    const now = new Date();
+    const secondsToday = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+    const slot = Math.floor(secondsToday / SLOT_SECONDS) % SLOTS_PER_DAY;
+    return {
+      slot,
+      sourceIndex: slot % sources.length,
+      offset: secondsToday % SLOT_SECONDS
+    };
+  }
 
-  el.addEventListener('timeupdate', () => {
-    if (el !== streamAudioEl) return;
-    if (el.currentTime >= TEST_SEGMENT_SECONDS) {
-      sourceIndex = (sourceIndex + 1) % sources.length;
-      trySource();
+  function playScheduled(forceReload = false) {
+    if (el !== streamAudioEl || !state.isPlaying) return;
+    const scheduled = scheduleNow();
+    const wantedSrc = sources[scheduled.sourceIndex];
+
+    if (forceReload || loadedSlot !== scheduled.slot || el.src !== wantedSrc) {
+      loadedSlot = scheduled.slot;
+      el.src = wantedSrc;
+      el.load();
     }
-  });
+
+    const seekAndPlay = () => {
+      if (el !== streamAudioEl || !state.isPlaying) return;
+      const current = scheduleNow();
+      // Some recordings are shorter than a five-minute slot. Modulo keeps
+      // piano playing until the next clock slot rather than stopping.
+      const duration = Number.isFinite(el.duration) && el.duration > 1 ? el.duration : SLOT_SECONDS;
+      const target = Math.min(Math.max(0, current.offset % duration), Math.max(0, duration - 0.25));
+      if (Math.abs((el.currentTime || 0) - target) > 4) {
+        try { el.currentTime = target; } catch (e) {}
+      }
+      el.play().catch(() => {
+        clearTimeout(retryTimer);
+        retryTimer = setTimeout(() => playScheduled(true), 1500);
+      });
+    };
+
+    if (el.readyState >= 1) seekAndPlay();
+    else el.addEventListener('loadedmetadata', seekAndPlay, { once: true });
+  }
 
   el.addEventListener('ended', () => {
-    if (el !== streamAudioEl) return;
-    sourceIndex = (sourceIndex + 1) % sources.length;
-    trySource();
+    if (el !== streamAudioEl || !state.isPlaying) return;
+    playScheduled(true);
   });
 
   el.addEventListener('error', () => {
-    if (el !== streamAudioEl) return;
-    sourceIndex += 1;
-    if (sourceIndex < sources.length) trySource();
-    else showToast('Audio source unavailable', '🔇');
+    if (el !== streamAudioEl || !state.isPlaying) return;
+    clearTimeout(retryTimer);
+    retryTimer = setTimeout(() => playScheduled(true), 1500);
   });
 
-  trySource();
+  syncTimer = setInterval(() => {
+    if (el !== streamAudioEl) {
+      clearInterval(syncTimer);
+      clearTimeout(retryTimer);
+      return;
+    }
+    if (!state.isPlaying) return;
+    const scheduled = scheduleNow();
+    if (loadedSlot !== scheduled.slot || el.paused) playScheduled(loadedSlot !== scheduled.slot);
+  }, 2000);
+
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && el === streamAudioEl && state.isPlaying) playScheduled(true);
+  });
+
+  window.addEventListener('online', () => {
+    if (el === streamAudioEl && state.isPlaying) playScheduled(true);
+  });
+
+  playScheduled(true);
 }
 
 function startSynth() {
