@@ -224,37 +224,46 @@ function startAudio(channelIdx) {
 }
 
 function startStream(url, fallbackSynthType) {
+  // Continuous piano station: play Internet Archive recordings one after another.
+  const playlist = [
+    'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
+    url
+  ].filter((item, index, all) => item && all.indexOf(item) === index);
+
+  let track = 0;
   const el = new Audio();
   el.preload = 'auto';
-  el.volume = state.volume / 100;
-  el.loop = true;
+  el.volume = 1;
   streamAudioEl = el;
 
-  // Piano only. Never substitute the synthetic drone/noise generator.
-  el.addEventListener('error', () => {
-    if (el !== streamAudioEl) return;
-    el.pause();
-    streamAudioEl = null;
-    state.isPlaying = false;
-    const btn = document.getElementById('play-btn');
-    if (btn) btn.textContent = '▶';
-    showToast('Piano recording could not load', '🎹');
-  }, { once: true });
+  const status = () => document.getElementById('piano-status');
 
-  el.src = url;
-  el.load();
-  el.play().catch(err => {
-    if (err.name === 'NotAllowedError') {
-      showToast('Tap the piano button to play', '🎹');
-      return;
-    }
-    el.pause();
-    streamAudioEl = null;
-    state.isPlaying = false;
-    const btn = document.getElementById('play-btn');
-    if (btn) btn.textContent = '▶';
-    showToast('Piano recording could not play', '🎹');
-  });
+  const playTrack = () => {
+    if (el !== streamAudioEl) return;
+    el.src = playlist[track];
+    el.load();
+    el.play().then(() => {
+      const s = status();
+      if (s) s.textContent = 'Piano playing continuously';
+    }).catch(err => {
+      if (err.name === 'NotAllowedError') {
+        const s = status();
+        if (s) s.textContent = 'Tap ▶ once to start piano';
+        return;
+      }
+      nextTrack();
+    });
+  };
+
+  const nextTrack = () => {
+    if (el !== streamAudioEl) return;
+    track = (track + 1) % playlist.length;
+    playTrack();
+  };
+
+  el.addEventListener('ended', nextTrack);
+  el.addEventListener('error', nextTrack);
+  playTrack();
 }
 
 function startSynth(synthType) {
