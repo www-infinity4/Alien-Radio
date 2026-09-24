@@ -234,7 +234,15 @@ function startStream(url, fallbackSynthType) {
 
   const sources = [
     'https://upload.wikimedia.org/wikipedia/commons/5/50/Nocturne_Op._9_no._2_in_E_flat_major.mp3',
-    'https://upload.wikimedia.org/wikipedia/commons/a/a9/WaltzB.46InEFlatMajor.mp3'
+    'https://upload.wikimedia.org/wikipedia/commons/8/8b/Prelude_Op._28_no._17.mp3',
+    'https://upload.wikimedia.org/wikipedia/commons/5/51/PolonaiseOp.71No.2InBFlatMajor.mp3',
+    'https://upload.wikimedia.org/wikipedia/commons/a/a9/WaltzB.46InEFlatMajor.mp3',
+    'https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f5/Clair_de_lune_%28Claude_Debussy%29_Suite_bergamasque.ogg/Clair_de_lune_%28Claude_Debussy%29_Suite_bergamasque.ogg.mp3',
+    'https://upload.wikimedia.org/wikipedia/commons/transcoded/4/4b/Fryderyk_Chopin_-_%C3%89tude_Op._10_n._3.ogg/Fryderyk_Chopin_-_%C3%89tude_Op._10_n._3.ogg.mp3',
+    'https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6a/Chopin_op25_No_1.ogg/Chopin_op25_No_1.ogg.mp3',
+    'https://upload.wikimedia.org/wikipedia/commons/transcoded/0/0d/Chopin_op10_No_12.ogg/Chopin_op10_No_12.ogg.mp3',
+    'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8d/Piano_Sonata_No._7_%28Beethoven%29%2C_First_Movement.ogg/Piano_Sonata_No._7_%28Beethoven%29%2C_First_Movement.ogg.mp3',
+    'https://upload.wikimedia.org/wikipedia/commons/transcoded/5/5f/Moonlight.ogg/Moonlight.ogg.mp3'
   ];
   let sourceIndex = 0;
   const TEST_SEGMENT_SECONDS = 300;
