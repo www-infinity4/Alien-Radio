@@ -11,8 +11,8 @@
 const CHANNELS = [
   {
     id: 1, name: 'PIANO', freq: '88.1', color: '#00fff7', signal: 100,
-    genre: 'Internet Archive · Claudio Arrau · Piano',
-    streamUrl: 'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3',
+    genre: 'Beethoven Piano Sonata No. 1 · Paavali Jumppanen',
+    streamUrl: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f3/Beethoven_piano_sonata_1.ogg/Beethoven_piano_sonata_1.ogg.mp3',
     synthType: 'cosmicPad',
   },
 ];
@@ -226,10 +226,10 @@ function startAudio(channelIdx) {
 }
 
 function startStream(url, fallbackSynthType) {
-  // Keep Infinity Radio deliberately simple: the confirmed Internet Archive Claudio Arrau piano file,
+  // Keep Infinity Radio deliberately simple: the verified Wikimedia MP3 transcode of Beethoven Piano Sonata No. 1,
   // played continuously and looped by the browser. No clock scheduler.
   const LONG_PIANO_PROGRAMME =
-    'https://archive.org/download/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0/lp_beethoven-hammerklavier-and-sonatas-nos-5_claudio-arrau_0.mp3';
+    'https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f3/Beethoven_piano_sonata_1.ogg/Beethoven_piano_sonata_1.ogg.mp3';
 
   const el = new Audio(LONG_PIANO_PROGRAMME);
   el.preload = 'auto';
