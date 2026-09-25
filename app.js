@@ -11,8 +11,8 @@
 const CHANNELS = [
   {
     id: 1, name: 'PIANO', freq: '88.1', color: '#00fff7', signal: 100,
-    genre: 'Beethoven Piano Sonata No. 1 · Paul Pitman · Piano',
-    streamUrl: 'https://musictheorymaterials.utk.edu/wp-content/uploads/2018/08/Beethoven-PIano-Soanta-1-Mvt-1.mp3',
+    genre: 'Beethoven 5th Symphony · Solo Piano',
+    streamUrl: 'https://www.orangefreesounds.com/wp-content/uploads/2019/10/Beethoven-5th-symphony-piano.mp3',
     synthType: 'cosmicPad',
   },
 ];
@@ -226,10 +226,10 @@ function startAudio(channelIdx) {
 }
 
 function startStream(url, fallbackSynthType) {
-  // Keep Infinity Radio deliberately simple: a direct MP3 recording of Beethoven Piano Sonata No. 1 hosted by the University of Tennessee,
+  // Keep Infinity Radio deliberately simple: a direct MP3 piano recording of Beethoven's 5th Symphony,
   // played continuously and looped by the browser. No clock scheduler.
   const LONG_PIANO_PROGRAMME =
-    'https://musictheorymaterials.utk.edu/wp-content/uploads/2018/08/Beethoven-PIano-Soanta-1-Mvt-1.mp3';
+    'https://www.orangefreesounds.com/wp-content/uploads/2019/10/Beethoven-5th-symphony-piano.mp3';
 
   const el = new Audio(LONG_PIANO_PROGRAMME);
   el.preload = 'auto';
