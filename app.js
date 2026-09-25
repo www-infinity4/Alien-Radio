@@ -8,6 +8,14 @@
    streamUrl: live internet radio stream (SomaFM / Intergalactic FM / Radio Paradise)
    synthType: fallback Web Audio synth profile key if the stream cannot be loaded
 ── */
+const PIANO_PLAYLIST = [
+  { title: "Beethoven 5th Symphony · Solo Piano", url: "https://www.orangefreesounds.com/wp-content/uploads/2019/10/Beethoven-5th-symphony-piano.mp3" },
+  { title: "Moonlight Sonata · Solo Piano", url: "https://www.orangefreesounds.com/wp-content/uploads/2015/12/Moonlight-sonata-piano.mp3" },
+  { title: "Sonata Pathétique · Adagio Cantabile", url: "https://www.orangefreesounds.com/wp-content/uploads/2018/04/Sonata-pathetique-2nd-movement.mp3" },
+  { title: "Ode to Joy · Piano", url: "https://www.orangefreesounds.com/wp-content/uploads/2022/04/Ode-to-joy-melody-piano.mp3" }
+];
+let pianoTrackIndex = 0;
+
 const CHANNELS = [
   {
     id: 1, name: 'PIANO', freq: '88.1', color: '#00fff7', signal: 100,
@@ -226,39 +234,50 @@ function startAudio(channelIdx) {
 }
 
 function startStream(url, fallbackSynthType) {
-  // Play the channel URL directly. Keeping this as a plain HTML5 Audio element
-  // avoids Web Audio/CORS routing problems on Android.
-  const el = new Audio();
-  el.preload = 'metadata';
-  el.loop = true;
-  el.volume = state.volume / 100;
-  el.src = url;
-  streamAudioEl = el;
+  // Native HTML5 Audio is the working Android baseline. Play every piano file
+  // in sequence, then wrap back to the first track after the last one.
+  if (!PIANO_PLAYLIST.length) return;
+  const requested = PIANO_PLAYLIST.findIndex(track => track.url === url);
+  if (requested >= 0) pianoTrackIndex = requested;
 
-  const playPromise = el.play();
-  if (playPromise && typeof playPromise.catch === 'function') {
-    playPromise.catch(() => {
-      if (el === streamAudioEl && state.isPlaying) {
-        state.isPlaying = false;
-        const btn = document.getElementById('play-btn');
-        if (btn) btn.textContent = '▶';
-        showToast('Tap Play to start piano', '▶️');
-      }
+  const playCurrent = () => {
+    const track = PIANO_PLAYLIST[pianoTrackIndex];
+    const el = new Audio();
+    el.preload = 'metadata';
+    el.volume = state.volume / 100;
+    el.src = track.url;
+    streamAudioEl = el;
+
+    const channelLabel = document.getElementById('np-channel');
+    if (channelLabel) channelLabel.textContent = track.title;
+
+    el.addEventListener('ended', () => {
+      if (el !== streamAudioEl || !state.isPlaying) return;
+      pianoTrackIndex = (pianoTrackIndex + 1) % PIANO_PLAYLIST.length;
+      playCurrent();
     });
-  }
 
-  el.addEventListener('playing', () => {
-    if (el === streamAudioEl) showToast('Piano playing', '🎹');
-  }, { once: true });
+    el.addEventListener('error', () => {
+      if (el !== streamAudioEl || !state.isPlaying) return;
+      pianoTrackIndex = (pianoTrackIndex + 1) % PIANO_PLAYLIST.length;
+      showToast('Skipping unavailable piano track', '🎹');
+      playCurrent();
+    });
 
-  el.addEventListener('error', () => {
-    if (el === streamAudioEl) {
-      state.isPlaying = false;
-      const btn = document.getElementById('play-btn');
-      if (btn) btn.textContent = '▶';
-      showToast('Piano file could not load', '🔇');
+    const p = el.play();
+    if (p && typeof p.catch === 'function') {
+      p.catch(() => {
+        if (el === streamAudioEl && state.isPlaying) {
+          state.isPlaying = false;
+          const btn = document.getElementById('play-btn');
+          if (btn) btn.textContent = '▶';
+          showToast('Tap Play to start piano', '▶️');
+        }
+      });
     }
-  });
+  };
+
+  playCurrent();
 }
 
 function startSynth() {
