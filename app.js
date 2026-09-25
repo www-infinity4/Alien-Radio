@@ -226,25 +226,38 @@ function startAudio(channelIdx) {
 }
 
 function startStream(url, fallbackSynthType) {
-  // Keep Infinity Radio deliberately simple: a direct MP3 piano recording of Beethoven's 5th Symphony,
-  // played continuously and looped by the browser. No clock scheduler.
-  const LONG_PIANO_PROGRAMME =
-    'https://www.orangefreesounds.com/wp-content/uploads/2019/10/Beethoven-5th-symphony-piano.mp3';
-
-  const el = new Audio(LONG_PIANO_PROGRAMME);
-  el.preload = 'auto';
-  el.volume = state.volume / 100;
+  // Play the channel URL directly. Keeping this as a plain HTML5 Audio element
+  // avoids Web Audio/CORS routing problems on Android.
+  const el = new Audio();
+  el.preload = 'metadata';
   el.loop = true;
+  el.volume = state.volume / 100;
+  el.src = url;
   streamAudioEl = el;
 
-  el.addEventListener('error', () => {
-    if (el === streamAudioEl && state.isPlaying) {
-      showToast('Piano source unavailable', '🔇');
-    }
-  });
+  const playPromise = el.play();
+  if (playPromise && typeof playPromise.catch === 'function') {
+    playPromise.catch(() => {
+      if (el === streamAudioEl && state.isPlaying) {
+        state.isPlaying = false;
+        const btn = document.getElementById('play-btn');
+        if (btn) btn.textContent = '▶';
+        showToast('Tap Play to start piano', '▶️');
+      }
+    });
+  }
 
-  el.play().catch(() => {
-    showToast('Tap Play once more to start piano', '▶️');
+  el.addEventListener('playing', () => {
+    if (el === streamAudioEl) showToast('Piano playing', '🎹');
+  }, { once: true });
+
+  el.addEventListener('error', () => {
+    if (el === streamAudioEl) {
+      state.isPlaying = false;
+      const btn = document.getElementById('play-btn');
+      if (btn) btn.textContent = '▶';
+      showToast('Piano file could not load', '🔇');
+    }
   });
 }
 
