@@ -257,53 +257,44 @@ function startAudio(channelIdx) {
 }
 
 function startStream(url, fallbackSynthType) {
-  // Native HTML5 Audio is the working Android baseline. Play every piano file
-  // in sequence, then wrap back to the first track after the last one.
   if (!PIANO_PLAYLIST.length) return;
-  // Keep the queue position authoritative. The channel stream URL must never
-  // reset playback to the first song when Play/restart is triggered.
-  const playCurrent = () => {
-    const track = PIANO_PLAYLIST[pianoTrackIndex];
-    const el = new Audio();
+  let el = streamAudioEl;
+  if (!el) {
+    el = new Audio();
     el.preload = 'metadata';
-    el.volume = state.volume / 100;
-    el.src = track.url;
     streamAudioEl = el;
-
-    const channelLabel = document.getElementById('np-channel');
-    if (channelLabel) channelLabel.textContent = track.title;
-
-    let advanced = false;
-    const advance = (failed = false) => {
-      if (advanced || el !== streamAudioEl || !state.isPlaying) return;
-      advanced = true;
-      el.onended = null;
-      el.onerror = null;
-      el.pause();
-      el.removeAttribute('src');
-      el.load();
+    el.addEventListener('ended', () => {
+      if (!state.isPlaying || el !== streamAudioEl) return;
       pianoTrackIndex = (pianoTrackIndex + 1) % PIANO_PLAYLIST.length;
       sessionStorage.setItem('infinityRadio:pianoTrackIndex', String(pianoTrackIndex));
-      if (failed) showToast('Skipping unavailable piano track', '🎹');
-      playCurrent();
-    };
-    el.onended = () => advance(false);
-    el.onerror = () => advance(true);
+      playPianoTrack(el);
+    });
+    el.addEventListener('error', () => {
+      if (!state.isPlaying || el !== streamAudioEl) return;
+      pianoTrackIndex = (pianoTrackIndex + 1) % PIANO_PLAYLIST.length;
+      sessionStorage.setItem('infinityRadio:pianoTrackIndex', String(pianoTrackIndex));
+      showToast('Skipping unavailable piano track', '🎹');
+      setTimeout(() => playPianoTrack(el), 250);
+    });
+  }
+  playPianoTrack(el);
+}
 
-    const p = el.play();
-    if (p && typeof p.catch === 'function') {
-      p.catch(() => {
-        if (el === streamAudioEl && state.isPlaying) {
-          state.isPlaying = false;
-          const btn = document.getElementById('play-btn');
-          if (btn) btn.textContent = '▶';
-          showToast('Tap Play to start piano', '▶️');
-        }
-      });
+function playPianoTrack(el) {
+  const track = PIANO_PLAYLIST[pianoTrackIndex % PIANO_PLAYLIST.length];
+  el.volume = state.volume / 100;
+  const channelLabel = document.getElementById('np-channel');
+  if (channelLabel) channelLabel.textContent = track.title;
+  if (el.src !== track.url) el.src = track.url;
+  const p = el.play();
+  if (p && typeof p.catch === 'function') p.catch(() => {
+    if (el === streamAudioEl && state.isPlaying) {
+      state.isPlaying = false;
+      const btn = document.getElementById('play-btn');
+      if (btn) btn.textContent = '▶';
+      showToast('Tap Play to start piano', '▶️');
     }
-  };
-
-  playCurrent();
+  });
 }
 
 function startSynth() {
@@ -1155,11 +1146,21 @@ function closeModal(id) {
    Only explicit collect-tagged Control Phi interest entries are eligible.
    No unrelated browsing/share activity is used as a substitute. */
 function phiCollectTopics() {
+  const topics = [];
+  if (Array.isArray(quantaCloudCards)) {
+    quantaCloudCards.forEach(card => {
+      const value = String(card?.title || '').trim();
+      if (value) topics.push(value);
+    });
+  }
   const feed = window.ControlPhi?.interestFeed?.();
-  if (!Array.isArray(feed)) return [];
-  return feed.filter(item => String(item?.type || item?.kind || item?.action || '').toLowerCase() === 'collect')
-    .map(item => String(item?.query || item?.title || item?.topic || item?.reference || '').trim())
-    .filter(Boolean).slice(0, 12);
+  if (Array.isArray(feed)) feed
+    .filter(item => String(item?.type || item?.kind || item?.action || '').toLowerCase() === 'collect')
+    .forEach(item => {
+      const value = String(item?.query || item?.title || item?.topic || item?.reference || '').trim();
+      if (value) topics.push(value);
+    });
+  return [...new Set(topics)].slice(0, 24);
 }
 function rotatePhiCollectAd() {
   const slot = document.getElementById('ad-slot');
@@ -1222,6 +1223,7 @@ async function loadQuantaCloudCards() {
     quantaCloudCards = Array.isArray(payload.cards) ? payload.cards : [];
     quantaCardIndex = 0;
     renderCurrentQuantaCard();
+    rotatePhiCollectAd();
   } catch (_) {
     if (host) host.textContent = 'Connecting Quanta Phi collected cards…';
   }
