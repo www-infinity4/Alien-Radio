@@ -9,6 +9,10 @@
    synthType: fallback Web Audio synth profile key if the stream cannot be loaded
 ── */
 const PIANO_PLAYLIST = [
+  { title: "Chopin · Prelude in E Minor Op. 28 No. 4", url: "https://www.orangefreesounds.com/wp-content/uploads/2016/09/Prelude-in-e-minor.mp3" },
+  { title: "Chopin · Waltz Op. 64 No. 2", url: "https://www.orangefreesounds.com/wp-content/uploads/2018/07/Chopin-waltz-op-64-no-2-in-c-sharp-minor.mp3" },
+  { title: "Schumann · Träumerei", url: "https://www.orangefreesounds.com/wp-content/uploads/2016/01/Traumerei-piano-music.mp3" },
+  { title: "Scott Joplin · The Entertainer", url: "https://www.orangefreesounds.com/wp-content/uploads/2016/02/The-entertainer-piano.mp3" },
   { title: "Bach · Prelude in C Major", url: "https://www.orangefreesounds.com/wp-content/uploads/2021/01/Bach-prelude-in-c-major-piano.mp3" },
   { title: "Bach · Minuet in G", url: "https://www.orangefreesounds.com/wp-content/uploads/2018/03/Bach-minuet-in-g.mp3" },
   { title: "Bach · Badinerie · Piano", url: "https://orangefreesounds.com/wp-content/uploads/2023/02/Bach-badinerie-piano-music.mp3" },
