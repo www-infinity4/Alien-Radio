@@ -1170,7 +1170,13 @@ function rotatePhiCollectAd() {
     return;
   }
   const topic = topics[Math.floor(Date.now() / 15000) % topics.length];
-  slot.textContent = 'Sponsored placement for: ' + topic;
+  if (window.ControlPhi?.renderSponsoredCard) {
+    window.ControlPhi.renderSponsoredCard(slot, topic, 'infinity-radio').catch(() => {
+      slot.textContent = 'No funded sponsor for this collected topic yet.';
+    });
+  } else {
+    slot.textContent = 'No funded sponsor for this collected topic yet.';
+  }
 }
 setInterval(rotatePhiCollectAd, 15000);
 document.addEventListener('DOMContentLoaded', rotatePhiCollectAd);
