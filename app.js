@@ -267,18 +267,21 @@ function startStream(url, fallbackSynthType) {
     const channelLabel = document.getElementById('np-channel');
     if (channelLabel) channelLabel.textContent = track.title;
 
-    el.addEventListener('ended', () => {
-      if (el !== streamAudioEl || !state.isPlaying) return;
+    let advanced = false;
+    const advance = (failed = false) => {
+      if (advanced || el !== streamAudioEl || !state.isPlaying) return;
+      advanced = true;
+      el.onended = null;
+      el.onerror = null;
+      el.pause();
+      el.removeAttribute('src');
+      el.load();
       pianoTrackIndex = (pianoTrackIndex + 1) % PIANO_PLAYLIST.length;
+      if (failed) showToast('Skipping unavailable piano track', '🎹');
       playCurrent();
-    });
-
-    el.addEventListener('error', () => {
-      if (el !== streamAudioEl || !state.isPlaying) return;
-      pianoTrackIndex = (pianoTrackIndex + 1) % PIANO_PLAYLIST.length;
-      showToast('Skipping unavailable piano track', '🎹');
-      playCurrent();
-    });
+    };
+    el.onended = () => advance(false);
+    el.onerror = () => advance(true);
 
     const p = el.play();
     if (p && typeof p.catch === 'function') {
