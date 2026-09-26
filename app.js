@@ -9,6 +9,15 @@
    synthType: fallback Web Audio synth profile key if the stream cannot be loaded
 ── */
 const PIANO_PLAYLIST = [
+  { title: "Bach · Prelude in C Major", url: "https://www.orangefreesounds.com/wp-content/uploads/2021/01/Bach-prelude-in-c-major-piano.mp3" },
+  { title: "Bach · Minuet in G", url: "https://www.orangefreesounds.com/wp-content/uploads/2018/03/Bach-minuet-in-g.mp3" },
+  { title: "Bach · Badinerie · Piano", url: "https://orangefreesounds.com/wp-content/uploads/2023/02/Bach-badinerie-piano-music.mp3" },
+  { title: "Chopin · Nocturne in F-sharp", url: "https://orangefreesounds.com/wp-content/uploads/2024/06/Chopin-nocturne-in-f-sharp.mp3" },
+  { title: "Chopin · Revolutionary Étude", url: "https://www.orangefreesounds.com/wp-content/uploads/2016/03/Revolutionary-etude.mp3" },
+  { title: "Mozart · Piano Concerto No. 21", url: "https://www.orangefreesounds.com/wp-content/uploads/2017/05/Mozart-piano-concerto-21.mp3" },
+  { title: "Mozart · Piano Concerto No. 23 · Adagio", url: "https://www.orangefreesounds.com/wp-content/uploads/2016/07/Piano-Concerto-No.23-In-A-Major-K-488-Adagio.mp3" },
+  { title: "Mozart · Requiem · Lacrymosa · Piano", url: "https://www.orangefreesounds.com/wp-content/uploads/2018/02/Requiem-piano-mozart-lacrymosa.mp3" },
+  { title: "Pachelbel · Canon in D · Piano", url: "https://www.orangefreesounds.com/wp-content/uploads/2017/12/Canon-d-piano-song.mp3" },
   { title: "Beethoven 5th Symphony · Solo Piano", url: "https://www.orangefreesounds.com/wp-content/uploads/2019/10/Beethoven-5th-symphony-piano.mp3" },
   { title: "Moonlight Sonata · Solo Piano", url: "https://www.orangefreesounds.com/wp-content/uploads/2015/12/Moonlight-sonata-piano.mp3" },
   { title: "Sonata Pathétique · Adagio Cantabile", url: "https://www.orangefreesounds.com/wp-content/uploads/2018/04/Sonata-pathetique-2nd-movement.mp3" },
@@ -19,16 +28,7 @@ const PIANO_PLAYLIST = [
   { title: "Chopin · Ballade No. 1 in G Minor", url: "https://orangefreesounds.com/wp-content/uploads/2023/05/Chopin-ballade-no-1.mp3" },
   { title: "Chopin · Étude Op. 10 No. 4", url: "https://www.orangefreesounds.com/wp-content/uploads/2019/08/Chopin-etude-op-10-no-4.mp3" },
   { title: "Mozart · Fantasia in D Minor K.397", url: "https://www.orangefreesounds.com/wp-content/uploads/2020/12/Mozart-fantasia-in-d-minor-k.397.mp3" },
-  { title: "Mozart · Piano Sonata No. 11 · Alla Turca", url: "https://www.orangefreesounds.com/wp-content/uploads/2017/10/Piano-sonata-no-11.mp3" },
-  { title: "Bach · Prelude in C Major", url: "https://www.orangefreesounds.com/wp-content/uploads/2021/01/Bach-prelude-in-c-major-piano.mp3" },
-  { title: "Bach · Minuet in G", url: "https://www.orangefreesounds.com/wp-content/uploads/2018/03/Bach-minuet-in-g.mp3" },
-  { title: "Bach · Badinerie · Piano", url: "https://orangefreesounds.com/wp-content/uploads/2023/02/Bach-badinerie-piano-music.mp3" },
-  { title: "Chopin · Nocturne in F-sharp", url: "https://orangefreesounds.com/wp-content/uploads/2024/06/Chopin-nocturne-in-f-sharp.mp3" },
-  { title: "Chopin · Revolutionary Étude", url: "https://www.orangefreesounds.com/wp-content/uploads/2016/03/Revolutionary-etude.mp3" },
-  { title: "Mozart · Piano Concerto No. 21", url: "https://www.orangefreesounds.com/wp-content/uploads/2017/05/Mozart-piano-concerto-21.mp3" },
-  { title: "Mozart · Piano Concerto No. 23 · Adagio", url: "https://www.orangefreesounds.com/wp-content/uploads/2016/07/Piano-Concerto-No.23-In-A-Major-K-488-Adagio.mp3" },
-  { title: "Mozart · Requiem · Lacrymosa · Piano", url: "https://www.orangefreesounds.com/wp-content/uploads/2018/02/Requiem-piano-mozart-lacrymosa.mp3" },
-  { title: "Pachelbel · Canon in D · Piano", url: "https://www.orangefreesounds.com/wp-content/uploads/2017/12/Canon-d-piano-song.mp3" }
+  { title: "Mozart · Piano Sonata No. 11 · Alla Turca", url: "https://www.orangefreesounds.com/wp-content/uploads/2017/10/Piano-sonata-no-11.mp3" }
 ];
 let pianoTrackIndex = 0;
 
