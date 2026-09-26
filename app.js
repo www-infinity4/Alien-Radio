@@ -30,7 +30,10 @@ const PIANO_PLAYLIST = [
   { title: "Mozart · Fantasia in D Minor K.397", url: "https://www.orangefreesounds.com/wp-content/uploads/2020/12/Mozart-fantasia-in-d-minor-k.397.mp3" },
   { title: "Mozart · Piano Sonata No. 11 · Alla Turca", url: "https://www.orangefreesounds.com/wp-content/uploads/2017/10/Piano-sonata-no-11.mp3" }
 ];
-let pianoTrackIndex = 0;
+let pianoTrackIndex = (() => {
+  const saved = Number(sessionStorage.getItem('infinityRadio:pianoTrackIndex'));
+  return Number.isInteger(saved) && saved >= 0 && saved < PIANO_PLAYLIST.length ? saved : 0;
+})();
 
 const CHANNELS = [
   {
@@ -253,9 +256,8 @@ function startStream(url, fallbackSynthType) {
   // Native HTML5 Audio is the working Android baseline. Play every piano file
   // in sequence, then wrap back to the first track after the last one.
   if (!PIANO_PLAYLIST.length) return;
-  const requested = PIANO_PLAYLIST.findIndex(track => track.url === url);
-  if (requested >= 0) pianoTrackIndex = requested;
-
+  // Keep the queue position authoritative. The channel stream URL must never
+  // reset playback to the first song when Play/restart is triggered.
   const playCurrent = () => {
     const track = PIANO_PLAYLIST[pianoTrackIndex];
     const el = new Audio();
@@ -277,6 +279,7 @@ function startStream(url, fallbackSynthType) {
       el.removeAttribute('src');
       el.load();
       pianoTrackIndex = (pianoTrackIndex + 1) % PIANO_PLAYLIST.length;
+      sessionStorage.setItem('infinityRadio:pianoTrackIndex', String(pianoTrackIndex));
       if (failed) showToast('Skipping unavailable piano track', '🎹');
       playCurrent();
     };
