@@ -1176,33 +1176,58 @@ setInterval(rotatePhiCollectAd, 15000);
 document.addEventListener('DOMContentLoaded', rotatePhiCollectAd);
 
 /* ── Quanta Phi collected-card feed ── */
-function readQuantaCards() {
-  try {
-    const value = JSON.parse(localStorage.getItem('quantaPhiCollected') || '[]');
-    return Array.isArray(value) ? value.slice().reverse() : [];
-  } catch (_) { return []; }
+let quantaCloudCards = [];
+let quantaCardIndex = 0;
+
+function escapeCardText(value) {
+  return String(value || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-function renderQuantaFeed() {
+
+function renderCurrentQuantaCard() {
   const host = document.getElementById('quanta-feed');
   if (!host) return;
-  const cards = readQuantaCards().slice(0, 12);
-  if (!cards.length) {
-    host.textContent = 'Open Quanta Phi and collect cards to build this feed.';
+  if (!quantaCloudCards.length) {
+    host.textContent = 'No Quanta Phi collected cards are synced yet.';
     return;
   }
-  host.innerHTML = cards.map(card => {
-    const title = String(card.title || 'Quanta Phi collect');
-    const story = String(card.story || '').slice(0, 420);
-    const media = String(card.media || '');
-    const source = String(card.sourceUrl || '');
-    const visual = card.type === 'Image' && media ? '<img loading="lazy" src="' + media.replace(/"/g,'&quot;') + '" alt="">' : '';
-    const link = source ? '<a href="' + source.replace(/"/g,'&quot;') + '" target="_blank" rel="noopener">Source</a>' : '';
-    return '<article class="quanta-card">' + visual + '<strong>' + title.replace(/</g,'&lt;') + '</strong>' +
-      (story ? '<p>' + story.replace(/</g,'&lt;') + '</p>' : '') + link + '</article>';
-  }).join('');
+  const card = quantaCloudCards[quantaCardIndex % quantaCloudCards.length];
+  const title = escapeCardText(card.title || 'Quanta Phi collect');
+  const story = escapeCardText(String(card.story || '').slice(0, 420));
+  const media = String(card.media || '');
+  const source = String(card.sourceUrl || '');
+  const visual = String(card.type || '').toLowerCase() === 'image' && /^https:\/\//.test(media)
+    ? '<img loading="lazy" src="' + escapeCardText(media) + '" alt="">'
+    : '';
+  const link = /^https:\/\//.test(source)
+    ? '<a href="' + escapeCardText(source) + '" target="_blank" rel="noopener">Source</a>'
+    : '';
+  host.innerHTML = '<article class="quanta-card">' + visual + '<strong>' + title + '</strong>' +
+    (story ? '<p>' + story + '</p>' : '') + link + '</article>';
 }
-document.addEventListener('DOMContentLoaded', renderQuantaFeed);
-window.addEventListener('storage', event => {
-  if (event.key === 'quantaPhiCollected') renderQuantaFeed();
+
+async function loadQuantaCloudCards() {
+  const host = document.getElementById('quanta-feed');
+  try {
+    const bridge = window.StarQuestCloudLedger;
+    if (!bridge?.authenticatedFetch) throw new Error('ledger_not_connected');
+    const response = await bridge.authenticatedFetch('https://quanta-phi-ledger.marvaseater.workers.dev/v1/quants/collects');
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.error || 'collect_feed_failed');
+    quantaCloudCards = Array.isArray(payload.cards) ? payload.cards : [];
+    quantaCardIndex = 0;
+    renderCurrentQuantaCard();
+  } catch (_) {
+    if (host) host.textContent = 'Connecting Quanta Phi collected cards…';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadQuantaCloudCards();
+  setInterval(() => {
+    if (quantaCloudCards.length > 1) {
+      quantaCardIndex = (quantaCardIndex + 1) % quantaCloudCards.length;
+      renderCurrentQuantaCard();
+    }
+  }, 5000);
+  setInterval(loadQuantaCloudCards, 60000);
 });
-window.addEventListener('quantaphi:collected', renderQuantaFeed);
