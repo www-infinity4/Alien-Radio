@@ -1167,3 +1167,35 @@ function rotatePhiCollectAd() {
 }
 setInterval(rotatePhiCollectAd, 15000);
 document.addEventListener('DOMContentLoaded', rotatePhiCollectAd);
+
+/* ── Quanta Phi collected-card feed ── */
+function readQuantaCards() {
+  try {
+    const value = JSON.parse(localStorage.getItem('quantaPhiCollected') || '[]');
+    return Array.isArray(value) ? value.slice().reverse() : [];
+  } catch (_) { return []; }
+}
+function renderQuantaFeed() {
+  const host = document.getElementById('quanta-feed');
+  if (!host) return;
+  const cards = readQuantaCards().slice(0, 12);
+  if (!cards.length) {
+    host.textContent = 'Open Quanta Phi and collect cards to build this feed.';
+    return;
+  }
+  host.innerHTML = cards.map(card => {
+    const title = String(card.title || 'Quanta Phi collect');
+    const story = String(card.story || '').slice(0, 420);
+    const media = String(card.media || '');
+    const source = String(card.sourceUrl || '');
+    const visual = card.type === 'Image' && media ? '<img loading="lazy" src="' + media.replace(/"/g,'&quot;') + '" alt="">' : '';
+    const link = source ? '<a href="' + source.replace(/"/g,'&quot;') + '" target="_blank" rel="noopener">Source</a>' : '';
+    return '<article class="quanta-card">' + visual + '<strong>' + title.replace(/</g,'&lt;') + '</strong>' +
+      (story ? '<p>' + story.replace(/</g,'&lt;') + '</p>' : '') + link + '</article>';
+  }).join('');
+}
+document.addEventListener('DOMContentLoaded', renderQuantaFeed);
+window.addEventListener('storage', event => {
+  if (event.key === 'quantaPhiCollected') renderQuantaFeed();
+});
+window.addEventListener('quantaphi:collected', renderQuantaFeed);
