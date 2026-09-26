@@ -12,7 +12,14 @@ const PIANO_PLAYLIST = [
   { title: "Beethoven 5th Symphony · Solo Piano", url: "https://www.orangefreesounds.com/wp-content/uploads/2019/10/Beethoven-5th-symphony-piano.mp3" },
   { title: "Moonlight Sonata · Solo Piano", url: "https://www.orangefreesounds.com/wp-content/uploads/2015/12/Moonlight-sonata-piano.mp3" },
   { title: "Sonata Pathétique · Adagio Cantabile", url: "https://www.orangefreesounds.com/wp-content/uploads/2018/04/Sonata-pathetique-2nd-movement.mp3" },
-  { title: "Ode to Joy · Piano", url: "https://www.orangefreesounds.com/wp-content/uploads/2022/04/Ode-to-joy-melody-piano.mp3" }
+  { title: "Ode to Joy · Piano", url: "https://www.orangefreesounds.com/wp-content/uploads/2022/04/Ode-to-joy-melody-piano.mp3" },
+  { title: "Chopin · Nocturne Op. 9 No. 2", url: "https://www.orangefreesounds.com/wp-content/uploads/2016/02/Chopin-nocturne-op-9-no-2.mp3" },
+  { title: "Chopin · Nocturne in C-sharp Minor", url: "https://www.orangefreesounds.com/wp-content/uploads/2017/05/Chopin-nocturne-in-c-sharp-minor.mp3" },
+  { title: "Chopin · Nocturne Op. 9 No. 1", url: "https://www.orangefreesounds.com/wp-content/uploads/2018/01/Chopin-nocturne-op-9-no-1-1.mp3" },
+  { title: "Chopin · Ballade No. 1 in G Minor", url: "https://orangefreesounds.com/wp-content/uploads/2023/05/Chopin-ballade-no-1.mp3" },
+  { title: "Chopin · Étude Op. 10 No. 4", url: "https://www.orangefreesounds.com/wp-content/uploads/2019/08/Chopin-etude-op-10-no-4.mp3" },
+  { title: "Mozart · Fantasia in D Minor K.397", url: "https://www.orangefreesounds.com/wp-content/uploads/2020/12/Mozart-fantasia-in-d-minor-k.397.mp3" },
+  { title: "Mozart · Piano Sonata No. 11 · Alla Turca", url: "https://www.orangefreesounds.com/wp-content/uploads/2017/10/Piano-sonata-no-11.mp3" }
 ];
 let pianoTrackIndex = 0;
 
