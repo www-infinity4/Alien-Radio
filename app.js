@@ -1131,3 +1131,27 @@ function closeModal(id) {
     });
   });
 })();
+
+/* ── Phi Collect Sponsored Rail ──
+   Only explicit collect-tagged Control Phi interest entries are eligible.
+   No unrelated browsing/share activity is used as a substitute. */
+function phiCollectTopics() {
+  const feed = window.ControlPhi?.interestFeed?.();
+  if (!Array.isArray(feed)) return [];
+  return feed.filter(item => String(item?.type || item?.kind || item?.action || '').toLowerCase() === 'collect')
+    .map(item => String(item?.query || item?.title || item?.topic || item?.reference || '').trim())
+    .filter(Boolean).slice(0, 12);
+}
+function rotatePhiCollectAd() {
+  const slot = document.getElementById('ad-slot');
+  if (!slot) return;
+  const topics = phiCollectTopics();
+  if (!topics.length) {
+    slot.textContent = 'No collect-based sponsor available yet.';
+    return;
+  }
+  const topic = topics[Math.floor(Date.now() / 15000) % topics.length];
+  slot.textContent = 'Sponsored placement for: ' + topic;
+}
+setInterval(rotatePhiCollectAd, 15000);
+document.addEventListener('DOMContentLoaded', rotatePhiCollectAd);
