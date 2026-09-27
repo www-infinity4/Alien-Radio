@@ -979,9 +979,11 @@ function handleMushroom() {
 (function startListenTimer() {
   const TICK_MS = 5000; // update every 5 seconds
   setInterval(() => {
-    const user = AUTH.currentUser();
-    if (!user || !state.isPlaying) return;
-    const awarded = AUTH.addListenTime(user.username, TICK_MS / 1000);
+    const auth = globalThis.AUTH;
+    if (!auth || !state.isPlaying) return;
+    const user = auth.currentUser();
+    if (!user) return;
+    const awarded = auth.addListenTime(user.username, TICK_MS / 1000);
     updateTokenDisplay();
     if (awarded > 0) {
       showToast(`+${awarded} ∞TOKEN earned for listening!`, '🟡');
