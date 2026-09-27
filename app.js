@@ -1246,14 +1246,11 @@ async function renderCurrentQuantaCard() {
   const ad=await resolveCommerceAd(card);
   if(card!==quantaCloudCards[quantaCardIndex % quantaCloudCards.length])return;
   if(!ad.image){
-    host.innerHTML='<a class="commerce-ad commerce-ad-loading" href="'+escapeCardText(ad.url)+'">OPEN SHOPPING MATCH</a><div class="commerce-note">Contextual shopping suggestion · merchant checkout</div>';
+    host.innerHTML='<a class="commerce-ad commerce-ad-loading" target="_blank" rel="noopener noreferrer" href="'+escapeCardText(ad.url)+'">OPEN SHOPPING MATCH</a><div class="commerce-note">Opens secure merchant tab · radio keeps playing</div>';
   } else {
-    host.innerHTML='<a class="commerce-ad" href="'+escapeCardText(ad.url)+'"><img loading="lazy" src="'+escapeCardText(ad.image)+'" alt="Shopping suggestion"></a><div class="commerce-note">Contextual shopping suggestion · merchant checkout</div>';
+    host.innerHTML='<a class="commerce-ad" target="_blank" rel="noopener noreferrer" href="'+escapeCardText(ad.url)+'"><img loading="lazy" src="'+escapeCardText(ad.image)+'" alt="Shopping suggestion"></a><div class="commerce-note">Opens secure merchant tab · radio keeps playing</div>';
   }
-  host.querySelector('.commerce-ad')?.addEventListener('click',event=>{
-    event.preventDefault();
-    openCommerceInsideRadio(ad.url,ad.query);
-  });
+
 }
 
 function localCollectedCards() {
