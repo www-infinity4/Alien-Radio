@@ -11,11 +11,12 @@ function bridge(a,b,settings){const from=a.midi,to=b.midi,diff=to-from;if(Math.a
 async function compose(){
  const source=available();
  if(!source.length){status('Record at least one Music Quant first.');return}
- const events=[];source.forEach((q,qi)=>{const settings=q.settings||{};q.notes.forEach((n,ni)=>events.push({...n,settings,quantId:q.id,generated:false,dynamic:settings.dynamic,sourceIndex:qi,noteIndex:ni}));const next=source[qi+1];if(next)bridge(q.notes[q.notes.length-1],next.notes[0],settings).forEach(n=>events.push({...n,settings,quantId:q.id+'→'+next.id}))});
+ const events=[];let timelineMs=0;
+ source.forEach((q,qi)=>{const settings=q.settings||{},notes=q.notes.slice().sort((a,b)=>(Number(a.onsetMs)||0)-(Number(b.onsetMs)||0)||(Number(a.midi)||0)-(Number(b.midi)||0));let legacyOnset=0,previousHold=0;notes.forEach((n,ni)=>{let localOnset;if(Number.isFinite(Number(n.onsetMs)))localOnset=Math.max(0,Number(n.onsetMs));else{if(ni)legacyOnset+=Number(n.offsetMs)>0?Number(n.offsetMs):previousHold;localOnset=legacyOnset}previousHold=Math.max(60,Number(n.holdMs)||250);events.push({...n,compositionOnsetMs:timelineMs+localOnset,settings,quantId:q.id,generated:false,dynamic:settings.dynamic,sourceIndex:qi,noteIndex:ni})});const quantEnd=Math.max(...events.filter(e=>e.sourceIndex===qi).map(e=>e.compositionOnsetMs+Math.max(60,Number(e.holdMs)||250)),timelineMs+250);timelineMs=quantEnd+90;const next=source[qi+1];if(next)bridge(notes[notes.length-1],next.notes[0],settings).forEach((n,bi)=>{events.push({...n,compositionOnsetMs:timelineMs+bi*Math.max(60,Number(n.offsetMs)||120),settings,quantId:q.id+'→'+next.id});timelineMs+=Math.max(60,Number(n.holdMs)||200)})});
  const body={type:'infinity.music-quant.composition.v1',sourceQuantIds:source.map(q=>q.id),events,createdAt:new Date().toISOString(),composer:'music-quant-bridge-engine-v1',gptReady:true};body.hash=await hash(body);composition=body;const saved=read(COMPOSITIONS,[]);saved.unshift(body);write(COMPOSITIONS,saved.slice(0,100));renderComposition();status('Composition built from '+source.length+' Music Quant'+(source.length===1?'':'s')+' with '+events.filter(x=>x.generated).length+' transition notes.')}
 function ensureAudio(){if(!playCtx)playCtx=new (AudioContext||webkitAudioContext)();if(playCtx.state==='suspended')playCtx.resume()}
 function stop(){playing.forEach(x=>{try{x.stop()}catch{}});playing=[]}
-function instrumentWave(name){return name==='organ'?'square':name==='electric'?'triangle':name==='bell'?'sine':'triangle'}
+function instrumentPartials(name){if(name==='organ')return[{ratio:1,type:'sine',amount:.8},{ratio:2,type:'sine',amount:.2}];if(name==='bell')return[{ratio:1,type:'sine',amount:.72},{ratio:2.76,type:'sine',amount:.2},{ratio:5.4,type:'sine',amount:.08}];if(name==='electric')return[{ratio:1,type:'sine',amount:.82},{ratio:2,type:'triangle',amount:.12},{ratio:3.01,type:'sine',amount:.05}];return[{ratio:1,type:'sine',amount:.86},{ratio:2.01,type:'sine',amount:.17},{ratio:3.99,type:'sine',amount:.065},{ratio:6.02,type:'sine',amount:.02}]}
 function play(){
  if(!composition){status('Build the composition first.');return}
  ensureAudio();stop();
@@ -23,9 +24,10 @@ function play(){
  let onset=origin,previousDuration=.25;
  composition.events.forEach((event,index)=>{
   const s=event.settings||{};
-  const osc=playCtx.createOscillator(),gain=playCtx.createGain();
+  const gain=playCtx.createGain();
   const duration=Math.max(.06,Math.min(8,Number(event.holdMs||250)/1000));
-  if(index){
+  if(Number.isFinite(Number(event.compositionOnsetMs)))onset=origin+Math.max(0,Number(event.compositionOnsetMs))/1000;
+  else if(index){
    const recordedOffset=Number(event.offsetMs);
    // offsetMs is onset-to-onset time captured while the player performed.
    // Never add the previous hold duration too: that made playback unevenly slow.
@@ -35,8 +37,7 @@ function play(){
    onset+=onsetDelta;
   }
   const midi=Math.max(0,Math.min(127,Number(event.midi)||60));
-  osc.type=instrumentWave(s.instrument);
-  osc.frequency.setValueAtTime(440*Math.pow(2,(midi-69)/12),onset);
+  const frequency=440*Math.pow(2,(midi-69)/12);
   const level=dynamicsGain(event.dynamic||s.dynamic);
   const attackEnd=onset+Math.min(.018,duration*.25);
   const releaseStart=onset+Math.max(.025,duration-Math.min(.08,duration*.35));
@@ -44,9 +45,8 @@ function play(){
   gain.gain.exponentialRampToValueAtTime(level,attackEnd);
   gain.gain.setValueAtTime(level,releaseStart);
   gain.gain.exponentialRampToValueAtTime(.0001,onset+duration);
-  osc.connect(gain);gain.connect(playCtx.destination);
-  osc.start(onset);osc.stop(onset+duration+.03);
-  playing.push(osc);previousDuration=duration;
+  gain.connect(playCtx.destination);
+  instrumentPartials(s.instrument).forEach(partial=>{const osc=playCtx.createOscillator(),partialGain=playCtx.createGain();osc.type=partial.type;osc.frequency.setValueAtTime(frequency*partial.ratio,onset);partialGain.gain.value=partial.amount;osc.connect(partialGain);partialGain.connect(gain);osc.start(onset);osc.stop(onset+duration+.03);playing.push(osc)});previousDuration=duration;
  });
  status('Playing '+composition.events.length+' notes at their recorded timing. Infinity Radio remains independent.')
 }
@@ -56,7 +56,7 @@ async function spend(){
  const blob=new Blob([JSON.stringify(packet,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=q.id+'.music-quant.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
  const spent=read(SPENT,[]);spent.unshift({quantId:q.id,originHash:q.hash,transferHash:packet.transferHash,spentAt:packet.spentAt,quantity:1});write(SPENT,spent);window.dispatchEvent(new CustomEvent('musicquant:changed',{detail:{action:'spend-packet',quantId:q.id}}));status('Spent 1 Music Quant into a playable transfer packet. The notes and settings travel with it.');renderBalance()}
 async function receive(file){
- try{const packet=JSON.parse(await file.text());if(packet?.type!=='infinity.music-quant.transfer.v1'||!Array.isArray(packet.notes)||packet.notes.length!==5)throw new Error('invalid packet');const claimed=packet.transferHash;const copy={...packet};delete copy.transferHash;const actual=await hash(copy);if(actual!==claimed)throw new Error('hash mismatch');const received=read(RECEIVED,[]);if(!received.some(x=>x.transferHash===claimed)){received.unshift(packet);write(RECEIVED,received)}composition={type:'infinity.music-quant.composition.v1',sourceQuantIds:[packet.quantId],events:packet.notes.map(n=>({...n,settings:packet.settings,dynamic:packet.settings?.dynamic})),createdAt:new Date().toISOString(),composer:'received-transfer',hash:claimed};renderComposition();renderBalance();status('Received and verified 1 playable Music Quant. Press Play composition to hear it.')}catch(e){status('That Music Quant packet could not be verified: '+e.message)}}
+ try{const packet=JSON.parse(await file.text());if(packet?.type!=='infinity.music-quant.transfer.v1'||!Array.isArray(packet.notes)||packet.notes.length<5||packet.notes.length>15)throw new Error('invalid packet');const claimed=packet.transferHash;const copy={...packet};delete copy.transferHash;const actual=await hash(copy);if(actual!==claimed)throw new Error('hash mismatch');const received=read(RECEIVED,[]);if(!received.some(x=>x.transferHash===claimed)){received.unshift(packet);write(RECEIVED,received)}composition={type:'infinity.music-quant.composition.v1',sourceQuantIds:[packet.quantId],events:packet.notes.map(n=>({...n,compositionOnsetMs:Number(n.onsetMs)||0,settings:packet.settings,dynamic:packet.settings?.dynamic})),createdAt:new Date().toISOString(),composer:'received-transfer',hash:claimed};renderComposition();renderBalance();status('Received and verified 1 playable Music Quant. Press Play composition to hear it.')}catch(e){status('That Music Quant packet could not be verified: '+e.message)}}
 function renderComposition(){const out=document.getElementById('mqComposerOutput');if(!out)return;if(!composition){out.innerHTML='<p>No composition built yet.</p>';return}const generated=composition.events.filter(x=>x.generated).length;out.innerHTML='<strong>'+composition.events.length+' notes · '+generated+' generated transitions</strong><code>'+esc(composition.hash.slice(0,20))+'</code><div class="mq-sequence">'+composition.events.map(e=>'<span class="'+(e.generated?'generated':'')+'">'+(e.generated?'↝':esc(e.name||String(e.midi)))+'</span>').join('')+'</div>'}
 function renderBalance(){const el=document.getElementById('mqSpendable');if(el)el.textContent=available().length+' spendable · '+read(RECEIVED,[]).length+' received'}
 function status(text){const el=document.getElementById('mqComposerStatus');if(el)el.textContent=text}
