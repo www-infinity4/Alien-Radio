@@ -22,17 +22,19 @@ function mergeCloud(cloud){
 async function sync(){
  if(syncing)return;const bridge=window.StarQuestCloudLedger;const localBalance=read(LOCAL,[]).length+read(LISTENING,[]).length;if(!bridge?.authenticatedFetch){mirror({balance:localBalance});return}syncing=true;
  try{
-  const local=[...read(LOCAL,[]),...read(LISTENING,[])].sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).slice(0,100);
+  const local=[...read(LOCAL,[]),...read(LISTENING,[])].sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).slice(0,500);
   if(local.length){
-   const response=await bridge.authenticatedFetch(ENDPOINT+'/v1/music-quants/sync',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({quants:local.slice(0,100)})});
-   if(!response.ok)throw new Error('music_quant_sync_failed');
+   for(let offset=0;offset<local.length;offset+=100){
+    const response=await bridge.authenticatedFetch(ENDPOINT+'/v1/music-quants/sync',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({quants:local.slice(offset,offset+100)})});
+    if(!response.ok)throw new Error('music_quant_sync_failed');
+   }
   }
   const stateResponse=await bridge.authenticatedFetch(ENDPOINT+'/v1/music-quants/state',{cache:'no-store'});
   const state=await stateResponse.json().catch(()=>({}));
   if(!stateResponse.ok)throw new Error(state.error||'music_quant_state_failed');
   mergeCloud(state.quants);mirror(state);
   window.dispatchEvent(new CustomEvent('musicquant:cloud-synced',{detail:state}));
- }catch(error){console.warn('Music Quant cloud sync deferred',error)}
+ }catch(error){console.warn('Music Quant cloud sync deferred',error);window.dispatchEvent(new CustomEvent('musicquant:cloud-error',{detail:{message:String(error?.message||error)}}))}
  finally{syncing=false}
 }
 window.MusicQuantCloud={sync,endpoint:ENDPOINT};
