@@ -17,7 +17,39 @@ function ensureAudio(){if(!playCtx)playCtx=new (AudioContext||webkitAudioContext
 function stop(){playing.forEach(x=>{try{x.stop()}catch{}});playing=[]}
 function instrumentWave(name){return name==='organ'?'square':name==='electric'?'triangle':name==='bell'?'sine':'triangle'}
 function play(){
- if(!composition){status('Build the composition first.');return}ensureAudio();stop();let when=playCtx.currentTime+.08;composition.events.forEach((event,index)=>{const s=event.settings||{},osc=playCtx.createOscillator(),gain=playCtx.createGain(),duration=Math.max(.06,Math.min(8,Number(event.holdMs||250)/1000)),gap=index?Math.max(0,Math.min(4,Number(event.offsetMs||0)/1000)):0;when+=gap;osc.type=instrumentWave(s.instrument);osc.frequency.value=440*Math.pow(2,(Number(event.midi)-69)/12);const level=dynamicsGain(event.dynamic||s.dynamic);gain.gain.setValueAtTime(.0001,when);gain.gain.exponentialRampToValueAtTime(level,when+.018);gain.gain.setValueAtTime(level,when+Math.max(.02,duration-.08));gain.gain.exponentialRampToValueAtTime(.0001,when+duration);osc.connect(gain);gain.connect(playCtx.destination);osc.start(when);osc.stop(when+duration+.03);playing.push(osc);when+=duration});status('Playing '+composition.events.length+' notes. Infinity Radio remains independent.')}
+ if(!composition){status('Build the composition first.');return}
+ ensureAudio();stop();
+ const origin=playCtx.currentTime+.08;
+ let onset=origin,previousDuration=.25;
+ composition.events.forEach((event,index)=>{
+  const s=event.settings||{};
+  const osc=playCtx.createOscillator(),gain=playCtx.createGain();
+  const duration=Math.max(.06,Math.min(8,Number(event.holdMs||250)/1000));
+  if(index){
+   const recordedOffset=Number(event.offsetMs);
+   // offsetMs is onset-to-onset time captured while the player performed.
+   // Never add the previous hold duration too: that made playback unevenly slow.
+   const onsetDelta=Number.isFinite(recordedOffset)&&recordedOffset>0
+    ?Math.max(.01,Math.min(8,recordedOffset/1000))
+    :previousDuration;
+   onset+=onsetDelta;
+  }
+  const midi=Math.max(0,Math.min(127,Number(event.midi)||60));
+  osc.type=instrumentWave(s.instrument);
+  osc.frequency.setValueAtTime(440*Math.pow(2,(midi-69)/12),onset);
+  const level=dynamicsGain(event.dynamic||s.dynamic);
+  const attackEnd=onset+Math.min(.018,duration*.25);
+  const releaseStart=onset+Math.max(.025,duration-Math.min(.08,duration*.35));
+  gain.gain.setValueAtTime(.0001,onset);
+  gain.gain.exponentialRampToValueAtTime(level,attackEnd);
+  gain.gain.setValueAtTime(level,releaseStart);
+  gain.gain.exponentialRampToValueAtTime(.0001,onset+duration);
+  osc.connect(gain);gain.connect(playCtx.destination);
+  osc.start(onset);osc.stop(onset+duration+.03);
+  playing.push(osc);previousDuration=duration;
+ });
+ status('Playing '+composition.events.length+' notes at their recorded timing. Infinity Radio remains independent.')
+}
 async function spend(){
  const q=available()[0];if(!q){status('No unspent Music Quant is available.');return}
  const packet={type:'infinity.music-quant.transfer.v1',version:1,quantId:q.id,originHash:q.hash,notes:q.notes,settings:q.settings,createdAt:q.createdAt,spentAt:new Date().toISOString(),playable:true,unit:'Music Quant',quantity:1};packet.transferHash=await hash(packet);
