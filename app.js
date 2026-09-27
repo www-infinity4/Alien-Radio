@@ -1271,6 +1271,26 @@ async function renderCurrentQuantaCard() {
     openCommerceInsideRadio(ad.url,ad.query);
   });
 }
+
+function localCollectedCards() {
+  const read = (key) => { try { const value=JSON.parse(localStorage.getItem(key)||'[]'); return Array.isArray(value)?value:[]; } catch { return []; } };
+  const combined=[...read('quantaPhiCollected'),...read('phiShared:collection:v1')];
+  const seen=new Set();
+  return combined.map((card,index)=>{
+    const key=String(card?.key||card?.storyKey||card?.id||card?.url||card?.title||index);
+    const type=String(card?.type||card?.kind||'');
+    return {
+      key,
+      type,
+      title:String(card?.title||card?.sourceTitle||'Collected card'),
+      story:String(card?.story||card?.extract||card?.body||''),
+      media:String(card?.media||card?.image||card?.imageUrl||''),
+      sourceUrl:String(card?.sourceUrl||card?.url||''),
+      collectedAt:String(card?.collectedAt||'')
+    };
+  }).filter(card=>card.title&&!seen.has(card.key)&&seen.add(card.key)).slice(0,50);
+}
+
 async function loadQuantaCloudCards() {
   const host = document.getElementById('quanta-feed');
   const fallback=localCollectedCards();
