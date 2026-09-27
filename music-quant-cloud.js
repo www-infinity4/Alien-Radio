@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 const ENDPOINT='https://quanta-phi-ledger.marvaseater.workers.dev';
-const LOCAL='musicPhi:quants:v1',UNIFIED='infinity_unified_wallet_v1';
+const LOCAL='musicPhi:quants:v1',LISTENING='musicPhi:listeningQuants:v1',UNIFIED='infinity_unified_wallet_v1';
 const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}},write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch{return false}};
 let syncing=false;
 function mirror(state){
@@ -13,15 +13,16 @@ function mirror(state){
  window.ControlPhi?.refreshWallet?.();
 }
 function mergeCloud(cloud){
- const local=read(LOCAL,[]),map=new Map(local.map(q=>[q.id,q]));
- (Array.isArray(cloud)?cloud:[]).forEach(q=>{if(q?.id&&Array.isArray(q.notes)&&q.notes.length===5)map.set(q.id,q)});
- const merged=[...map.values()].sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).slice(0,500);
- write(LOCAL,merged);return merged;
+ const playable=read(LOCAL,[]),listening=read(LISTENING,[]),playableMap=new Map(playable.map(q=>[q.id,q])),listeningMap=new Map(listening.map(q=>[q.id,q]));
+ (Array.isArray(cloud)?cloud:[]).forEach(q=>{if(!q?.id)return;if(q.kind==='listening'&&Array.isArray(q.notes)&&q.notes.length===0)listeningMap.set(q.id,q);else if(Array.isArray(q.notes)&&q.notes.length===5)playableMap.set(q.id,q)});
+ const playableMerged=[...playableMap.values()].sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).slice(0,500);
+ const listeningMerged=[...listeningMap.values()].sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).slice(0,500);
+ write(LOCAL,playableMerged);write(LISTENING,listeningMerged);return [...playableMerged,...listeningMerged];
 }
 async function sync(){
- if(syncing)return;const bridge=window.StarQuestCloudLedger;if(!bridge?.authenticatedFetch)return;syncing=true;
+ if(syncing)return;const bridge=window.StarQuestCloudLedger;const localBalance=read(LOCAL,[]).length+read(LISTENING,[]).length;if(!bridge?.authenticatedFetch){mirror({balance:localBalance});return}syncing=true;
  try{
-  const local=read(LOCAL,[]);
+  const local=[...read(LOCAL,[]),...read(LISTENING,[])].sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).slice(0,100);
   if(local.length){
    const response=await bridge.authenticatedFetch(ENDPOINT+'/v1/music-quants/sync',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({quants:local.slice(0,100)})});
    if(!response.ok)throw new Error('music_quant_sync_failed');
