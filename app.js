@@ -730,7 +730,7 @@ function nextChannel() {
 
 /* ── Init ── */
 function init() {
-  AlienMarketFeed.init();
+  globalThis.AlienMarketFeed?.init?.();
   buildChannelList();
   buildAIDashboard();
   // Quiet single-station mode: no constantly flashing visualizers.
@@ -1124,7 +1124,8 @@ function closeModal(id) {
    BOOTSTRAP AUTH
 ══════════════════════════════════════════════════════════════════ */
 (async function bootstrapAuth() {
-  await AUTH.ensureAdmin();
+  if(!globalThis.AUTH)return;
+  await globalThis.AUTH.ensureAdmin();
   onAuthChange();
 
   // Hamburger close on overlay click
