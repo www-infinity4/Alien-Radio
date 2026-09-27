@@ -1215,7 +1215,7 @@ async function resolveCommerceAd(card) {
   const intent=commerceIntent(card);
   const cacheKey=intent.query.toLowerCase();
   if(commerceCache.has(cacheKey))return commerceCache.get(cacheKey);
-  const merchantUrl='https://www-infinity4.github.io/Shop-Phi/?'+new URLSearchParams({q:intent.query,source:'infinity-radio'}).toString();
+  const merchantUrl='https://www-infinity4.github.io/Alien-Radio/shop.html?'+new URLSearchParams({q:intent.query,source:'infinity-radio'}).toString();
   const imageQuery=intent.query+' product advertisement white background';
   const imageUrl='https://tse1.mm.bing.net/th?'+new URLSearchParams({q:imageQuery,w:'1000',h:'650',c:'7',rs:'1',p:'0'}).toString();
   const ad={image:imageUrl,url:merchantUrl,query:intent.query,creativeSource:'metadata-product-search'};
