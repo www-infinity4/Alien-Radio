@@ -5,7 +5,7 @@ const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch{retur
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let composition=read(COMPOSITIONS,[])[0]||null,playCtx=null,playing=[];
 async function hash(value){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(value)));return [...new Uint8Array(bytes)].map(b=>b.toString(16).padStart(2,'0')).join('')}
-function available(){const spent=new Set(read(SPENT,[]).map(x=>x.quantId));return read(QUANTS,[]).filter(q=>!spent.has(q.id))}
+function available(){const spent=new Set(read(SPENT,[]).map(x=>x.quantId)),source=window.MusicQuantLab?.getQuants?.()||read(QUANTS,[]);return source.filter(q=>!spent.has(q.id))}
 function dynamicsGain(mark){return({pp:.07,p:.1,mp:.14,mf:.2,f:.28,ff:.36})[mark]||.2}
 function bridge(a,b,settings){const from=a.midi,to=b.midi,diff=to-from;if(Math.abs(diff)<=2)return[];const direction=Math.sign(diff),count=Math.min(4,Math.max(1,Math.floor(Math.abs(diff)/3))),beat=60000/Math.max(30,Number(settings.bpm)||90);return Array.from({length:count},(_,i)=>({name:'bridge',midi:Math.round(from+diff*((i+1)/(count+1))),holdMs:Math.round(beat*.55),offsetMs:Math.round(beat*.6),generated:true,dynamic:settings.dynamic}))}
 async function compose(){
