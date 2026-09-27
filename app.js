@@ -1190,47 +1190,87 @@ function escapeCardText(value) {
   return String(value || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function renderCurrentQuantaCard() {
+const commerceCache=new Map();
+
+function commerceIntent(card) {
+  const topic=String(card?.title||'').replace(/\s+/g,' ').trim();
+  const text=(topic+' '+String(card?.story||'')).toLowerCase();
+  const elementNames='hydrogen helium lithium beryllium boron carbon nitrogen oxygen fluorine neon sodium magnesium aluminum silicon phosphorus sulfur chlorine argon potassium calcium scandium titanium vanadium chromium manganese iron cobalt nickel copper zinc gallium germanium arsenic selenium bromine krypton rubidium strontium yttrium zirconium niobium molybdenum technetium ruthenium rhodium palladium silver cadmium indium tin antimony tellurium iodine xenon cesium barium lanthanum cerium praseodymium neodymium promethium samarium europium gadolinium terbium dysprosium holmium erbium thulium ytterbium lutetium hafnium tantalum tungsten rhenium osmium iridium platinum gold mercury thallium lead bismuth polonium astatine radon francium radium actinium thorium protactinium uranium';
+  const isElement=elementNames.split(' ').some(name=>new RegExp('\\b'+name+'\\b','i').test(text))||/\belement\s*\d+\b|\batomic\b/.test(text);
+  const isMusic=/\b(album|band|guitar|vinyl|record|concert|music|song|singer|pink floyd|grateful dead|steve miller|steve winwood)\b/.test(text);
+  const query=isElement?topic+' element sample specimen 99.9%':isMusic?topic+' official merchandise vinyl shirt guitar':topic+' buy shop merchandise';
+  return {topic,query};
+}
+
+function safeMerchantUrl(value,fallbackQuery) {
+  try {
+    const url=new URL(String(value||''));
+    if(/^https?:$/.test(url.protocol))return url.href;
+  } catch {}
+  return 'https://www.ebay.com/sch/i.html?'+new URLSearchParams({_nkw:fallbackQuery}).toString();
+}
+
+async function resolveCommerceAd(card) {
+  const intent=commerceIntent(card);
+  const cacheKey=intent.query.toLowerCase();
+  if(commerceCache.has(cacheKey))return commerceCache.get(cacheKey);
+  const fallbackImage=String(card?.media||card?.image||'');
+  const fallback={image:/^https:\/\//i.test(fallbackImage)?fallbackImage:'',url:safeMerchantUrl('',intent.query),query:intent.query};
+  try {
+    const endpoint=new URL('https://orange-brook-a2ac.marvaseater.workers.dev/search');
+    endpoint.search=new URLSearchParams({q:'site:ebay.com '+intent.query,format:'json',categories:'images',safesearch:'1'});
+    const response=await fetch(endpoint,{headers:{accept:'application/json'}});
+    if(!response.ok)throw new Error('shopping_search_failed');
+    const payload=await response.json();
+    const candidates=Array.isArray(payload?.results)?payload.results:[];
+    const match=candidates.find(item=>{
+      const image=String(item?.img_src||item?.thumbnail_src||item?.thumbnail||'');
+      const url=String(item?.url||'');
+      return /^https:\/\//i.test(image)&&/^https:\/\//i.test(url)&&/(ebay|walmart|etsy|reverb|discogs|amazon)\./i.test(url);
+    })||candidates.find(item=>/^https:\/\//i.test(String(item?.img_src||item?.thumbnail_src||item?.thumbnail||''))&&/^https:\/\//i.test(String(item?.url||'')));
+    if(match){
+      const ad={image:String(match.img_src||match.thumbnail_src||match.thumbnail),url:safeMerchantUrl(match.url,intent.query),query:intent.query};
+      commerceCache.set(cacheKey,ad);
+      return ad;
+    }
+  } catch {}
+  commerceCache.set(cacheKey,fallback);
+  return fallback;
+}
+
+function openCommerceInsideRadio(url,label) {
+  const panel=document.getElementById('omniBrowser');
+  const frame=document.getElementById('omniBrowserFrame');
+  const title=document.getElementById('omniBrowserTitle');
+  if(!panel||!frame){location.href=url;return}
+  frame.src=url;
+  if(title)title.textContent='Shopping · '+label;
+  panel.hidden=false;
+  document.body.classList.add('web-mode');
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+async function renderCurrentQuantaCard() {
   const host = document.getElementById('quanta-feed');
   if (!host) return;
   if (!quantaCloudCards.length) {
-    host.textContent = 'No Quanta Phi collected cards are synced yet.';
+    host.textContent = 'No collected cards found yet. Collect one in Quanta Phi and return here.';
     return;
   }
   const card = quantaCloudCards[quantaCardIndex % quantaCloudCards.length];
-  const title = escapeCardText(card.title || 'Quanta Phi collect');
-  const story = escapeCardText(String(card.story || '').slice(0, 420));
-  const media = String(card.media || '');
-  const source = String(card.sourceUrl || '');
-  const visual = String(card.type || '').toLowerCase() === 'image' && /^https:\/\//.test(media)
-    ? '<img loading="lazy" src="' + escapeCardText(media) + '" alt="">'
-    : '';
-  const link = /^https:\/\//.test(source)
-    ? '<a href="' + escapeCardText(source) + '" target="_blank" rel="noopener">Source</a>'
-    : '';
-  host.innerHTML = '<article class="quanta-card">' + visual + '<strong>' + title + '</strong>' +
-    (story ? '<p>' + story + '</p>' : '') + link + '</article>';
+  host.innerHTML='<div class="commerce-ad-loading">FINDING A SHOPPING MATCH…</div>';
+  const ad=await resolveCommerceAd(card);
+  if(card!==quantaCloudCards[quantaCardIndex % quantaCloudCards.length])return;
+  if(!ad.image){
+    host.innerHTML='<a class="commerce-ad commerce-ad-loading" href="'+escapeCardText(ad.url)+'">OPEN SHOPPING MATCH</a><div class="commerce-note">Contextual shopping suggestion · merchant checkout</div>';
+  } else {
+    host.innerHTML='<a class="commerce-ad" href="'+escapeCardText(ad.url)+'"><img loading="lazy" src="'+escapeCardText(ad.image)+'" alt="Shopping suggestion"></a><div class="commerce-note">Contextual shopping suggestion · merchant checkout</div>';
+  }
+  host.querySelector('.commerce-ad')?.addEventListener('click',event=>{
+    event.preventDefault();
+    openCommerceInsideRadio(ad.url,ad.query);
+  });
 }
-
-function localCollectedCards() {
-  const read = (key) => { try { const value=JSON.parse(localStorage.getItem(key)||'[]'); return Array.isArray(value)?value:[]; } catch { return []; } };
-  const combined=[...read('quantaPhiCollected'),...read('phiShared:collection:v1')];
-  const seen=new Set();
-  return combined.map((card,index)=>{
-    const key=String(card?.key||card?.storyKey||card?.id||card?.url||card?.title||index);
-    const type=String(card?.type||card?.kind||'');
-    return {
-      key,
-      type,
-      title:String(card?.title||card?.sourceTitle||'Collected card'),
-      story:String(card?.story||card?.extract||card?.body||''),
-      media:String(card?.media||card?.image||card?.imageUrl||''),
-      sourceUrl:String(card?.sourceUrl||card?.url||''),
-      collectedAt:String(card?.collectedAt||'')
-    };
-  }).filter(card=>card.title&&!seen.has(card.key)&&seen.add(card.key)).slice(0,50);
-}
-
 async function loadQuantaCloudCards() {
   const host = document.getElementById('quanta-feed');
   const fallback=localCollectedCards();
