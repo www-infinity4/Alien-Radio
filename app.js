@@ -1212,20 +1212,45 @@ function renderCurrentQuantaCard() {
     (story ? '<p>' + story + '</p>' : '') + link + '</article>';
 }
 
+function localCollectedCards() {
+  const read = (key) => { try { const value=JSON.parse(localStorage.getItem(key)||'[]'); return Array.isArray(value)?value:[]; } catch { return []; } };
+  const combined=[...read('quantaPhiCollected'),...read('phiShared:collection:v1')];
+  const seen=new Set();
+  return combined.map((card,index)=>{
+    const key=String(card?.key||card?.storyKey||card?.id||card?.url||card?.title||index);
+    const type=String(card?.type||card?.kind||'');
+    return {
+      key,
+      type,
+      title:String(card?.title||card?.sourceTitle||'Collected card'),
+      story:String(card?.story||card?.extract||card?.body||''),
+      media:String(card?.media||card?.image||card?.imageUrl||''),
+      sourceUrl:String(card?.sourceUrl||card?.url||''),
+      collectedAt:String(card?.collectedAt||'')
+    };
+  }).filter(card=>card.title&&!seen.has(card.key)&&seen.add(card.key)).slice(0,50);
+}
+
 async function loadQuantaCloudCards() {
   const host = document.getElementById('quanta-feed');
+  const fallback=localCollectedCards();
   try {
     const bridge = window.StarQuestCloudLedger;
     if (!bridge?.authenticatedFetch) throw new Error('ledger_not_connected');
-    const response = await bridge.authenticatedFetch('https://quanta-phi-ledger.marvaseater.workers.dev/v1/quants/collects');
+    const response = await bridge.authenticatedFetch('https://quanta-phi-ledger.marvaseater.workers.dev/v1/quants/collects',{cache:'no-store'});
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(payload.error || 'collect_feed_failed');
-    quantaCloudCards = Array.isArray(payload.cards) ? payload.cards : [];
+    const cloud=Array.isArray(payload.cards)?payload.cards:[];
+    quantaCloudCards=cloud.length?cloud:fallback;
     quantaCardIndex = 0;
     renderCurrentQuantaCard();
     rotatePhiCollectAd();
   } catch (_) {
-    if (host) host.textContent = 'Connecting Quanta Phi collected cards…';
+    quantaCloudCards=fallback;
+    quantaCardIndex=0;
+    renderCurrentQuantaCard();
+    rotatePhiCollectAd();
+    if (!fallback.length&&host) host.textContent = 'No collected cards found yet. Collect one in Quanta Phi and return here.';
   }
 }
 
@@ -1239,3 +1264,34 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 5000);
   setInterval(loadQuantaCloudCards, 60000);
 });
+
+
+/* ── Omni Phi in-radio web search ── */
+(function installOmniRadioSearch(){
+  function init(){
+    const form=document.getElementById('omniRadioSearch');
+    const input=document.getElementById('omniRadioQuery');
+    const panel=document.getElementById('omniBrowser');
+    const frame=document.getElementById('omniBrowserFrame');
+    const title=document.getElementById('omniBrowserTitle');
+    const close=document.getElementById('closeOmniBrowser');
+    if(!form||!input||!panel||!frame)return;
+    form.addEventListener('submit',(event)=>{
+      event.preventDefault();
+      const query=input.value.trim();
+      if(!query)return;
+      const params=new URLSearchParams({q:query,mode:'search',from:'infinity-radio'});
+      frame.src='https://www-infinity4.github.io/Omni-Phi/overview/?'+params.toString();
+      title.textContent='Omni Phi · '+query;
+      panel.hidden=false;
+      document.body.classList.add('web-mode');
+      panel.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+    close?.addEventListener('click',()=>{
+      panel.hidden=true;
+      document.body.classList.remove('web-mode');
+      document.querySelector('.player')?.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
