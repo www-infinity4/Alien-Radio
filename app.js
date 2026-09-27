@@ -1215,30 +1215,13 @@ async function resolveCommerceAd(card) {
   const intent=commerceIntent(card);
   const cacheKey=intent.query.toLowerCase();
   if(commerceCache.has(cacheKey))return commerceCache.get(cacheKey);
-  const fallbackImage=String(card?.media||card?.image||'');
-  const fallback={image:/^https:\/\//i.test(fallbackImage)?fallbackImage:'',url:safeMerchantUrl('',intent.query),query:intent.query};
-  try {
-    const endpoint=new URL('https://orange-brook-a2ac.marvaseater.workers.dev/search');
-    endpoint.search=new URLSearchParams({q:'site:ebay.com '+intent.query,format:'json',categories:'images',safesearch:'1'});
-    const response=await fetch(endpoint,{headers:{accept:'application/json'}});
-    if(!response.ok)throw new Error('shopping_search_failed');
-    const payload=await response.json();
-    const candidates=Array.isArray(payload?.results)?payload.results:[];
-    const match=candidates.find(item=>{
-      const image=String(item?.img_src||item?.thumbnail_src||item?.thumbnail||'');
-      const url=String(item?.url||'');
-      return /^https:\/\//i.test(image)&&/^https:\/\//i.test(url)&&/(ebay|walmart|etsy|reverb|discogs|amazon)\./i.test(url);
-    })||candidates.find(item=>/^https:\/\//i.test(String(item?.img_src||item?.thumbnail_src||item?.thumbnail||''))&&/^https:\/\//i.test(String(item?.url||'')));
-    if(match){
-      const ad={image:String(match.img_src||match.thumbnail_src||match.thumbnail),url:safeMerchantUrl(match.url,intent.query),query:intent.query};
-      commerceCache.set(cacheKey,ad);
-      return ad;
-    }
-  } catch {}
-  commerceCache.set(cacheKey,fallback);
-  return fallback;
+  const merchantUrl='https://www.ebay.com/sch/i.html?'+new URLSearchParams({_nkw:intent.query,LH_BIN:'1'}).toString();
+  const imageQuery=intent.query+' product advertisement white background';
+  const imageUrl='https://tse1.mm.bing.net/th?'+new URLSearchParams({q:imageQuery,w:'1000',h:'650',c:'7',rs:'1',p:'0'}).toString();
+  const ad={image:imageUrl,url:merchantUrl,query:intent.query,creativeSource:'metadata-product-search'};
+  commerceCache.set(cacheKey,ad);
+  return ad;
 }
-
 function openCommerceInsideRadio(url,label) {
   const panel=document.getElementById('omniBrowser');
   const frame=document.getElementById('omniBrowserFrame');
