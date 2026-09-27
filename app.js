@@ -34,6 +34,22 @@ const PIANO_PLAYLIST = [
   { title: "Mozart · Fantasia in D Minor K.397", url: "https://www.orangefreesounds.com/wp-content/uploads/2020/12/Mozart-fantasia-in-d-minor-k.397.mp3" },
   { title: "Mozart · Piano Sonata No. 11 · Alla Turca", url: "https://www.orangefreesounds.com/wp-content/uploads/2017/10/Piano-sonata-no-11.mp3" }
 ];
+const ARCHIVE_PIANO_SOURCE='musopen-chopin';
+async function loadArchivePianoLibrary(){
+  try{
+    const response=await fetch('https://archive.org/metadata/'+ARCHIVE_PIANO_SOURCE,{cache:'force-cache'});
+    if(!response.ok)throw new Error('archive_metadata_'+response.status);
+    const metadata=await response.json(),existing=new Set(PIANO_PLAYLIST.map(track=>track.url));
+    const additions=(Array.isArray(metadata.files)?metadata.files:[])
+      .filter(file=>/\.mp3$/i.test(String(file?.name||''))&&/mp3/i.test(String(file?.format||'MP3')))
+      .map(file=>{const name=String(file.name),title=String(file.title||file.track||name.replace(/\.mp3$/i,'').replace(/[_-]+/g,' ')).trim();return {title:'Chopin · '+title,url:'https://archive.org/download/'+ARCHIVE_PIANO_SOURCE+'/'+name.split('/').map(encodeURIComponent).join('/'),archiveItem:ARCHIVE_PIANO_SOURCE}})
+      .filter(track=>track.title&&track.url&&!existing.has(track.url)).slice(0,100);
+    additions.forEach(track=>{existing.add(track.url);PIANO_PLAYLIST.push(track)});
+    window.dispatchEvent(new CustomEvent('infinityradio:library-loaded',{detail:{added:additions.length,total:PIANO_PLAYLIST.length,source:ARCHIVE_PIANO_SOURCE}}));
+  }catch(error){console.warn('Archive piano library deferred',error)}
+}
+loadArchivePianoLibrary();
+
 let pianoTrackIndex = (() => {
   const saved = Number(sessionStorage.getItem('infinityRadio:pianoTrackIndex'));
   return Number.isInteger(saved) && saved >= 0 && saved < PIANO_PLAYLIST.length ? saved : 0;
@@ -196,6 +212,7 @@ let fftBuffer      = null;
 // Active HTML5 stream element (null when using synth fallback)
 let streamAudioEl  = null;
 let streamMediaSrc = null;
+let pianoTrackSession = null;
 
 // Synth profiles — keyed by synthType (used as fallback when stream fails)
 const SYNTH_PROFILES = {
@@ -265,6 +282,9 @@ function startStream(url, fallbackSynthType) {
     streamAudioEl = el;
     el.addEventListener('ended', () => {
       if (!state.isPlaying || el !== streamAudioEl) return;
+      const finished=pianoTrackSession;
+      if(finished)window.dispatchEvent(new CustomEvent('infinityradio:track-complete',{detail:{...finished,endedAt:new Date().toISOString(),durationSec:Number.isFinite(el.duration)?Math.round(el.duration):null}}));
+      pianoTrackSession=null;
       pianoTrackIndex = (pianoTrackIndex + 1) % PIANO_PLAYLIST.length;
       sessionStorage.setItem('infinityRadio:pianoTrackIndex', String(pianoTrackIndex));
       playPianoTrack(el);
@@ -282,6 +302,8 @@ function startStream(url, fallbackSynthType) {
 
 function playPianoTrack(el) {
   const track = PIANO_PLAYLIST[pianoTrackIndex % PIANO_PLAYLIST.length];
+  pianoTrackSession={track:{title:track.title,url:track.url,archiveItem:track.archiveItem||''},trackIndex:pianoTrackIndex,startedAt:new Date().toISOString()};
+  window.dispatchEvent(new CustomEvent('infinityradio:track-start',{detail:pianoTrackSession}));
   el.volume = state.volume / 100;
   const channelLabel = document.getElementById('np-channel');
   if (channelLabel) channelLabel.textContent = track.title;
