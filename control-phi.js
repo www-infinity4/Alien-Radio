@@ -175,7 +175,7 @@
     const store=walletStore();
     const wallet=normalizeWallet(store.profile);
     const assets=auxiliaryBalances();
-    return {balance:wallet.tokens,starCoins:wallet.tokens,progressToNextCoin:wallet.pendingShareCredits,shareCount:wallet.shareCount,username:wallet.username||'Guest',quants:assets.quants,infinity:assets.infinity,musicQuants:assets.musicQuants};
+    const starCoins=Math.round((wallet.tokens+(wallet.pendingShareCredits/10))*10)/10;\n    return {balance:starCoins,starCoins,wholeStarCoins:wallet.tokens,progressToNextCoin:wallet.pendingShareCredits,shareCount:wallet.shareCount,username:wallet.username||'Guest',quants:assets.quants,infinity:assets.infinity,musicQuants:assets.musicQuants};
   }
 
   function importLegacyStarCoinBalance(amount,source='legacy'){
@@ -279,8 +279,7 @@
     wallet.shareEvents=wallet.shareEvents.slice(-250);
     wallet.ledger=wallet.ledger.slice(-500);
     store.save(wallet);
-    const detail={progressToNextCoin:wallet.pendingShareCredits,awarded,balance:wallet.tokens,shareCount:wallet.shareCount,source:'control-phi-fallback'};
-    window.dispatchEvent(new CustomEvent('starquest:share-progress',{detail}));
+    const event={attemptId,contentId:clean(reference||location.href,700),method,confirmed:true,verified:true,verificationState:'client_confirmed',status:'client_confirmed',createdAt:now,source:'control-phi-fallback'};\n    const detail={progressToNextCoin:wallet.pendingShareCredits,awarded,balance:Math.round((wallet.tokens+(wallet.pendingShareCredits/10))*10)/10,shareCount:wallet.shareCount,source:'control-phi-fallback',event};\n    window.dispatchEvent(new CustomEvent('starquest:share-progress',{detail}));
     window.dispatchEvent(new CustomEvent('controlphi:wallet-change',{detail}));
     refreshWalletUI();
     return detail;
@@ -403,7 +402,7 @@
       if(event.key===INTEREST_KEY)window.dispatchEvent(new CustomEvent('newsphi:interest',{detail:{external:true}}));
       if(event.key===WALLET_GUEST_KEY||event.key===WALLET_USERS_KEY||event.key===WALLET_SESSION_KEY)refreshWalletUI();
     });
-    window.addEventListener('starquest:share-progress',refreshWalletUI);
+    window.addEventListener('starquest:share-progress',refreshWalletUI);\n    document.addEventListener('starquest:ledger-connected',refreshWalletUI);\n    document.addEventListener('starquest:auth-changed',refreshWalletUI);
     window.addEventListener('controlphi:wallet-change',refreshWalletUI);
   }
 
@@ -489,7 +488,7 @@
     const mount=()=>{if(!document.body.contains(host))document.body.appendChild(host);const t=latestExplicitAdTopic();if(t)renderSponsoredCard(host,t,location.pathname).catch(()=>{});else host.hidden=true};
     mount();setInterval(mount,30000);
   }
-  window.ControlPhi={version:'1.8.1',recordShare,trackingUrl:(input={})=>{const plan=sharePlan(input,input.platform||'share');return plan.trackingUrl},openNews:()=>location.assign(NEWS_URL),shareFeed:()=>read(SHARE_KEY,[]).slice(),interestFeed:()=>read(INTEREST_KEY,[]).slice(),wallet:walletSnapshot,recordActivity,contextFeed:()=>read(CONTEXT_KEY,[]).slice(),ensureShareCredit,ensureActionCredit,importLegacyStarCoinBalance,refreshWallet:refreshWalletUI,requestSponsoredCard,renderSponsoredCard};
+  window.ControlPhi={version:'1.9.0',recordShare,trackingUrl:(input={})=>{const plan=sharePlan(input,input.platform||'share');return plan.trackingUrl},openNews:()=>location.assign(NEWS_URL),shareFeed:()=>read(SHARE_KEY,[]).slice(),interestFeed:()=>read(INTEREST_KEY,[]).slice(),wallet:walletSnapshot,recordActivity,contextFeed:()=>read(CONTEXT_KEY,[]).slice(),ensureShareCredit,ensureActionCredit,importLegacyStarCoinBalance,refreshWallet:refreshWalletUI,requestSponsoredCard,renderSponsoredCard};
   installShareBridge();
   installShareLinkBridge();
   installCrossTabBridge();
