@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Shop Phi — Similar Products</title>
+<meta name="description" content="Compare related products, brands, styles, and outlets from one topic-first shopping field.">
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#050812;color:#eefaff;font:15px/1.45 system-ui,sans-serif}.shell{max-width:1120px;margin:auto;padding:18px}.top{display:flex;align-items:center;gap:12px}.brand{font-size:25px;font-weight:950;letter-spacing:.12em}.phi{color:#67f6e8}.back{margin-left:auto;color:#bff;text-decoration:none;border:1px solid #285b6a;border-radius:12px;padding:10px}.search{display:flex;gap:8px;margin:20px 0}.search input{flex:1;min-width:0;padding:14px;border:1px solid #315d75;border-radius:12px;background:#071321;color:white;font-size:16px}.search button{padding:12px 16px;border:0;border-radius:12px;background:#ffe15a;color:#171000;font-weight:900}.sub{color:#9bb7c4}.outlets{display:flex;gap:8px;overflow:auto;padding:8px 0 16px}.outlet{white-space:nowrap;border:1px solid #315d75;border-radius:999px;padding:8px 11px;color:#cff}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}.card{overflow:hidden;border:1px solid #244a5e;border-radius:16px;background:#081522;color:white;text-decoration:none}.card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#132536}.copy{padding:12px}.copy strong{display:block;font-size:14px}.copy small{display:block;color:#9bb7c4;margin-top:5px}.shop{display:inline-block;margin-top:10px;background:#ffe15a;color:#171000;border-radius:999px;padding:7px 10px;font-weight:900;font-size:11px}.disclosure{margin:22px 0;color:#7893a0;font-size:11px}
+</style>
+</head>
+<body><main class="shell">
+<header class="top"><div class="brand">SHOP <span class="phi">PHI</span></div><a class="back" href="https://www-infinity4.github.io/Alien-Radio/">← Infinity Radio</a></header>
+<p class="sub">Similar and exact products across brands, styles, and outlets.</p>
+<form class="search" id="shopSearch"><input id="q" type="search" placeholder="Search products and comparisons"><button>Shop φ</button></form>
+<div class="outlets"><span class="outlet">eBay</span><span class="outlet">Walmart</span><span class="outlet">Etsy</span><span class="outlet">Reverb</span><span class="outlet">Discogs</span><span class="outlet">Google Shopping</span></div>
+<section class="grid" id="grid"></section>
+<p class="disclosure">Product discovery demonstration. Prices, availability, seller terms, and checkout are controlled by each merchant. Paid placements will be labeled separately.</p>
+</main>
+<script>
+const params=new URLSearchParams(location.search),input=document.getElementById('q'),grid=document.getElementById('grid');
+const seed=(params.get('q')||'piano music').trim(); input.value=seed;
+const variants=[
+ {label:'Exact matches',suffix:'exact product',outlet:'eBay',url:q=>'https://www.ebay.com/sch/i.html?'+new URLSearchParams({_nkw:q,LH_BIN:'1'})},
+ {label:'Different brands',suffix:'alternative brands',outlet:'Walmart',url:q=>'https://www.walmart.com/search?'+new URLSearchParams({q})},
+ {label:'Independent styles',suffix:'handmade custom',outlet:'Etsy',url:q=>'https://www.etsy.com/search?'+new URLSearchParams({q})},
+ {label:'Music gear',suffix:'music gear instrument',outlet:'Reverb',url:q=>'https://reverb.com/marketplace?'+new URLSearchParams({query:q})},
+ {label:'Albums and editions',suffix:'vinyl album edition',outlet:'Discogs',url:q=>'https://www.discogs.com/search/?'+new URLSearchParams({q,type:'all'})},
+ {label:'Compare outlets',suffix:'buy price comparison',outlet:'Google Shopping',url:q=>'https://www.google.com/search?'+new URLSearchParams({tbm:'shop',q})},
+ {label:'Collector choices',suffix:'rare collectible',outlet:'eBay',url:q=>'https://www.ebay.com/sch/i.html?'+new URLSearchParams({_nkw:q})},
+ {label:'Budget choices',suffix:'best value sale',outlet:'Walmart',url:q=>'https://www.walmart.com/search?'+new URLSearchParams({q})}
+];
+function render(query){document.title='Shop Phi — '+query;grid.innerHTML=variants.map((v,i)=>{const productQuery=(query+' '+v.suffix).trim(),img='https://tse1.mm.bing.net/th?'+new URLSearchParams({q:productQuery+' product advertisement white background',w:'700',h:'520',c:'7',rs:'1',p:String(i%3)}),href=v.url(productQuery);return '<a class="card" target="_blank" rel="noopener noreferrer" href="'+href+'"><img loading="lazy" src="'+img+'" alt=""><div class="copy"><strong>'+v.label+'</strong><small>'+v.outlet+' · '+productQuery+'</small><span class="shop">VIEW PRODUCTS</span></div></a>'}).join('')}
+document.getElementById('shopSearch').onsubmit=e=>{e.preventDefault();const q=input.value.trim();if(!q)return;history.replaceState(null,'','?'+new URLSearchParams({q}));render(q)};render(seed);
+</script></body></html>
