@@ -12,7 +12,7 @@ async function compose(){
  const requested=Math.max(1,Math.min(8,Number(document.getElementById('mqSourceCount')?.value)||1)),source=available().slice(0,requested);
  if(!source.length){status('Record at least one Music Quant first.');return}
  const events=[];let timelineMs=0;
- source.forEach((q,qi)=>{const settings=q.settings||{},notes=q.notes.slice().sort((a,b)=>(Number(a.onsetMs)||0)-(Number(b.onsetMs)||0)||(Number(a.midi)||0)-(Number(b.midi)||0));let legacyOnset=0,previousHold=0;notes.forEach((n,ni)=>{let localOnset;if(Number.isFinite(Number(n.onsetMs)))localOnset=Math.max(0,Number(n.onsetMs));else{if(ni)legacyOnset+=Number(n.offsetMs)>0?Number(n.offsetMs):previousHold;localOnset=legacyOnset}previousHold=Math.max(60,Number(n.holdMs)||250);events.push({...n,compositionOnsetMs:timelineMs+localOnset,settings,quantId:q.id,generated:false,dynamic:settings.dynamic,sourceIndex:qi,noteIndex:ni})});const quantEnd=Math.max(...events.filter(e=>e.sourceIndex===qi).map(e=>e.compositionOnsetMs+Math.max(60,Number(e.holdMs)||250)),timelineMs+250);timelineMs=quantEnd+90;const next=source[qi+1];if(next)bridge(notes[notes.length-1],next.notes[0],settings).forEach((n,bi)=>{events.push({...n,compositionOnsetMs:timelineMs+bi*Math.max(60,Number(n.offsetMs)||120),settings,quantId:q.id+'→'+next.id});timelineMs+=Math.max(60,Number(n.holdMs)||200)})});
+ source.forEach((q,qi)=>{const settings=q.settings||{},notes=q.notes.slice().sort((a,b)=>(Number(a.onsetMs)||0)-(Number(b.onsetMs)||0)||(Number(a.midi)||0)-(Number(b.midi)||0));let legacyOnset=0,previousHold=0;notes.forEach((n,ni)=>{let localOnset;if(Number.isFinite(Number(n.onsetMs)))localOnset=Math.max(0,Number(n.onsetMs));else{if(ni)legacyOnset+=Number(n.offsetMs)>0?Number(n.offsetMs):previousHold;localOnset=legacyOnset}previousHold=Math.max(60,Number(n.holdMs)||250);events.push({...n,compositionOnsetMs:timelineMs+localOnset,settings,quantId:q.id,generated:false,dynamic:n.dynamic||settings.dynamic,sourceIndex:qi,noteIndex:ni})});const quantEnd=Math.max(...events.filter(e=>e.sourceIndex===qi).map(e=>e.compositionOnsetMs+Math.max(60,Number(e.holdMs)||250)),timelineMs+250);timelineMs=quantEnd+90;const next=source[qi+1];if(next)bridge(notes[notes.length-1],next.notes[0],settings).forEach((n,bi)=>{events.push({...n,compositionOnsetMs:timelineMs+bi*Math.max(60,Number(n.offsetMs)||120),settings,quantId:q.id+'→'+next.id});timelineMs+=Math.max(60,Number(n.holdMs)||200)})});
  const body={type:'infinity.music-quant.composition.v1',sourceQuantIds:source.map(q=>q.id),events,createdAt:new Date().toISOString(),composer:'music-quant-bridge-engine-v1',gptReady:true};body.hash=await hash(body);composition=body;const saved=read(COMPOSITIONS,[]);saved.unshift(body);write(COMPOSITIONS,saved.slice(0,100));renderComposition();status('Composition built from '+source.length+' Music Quant'+(source.length===1?'':'s')+' with '+events.filter(x=>x.generated).length+' transition notes.')}
 function ensureAudio(){if(!playCtx)playCtx=new (AudioContext||webkitAudioContext)();if(playCtx.state==='suspended')playCtx.resume()}
 function stop(){playing.forEach(x=>{try{x.stop()}catch{}});playing=[]}
@@ -23,6 +23,7 @@ function play(){
  const origin=playCtx.currentTime+.08;
  let onset=origin,previousDuration=.25;
  composition.events.forEach((event,index)=>{
+  if(event.muted)return;
   const s=event.settings||{};
   const gain=playCtx.createGain();
   const duration=Math.max(.06,Math.min(8,Number(event.holdMs||250)/1000));
@@ -42,8 +43,11 @@ function play(){
   const attackEnd=onset+Math.min(.018,duration*.25);
   const releaseStart=onset+Math.max(.025,duration-Math.min(.08,duration*.35));
   gain.gain.setValueAtTime(.0001,onset);
-  gain.gain.exponentialRampToValueAtTime(level,attackEnd);
-  gain.gain.setValueAtTime(level,releaseStart);
+  const expression=event.expression||'steady';
+  const startLevel=expression==='crescendo'?Math.max(.015,level*.28):level;
+  const endLevel=expression==='decrescendo'?Math.max(.015,level*.25):level;
+  gain.gain.exponentialRampToValueAtTime(startLevel,attackEnd);
+  if(expression==='crescendo'||expression==='decrescendo')gain.gain.exponentialRampToValueAtTime(endLevel,releaseStart);else gain.gain.setValueAtTime(level,releaseStart);
   gain.gain.exponentialRampToValueAtTime(.0001,onset+duration);
   gain.connect(playCtx.destination);
   instrumentPartials(s.instrument).forEach(partial=>{const osc=playCtx.createOscillator(),partialGain=playCtx.createGain();osc.type=partial.type;osc.frequency.setValueAtTime(frequency*partial.ratio,onset);partialGain.gain.value=partial.amount;osc.connect(partialGain);partialGain.connect(gain);osc.start(onset);osc.stop(onset+duration+.03);playing.push(osc)});previousDuration=duration;
