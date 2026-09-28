@@ -36,7 +36,7 @@ async function sync(){
   const stateResponse=await bridge.authenticatedFetch(ENDPOINT+'/v1/music-quants/state',{cache:'no-store'});
   const state=await stateResponse.json().catch(()=>({}));
   if(!stateResponse.ok)throw new Error(state.error||'music_quant_state_failed');
-  mergeCloud(state.quants);window.MusicQuantCloud.state=state;mirror(state);
+  mergeCloud(state.quants);window.MusicQuantCloud.state=state;window.MusicQuantCloud.lastError='';mirror(state);
   window.dispatchEvent(new CustomEvent('musicquant:cloud-synced',{detail:state}));
   return state;
  }catch(error){console.warn('Music Quant cloud sync deferred',error);window.MusicQuantCloud.lastError=String(error?.message||error);window.dispatchEvent(new CustomEvent('musicquant:cloud-error',{detail:{message:window.MusicQuantCloud.lastError}}));window.ControlPhi?.refreshWallet?.();return {ok:false,reason:window.MusicQuantCloud.lastError}}
