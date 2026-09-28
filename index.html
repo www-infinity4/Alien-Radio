@@ -62,8 +62,8 @@ body.web-mode .player h1,body.web-mode .player p,body.web-mode #piano-status{dis
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"992ccaa311754974becbcebf74de1b34"}'></script></head>
 <body>
 <div class="radio-shell">
-<header class="radio-head"><div class="radio-brand"><h1 class="radio-title">INFINITY RADIO</h1><p class="radio-subtitle">A living station for music, markets and collected ideas.</p><span class="ledger-state" id="ledgerState">SYNCING UNIFIED WALLET</span><button class="connect-account" id="connectAccountButton" type="button" hidden>Connect wallet</button></div><div class="wallet-host" data-control-phi-wallet-host></div></header>
-<dialog class="account-dialog" id="connectAccountDialog" aria-labelledby="connectAccountTitle"><h2 id="connectAccountTitle">Connect StarQuest wallet</h2><p>Use your StarQuest username and password on this device. Music Quants saved here will sync to Cloudflare and appear in your wallet after the ledger confirms them.</p><form id="connectAccountForm"><label for="connectUsername">Username</label><input id="connectUsername" name="username" autocomplete="username" required minlength="3"><label for="connectPassword">Password</label><input id="connectPassword" name="password" type="password" autocomplete="current-password" required><p class="account-status" id="connectAccountStatus" role="status"></p><div class="account-actions"><button type="button" data-close-account>Cancel</button><button type="submit">Connect & sync</button></div></form></dialog>
+<header class="radio-head"><div class="radio-brand"><h1 class="radio-title">INFINITY RADIO</h1><p class="radio-subtitle">A living station for music, markets and collected ideas.</p><span class="ledger-state" id="ledgerState">SYNCING UNIFIED WALLET</span><button class="connect-account" id="connectAccountButton" type="button" hidden>Recover wallet</button></div><div class="wallet-host" data-control-phi-wallet-host></div></header>
+<dialog class="account-dialog" id="connectAccountDialog" aria-labelledby="connectAccountTitle"><h2 id="connectAccountTitle">Recover StarQuest wallet</h2><p>This device connects automatically. Use an existing StarQuest username and password here only to recover a wallet from another browser.</p><form id="connectAccountForm"><label for="connectUsername">Username</label><input id="connectUsername" name="username" autocomplete="username" required minlength="3"><label for="connectPassword">Password</label><input id="connectPassword" name="password" type="password" autocomplete="current-password" required><p class="account-status" id="connectAccountStatus" role="status"></p><div class="account-actions"><button type="button" data-close-account>Cancel</button><button type="submit">Connect & sync</button></div></form></dialog>
 <section class="metals" aria-label="Live metal prices">
 <iframe class="metal-widget" title="Gold" src="https://metal-sentinel.com/widget/AU?currency=USD&amp;theme=light"></iframe>
 <iframe class="metal-widget" title="Silver" src="https://metal-sentinel.com/widget/AG?currency=USD&amp;theme=light"></iframe>
@@ -105,6 +105,7 @@ body.web-mode .player h1,body.web-mode .player p,body.web-mode #piano-status{dis
 <script src="https://www-infinity4.github.io/TV-Database/js/auth.js"></script>
 <script>window.STARQUEST_LEDGER_CONFIG=window.STARQUEST_LEDGER_CONFIG||{endpoint:"https://starquest-ledger.marvaseater.workers.dev"};</script>
 <script src="https://www-infinity4.github.io/TV-Database/js/starquest-cloud-ledger.js?v=20260927-unified3"></script>
+<script src="radio-device-wallet.js?v=20260928-auto1"></script>
 <script>document.addEventListener("starquest:ledger-connected",()=>{const el=document.getElementById("ledgerState");if(el){el.textContent="UNIFIED WALLET CONNECTED";el.classList.add("connected")}window.ControlPhi?.refreshWallet?.()});document.addEventListener("starquest:ledger-error",()=>{const el=document.getElementById("ledgerState");if(el)el.textContent="OFFLINE · WILL SYNC"});document.addEventListener("DOMContentLoaded",()=>{if(!window.StarQuestAuth?.currentUser?.()){const el=document.getElementById("ledgerState");if(el)el.textContent="GUEST · CONNECT ACCOUNT FOR CLOUD WALLET"}});</script>
 <script src="https://unified-wallet.marvaseater.workers.dev/unified-wallet.js?v=20260927-cloud2"></script>
 <script src="app.js?v=20260927-archive100"></script>
@@ -116,6 +117,6 @@ body.web-mode .player h1,body.web-mode .player p,body.web-mode #piano-status{dis
 <script src="listener-notes.js?v=20260927-notes1"></script>
 <script src="unified-wallet-bridge.js?v=20260928-transfer2"></script>
 <script src="music-quant-transfer.js?v=20260928-transfer1"></script>
-<script src="radio-account.js?v=20260928-connect2"></script>
+<script src="radio-account.js?v=20260928-recovery3"></script>
 </body>
 </html>
