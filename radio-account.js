@@ -30,7 +30,13 @@
       if (typeof result === 'string') throw new Error(result);
       const connected = await window.StarQuestCloudLedger?.connect?.();
       if (!connected) throw new Error('StarQuest Cloudflare account did not connect. Check the username and password.');
-      const state = await window.MusicQuantCloud?.sync?.();
+      let state = await window.MusicQuantCloud?.sync?.();
+      if (state?.reason === 'sync_in_progress') {
+        state = await Promise.race([
+          new Promise(resolve => window.addEventListener('musicquant:cloud-synced', event => resolve(event.detail), { once: true })),
+          new Promise(resolve => setTimeout(() => resolve({ ok: false, reason: 'sync_timeout' }), 12000))
+        ]);
+      }
       if (!state?.ok) throw new Error('Account connected, but Music Quants are pending: ' + (state?.reason || 'unknown error'));
       status.textContent = 'Cloudflare confirmed ' + Number(state.balance || 0) + ' Music Quants in your wallet.';
       form.elements.password.value = '';
