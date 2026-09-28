@@ -20,7 +20,7 @@ function mergeCloud(cloud){
  write(LOCAL,playableMerged);write(LISTENING,listeningMerged);return [...playableMerged,...listeningMerged];
 }
 async function sync(){
- if(syncing)return;const bridge=window.StarQuestCloudLedger;const indexed=window.MusicQuantStore?await window.MusicQuantStore.list().catch(()=>[]):[],playableMap=new Map([...read(LOCAL,[]),...indexed].filter(q=>q?.id).map(q=>[q.id,q])),listeningMap=new Map(read(LISTENING,[]).filter(q=>q?.id).map(q=>[q.id,q])),localBalance=playableMap.size+listeningMap.size;if(!bridge?.authenticatedFetch){mirror({balance:localBalance});return}syncing=true;
+ if(syncing)return;const bridge=window.StarQuestCloudLedger;const indexed=window.MusicQuantStore?await window.MusicQuantStore.list().catch(()=>[]):[],playableMap=new Map([...read(LOCAL,[]),...indexed].filter(q=>q?.id).map(q=>[q.id,q])),listeningMap=new Map(read(LISTENING,[]).filter(q=>q?.id).map(q=>[q.id,q])),localBalance=playableMap.size+listeningMap.size;window.MusicQuantCloud.localCount=localBalance;window.ControlPhi?.refreshWallet?.();if(!bridge?.authenticatedFetch){return}syncing=true;
  try{
   const local=[...playableMap.values(),...listeningMap.values()].sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).slice(0,1000);
   if(local.length){
@@ -41,7 +41,7 @@ async function sync(){
  }catch(error){console.warn('Music Quant cloud sync deferred',error);window.dispatchEvent(new CustomEvent('musicquant:cloud-error',{detail:{message:String(error?.message||error)}}));window.ControlPhi?.refreshWallet?.()}
  finally{syncing=false}
 }
-window.MusicQuantCloud={sync,endpoint:ENDPOINT,state:null};
+window.MusicQuantCloud={sync,endpoint:ENDPOINT,state:null,localCount:0};
 document.addEventListener('starquest:ledger-connected',()=>void sync());
 addEventListener('musicquant:changed',()=>void sync());
 addEventListener('online',()=>void sync());
