@@ -179,7 +179,7 @@
     const wallet=normalizeWallet(store.profile);
     const assets=auxiliaryBalances();
     const starCoins=Math.round((wallet.tokens+(wallet.pendingShareCredits/10))*10)/10;
-    return {balance:starCoins,starCoins,wholeStarCoins:wallet.tokens,progressToNextCoin:wallet.pendingShareCredits,shareCount:wallet.shareCount,username:wallet.username||'Guest',quants:assets.quants,infinity:assets.infinity,musicQuants:assets.musicQuants};
+    return {balance:starCoins,starCoins,wholeStarCoins:wallet.tokens,progressToNextCoin:wallet.pendingShareCredits,shareCount:wallet.shareCount,username:/^device_[a-f0-9]+$/i.test(wallet.username||'')?'This device':(wallet.username||'Guest'),quants:assets.quants,infinity:assets.infinity,musicQuants:assets.musicQuants};
   }
 
   function importLegacyStarCoinBalance(amount,source='legacy'){
