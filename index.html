@@ -95,11 +95,11 @@ body.web-mode .player h1,body.web-mode .player p,body.web-mode #piano-status{dis
   </section>
 </section>
 </div>
-<script src="control-phi.js?v=20260928-wallet-cards3"></script>
+<script src="control-phi.js?v=20260928-cloud-list4"></script>
 <script src="https://www-infinity4.github.io/TV-Database/js/auth.js"></script>
 <script>window.STARQUEST_LEDGER_CONFIG=window.STARQUEST_LEDGER_CONFIG||{endpoint:"https://starquest-ledger.marvaseater.workers.dev"};</script>
 <script src="https://www-infinity4.github.io/TV-Database/js/starquest-cloud-ledger.js?v=20260927-unified3"></script>
-<script>document.addEventListener("starquest:ledger-connected",()=>{const el=document.getElementById("ledgerState");if(el){el.textContent="UNIFIED WALLET CONNECTED";el.classList.add("connected")}window.ControlPhi?.refreshWallet?.()});document.addEventListener("starquest:ledger-error",()=>{const el=document.getElementById("ledgerState");if(el)el.textContent="OFFLINE · WILL SYNC"});</script>
+<script>document.addEventListener("starquest:ledger-connected",()=>{const el=document.getElementById("ledgerState");if(el){el.textContent="UNIFIED WALLET CONNECTED";el.classList.add("connected")}window.ControlPhi?.refreshWallet?.()});document.addEventListener("starquest:ledger-error",()=>{const el=document.getElementById("ledgerState");if(el)el.textContent="OFFLINE · WILL SYNC"});document.addEventListener("DOMContentLoaded",()=>{if(!window.StarQuestAuth?.currentUser?.()){const el=document.getElementById("ledgerState");if(el)el.textContent="GUEST · CONNECT ACCOUNT FOR CLOUD WALLET"}});</script>
 <script src="https://unified-wallet.marvaseater.workers.dev/unified-wallet.js?v=20260927-cloud2"></script>
 <script src="app.js?v=20260927-archive100"></script>
 <script src="music-quant-store.js?v=20260927-idb1"></script>
