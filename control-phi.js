@@ -168,6 +168,8 @@
     }catch{}
     try{quants=Math.max(quants,Math.max(0,Number(localStorage.getItem('quantaPhiTokens'))||0))}catch{}
     try{const playable=(JSON.parse(localStorage.getItem('musicPhi:quants:v1')||'[]')||[]).length,listening=(JSON.parse(localStorage.getItem('musicPhi:listeningQuants:v1')||'[]')||[]).length;musicQuants=Math.max(musicQuants,playable+listening)}catch{}
+    const cloud=window.MusicQuantCloud?.state;
+    if(cloud?.ok&&Number.isFinite(Number(cloud.balance)))musicQuants=Number(cloud.balance);
     return {quants,infinity,musicQuants};
   }
 
