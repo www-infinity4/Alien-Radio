@@ -169,6 +169,7 @@
     try{quants=Math.max(quants,Math.max(0,Number(localStorage.getItem('quantaPhiTokens'))||0))}catch{}
     try{const playable=(JSON.parse(localStorage.getItem('musicPhi:quants:v1')||'[]')||[]).length,listening=(JSON.parse(localStorage.getItem('musicPhi:listeningQuants:v1')||'[]')||[]).length;musicQuants=Math.max(musicQuants,playable+listening)}catch{}
     const cloud=window.MusicQuantCloud?.state;
+    musicQuants=Math.max(musicQuants,Number(window.MusicQuantCloud?.localCount)||0);
     if(cloud?.ok&&Number.isFinite(Number(cloud.balance)))musicQuants=Number(cloud.balance);
     return {quants,infinity,musicQuants};
   }
@@ -229,7 +230,7 @@
     const name=document.querySelector('[data-control-phi-wallet-name]');
     if(name)name.textContent=snapshot.username;
     const status=document.querySelector('[data-control-phi-wallet-status]');
-    if(status)status.textContent=window.MusicQuantCloud?.state?.ok?'Music Quants verified in your Cloudflare ledger.':window.StarQuestAuth?.currentUser?.()?'Connecting Music Quants to your Cloudflare ledger…':'Guest view · sign in to the same StarQuest account to see your saved wallet.';
+    if(status)status.textContent=window.MusicQuantCloud?.state?.ok?'Music Quants verified in your Cloudflare ledger.':(Number(window.MusicQuantCloud?.localCount)||0)+' Music Quants saved on this device · connect your StarQuest account to sync them to the cloud.';
     const quantList=document.querySelector('[data-control-phi-music-quant-list]');
     if(quantList){
       const playable=read('musicPhi:quants:v1',[]),listening=read('musicPhi:listeningQuants:v1',[]);
