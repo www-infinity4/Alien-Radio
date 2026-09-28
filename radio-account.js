@@ -23,8 +23,15 @@
       if (!auth) throw new Error('StarQuest sign-in is unavailable.');
       let result = await auth.signIn(username, password);
       if (result === 'No account found with that username.') {
-        // Each site has its own browser storage. A local profile on this origin
-        // is needed before the Cloudflare bootstrap can verify the account.
+        // Verify cloud ownership before creating a profile on this origin.
+        const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']);
+        const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: new TextEncoder().encode('starquest-v1-' + username.toLowerCase()), iterations: 100000 }, key, 256);
+        const credentialProof = [...new Uint8Array(bits)].map(byte => byte.toString(16).padStart(2, '0')).join('');
+        const response = await fetch('https://starquest-ledger.marvaseater.workers.dev/v1/verify-existing', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, credentialProof }), cache: 'no-store'
+        });
+        if (!response.ok) throw new Error('The existing Cloudflare account could not be verified. Check your StarQuest username and password.');
         result = await auth.register(username, password);
       }
       if (typeof result === 'string') throw new Error(result);
