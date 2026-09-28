@@ -1,0 +1,39 @@
+{
+  "schema": "phi-product/v1",
+  "name": "Infinity Radio",
+  "repo": "www-infinity4/Alien-Radio",
+  "productionUrl": "https://www-infinity4.github.io/Alien-Radio/",
+  "automation": {
+    "monitor": "https://monitor-phi.marvaseater.workers.dev",
+    "mode": "observe-diagnose-patch-verify",
+    "changePolicy": "scoped",
+    "completionGate": "verification-required"
+  },
+  "checks": [
+    {
+      "id": "page-load",
+      "type": "http",
+      "expect": "2xx"
+    },
+    {
+      "id": "audio",
+      "type": "interaction",
+      "expect": "plays-and-advances"
+    },
+    {
+      "id": "music-quant",
+      "type": "contract",
+      "expect": "one-per-song-persists"
+    },
+    {
+      "id": "cards",
+      "type": "interaction",
+      "expect": "feed-renders"
+    },
+    {
+      "id": "mobile",
+      "type": "visual",
+      "expect": "no-horizontal-overflow"
+    }
+  ]
+}
