@@ -8,8 +8,8 @@ let wallet=null,starting=null,pending=Promise.resolve();
 function legacyInfinity(){const state=read(UNIFIED,{}),wallets=state?.wallets&&typeof state.wallets==='object'?Object.values(state.wallets):[];return Math.max(Number(state?.balances?.INFINITY)||0,...wallets.map(item=>Number(item?.balances?.INFINITY)||0),0)}
 async function localTokens(){
  const indexed=window.MusicQuantStore?await window.MusicQuantStore.list().catch(()=>[]):[];
- const playable=new Map([...read(PLAYABLE,[]),...indexed].filter(item=>item?.id).map(item=>[item.id,item]));
- const listening=new Map(read(LISTENING,[]).filter(item=>item?.id).map(item=>[item.id,item]));
+ const playable=new Map([...read(PLAYABLE,[]),...indexed].filter(item=>item?.id&&!item.transferredAt).map(item=>[item.id,item]));
+ const listening=new Map(read(LISTENING,[]).filter(item=>item?.id&&!item.transferredAt).map(item=>[item.id,item]));
  return [...playable.values()].map(data=>({id:data.id,type:'MUSIC_QUANT',source:'Infinity Radio',createdAt:Date.parse(data.createdAt)||Date.now(),provenanceHash:data.hash,data})).concat([...listening.values()].map(data=>({id:data.id,type:'LISTENING_QUANT',source:'Infinity Radio',createdAt:Date.parse(data.createdAt)||Date.now(),provenanceHash:data.hash,data})));
 }
 async function hydrateTokens(state){const cloud=(state?.tokens||[]).filter(token=>token.token_type==='MUSIC_QUANT'&&token?.data?.id).map(token=>token.data);if(cloud.length)await window.MusicQuantStore?.putMany(cloud);const listening=new Map(read(LISTENING,[]).map(q=>[q.id,q]));(state?.tokens||[]).forEach(token=>{const data=token?.data;if(data?.id&&(token.token_type==='LISTENING_QUANT'||data.kind==='listening'))listening.set(data.id,data)});write(LISTENING,[...listening.values()].sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).slice(0,500));window.dispatchEvent(new CustomEvent('musicquant:cloud-synced',{detail:state}))}
