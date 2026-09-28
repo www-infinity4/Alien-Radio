@@ -39,7 +39,21 @@ body.web-mode .player{position:sticky;top:6px;z-index:50;margin-top:8px;padding:
 body.web-mode .player h1,body.web-mode .player p,body.web-mode #piano-status{display:none}body.web-mode #play-btn{grid-column:2;grid-row:1;width:48px;height:48px;margin:0;font-size:20px}body.web-mode #np-channel{grid-column:1;grid-row:1;font-size:12px;letter-spacing:1.5px}
 @media(max-width:520px){.radio-head{display:grid;grid-template-columns:minmax(0,1fr);align-items:start;gap:10px;padding-right:52px}.radio-brand{width:100%;min-width:0}.radio-title{font-size:clamp(20px,7vw,28px);line-height:1.05;white-space:nowrap}.radio-subtitle{max-width:none}.wallet-host{width:100%;min-width:0}.wallet-host #controlPhiWalletButton{width:100%;min-height:42px!important;justify-content:center;padding:7px 10px!important}.cp-wallet-button-label{display:inline!important}.cp-wallet-button-assets{display:grid!important}.omni-browser iframe{height:76vh;min-height:520px}}
 </style>
-<link rel="stylesheet" href="oracle-theme.css?v=20260927-oracle1">
+<link rel="stylesheet" href="oracle-theme.css?v=20260927-oracle1"><style id="radio-wallet-cards">
+.wallet-host #controlPhiWalletButton{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;width:100%;padding:10px;border:1px solid #cfb9df;border-radius:18px;background:#fff;color:#321647;box-shadow:0 8px 25px #351c4d18}
+.wallet-host #controlPhiWalletButton .cp-wallet-button-label{flex-basis:100%;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#583273}
+.wallet-host #controlPhiWalletButton .cp-wallet-pill{display:grid;grid-template-columns:auto auto;grid-template-rows:auto auto;column-gap:6px;align-items:center;min-width:112px;padding:7px 10px;border:1px solid #e8d8f0;border-radius:13px;background:#f8f1fc}
+.wallet-host #controlPhiWalletButton .cp-wallet-pill>span{grid-row:1/3;font-size:18px;color:#8d56ab}
+.wallet-host #controlPhiWalletButton .cp-wallet-pill strong{font-size:19px;line-height:1;color:#321647}
+.wallet-host #controlPhiWalletButton .cp-wallet-pill small{font-size:10px;color:#644779;opacity:1}
+#controlPhiWalletPanel{background:#fff!important;color:#321647!important;border:1px solid #cfb9df!important;box-shadow:0 18px 45px #351c4d33!important}
+#controlPhiWalletPanel .cp-wallet-asset{background:#f8f1fc!important;border-color:#e8d8f0!important}
+#controlPhiWalletPanel .cp-wallet-asset strong{color:#321647}
+#controlPhiWalletPanel .cp-wallet-asset span,#controlPhiWalletPanel .cp-wallet-asset small,#controlPhiWalletPanel p{color:#644779!important}
+#controlPhiWalletPanel .cp-music-quant-wallet>strong{color:#583273!important}
+#controlPhiWalletPanel .cp-music-quant-row{background:#f8f1fc;color:#321647;border-color:#e8d8f0}
+#controlPhiWalletPanel .cp-music-quant-row small{color:#644779}
+</style>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"992ccaa311754974becbcebf74de1b34"}'></script></head>
 <body>
 <div class="radio-shell">
@@ -81,7 +95,7 @@ body.web-mode .player h1,body.web-mode .player p,body.web-mode #piano-status{dis
   </section>
 </section>
 </div>
-<script src="control-phi.js?v=20260928-music-cloud2"></script>
+<script src="control-phi.js?v=20260928-wallet-cards3"></script>
 <script src="https://www-infinity4.github.io/TV-Database/js/auth.js"></script>
 <script>window.STARQUEST_LEDGER_CONFIG=window.STARQUEST_LEDGER_CONFIG||{endpoint:"https://starquest-ledger.marvaseater.workers.dev"};</script>
 <script src="https://www-infinity4.github.io/TV-Database/js/starquest-cloud-ledger.js?v=20260927-unified3"></script>
@@ -92,7 +106,7 @@ body.web-mode .player h1,body.web-mode .player p,body.web-mode #piano-status{dis
 <script src="music-quant.js?v=20260928-continuous1"></script>
 <script src="music-quant-composer.js?v=20260928-continuous1"></script>
 <script src="listening-quant.js?v=20260927-listening1"></script>
-<script src="music-quant-cloud.js?v=20260928-music-cloud2"></script>
+<script src="music-quant-cloud.js?v=20260928-receipts3"></script>
 <script src="listener-notes.js?v=20260927-notes1"></script>
 <script src="unified-wallet-bridge.js?v=20260928-music-wallet1"></script>
 </body>
