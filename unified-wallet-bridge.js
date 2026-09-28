@@ -27,9 +27,24 @@ async function importExisting(){
   await wallet.importLegacy({importKey:'alien-radio-v2-'+offset+'-'+batch.length+'-'+signature.slice(0,16),balances:{INFINITY:legacyInfinity()},tokens:batch});
  }
 }
-async function mintChanged(event){const id=String(event?.detail?.quantId||'');if(!id)return;const data=[...(window.MusicQuantLab?.getQuants?.()||[]),...read(LISTENING,[])].find(item=>item?.id===id);if(!data)return;const type=data.kind==='listening'?'LISTENING_QUANT':'MUSIC_QUANT';await wallet.mintToken(type,data,'alien-radio:'+id)}
+async function mintChanged(event){
+ const ids=[event?.detail?.quantId,...(Array.isArray(event?.detail?.quantIds)?event.detail.quantIds:[])].filter(Boolean);
+ if(!ids.length)return;
+ const saved=await localTokens(),byId=new Map(saved.map(token=>[token.id,token]));
+ for(const id of new Set(ids)){
+  const token=byId.get(String(id));
+  if(!token)continue;
+  await wallet.mintToken(token.type,token.data,'alien-radio:'+token.id);
+ }
+ await wallet.refresh();
+}
 async function start(){if(!window.InfinityUnifiedWallet)return;if(starting)return starting;if(!wallet){wallet=new window.InfinityUnifiedWallet({appName:'Infinity Radio'});window.InfinityRadioUnifiedWallet=wallet;wallet.subscribe(mirror)}starting=(async()=>{try{await wallet.connect();await importExisting()}catch(error){console.warn('Unified Wallet waiting for the StarQuest account connection',error);window.dispatchEvent(new CustomEvent('infinity:wallet-error',{detail:{message:String(error?.message||error)}}))}finally{starting=null}})();return starting}
-addEventListener('musicquant:changed',event=>{pending=pending.then(()=>wallet?mintChanged(event):start()).catch(error=>console.warn('Unified Music Quant sync deferred',error))});
+addEventListener('musicquant:changed',event=>{
+ pending=pending.then(async()=>{
+  await start();
+  if(wallet)await mintChanged(event);
+ }).catch(error=>console.warn('Unified Music Quant sync deferred',error));
+});
 document.addEventListener('starquest:ledger-connected',()=>void start());addEventListener('online',()=>void (wallet?wallet.refresh().then(mirror).catch(()=>{}):start()));
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else void start();
 })();
