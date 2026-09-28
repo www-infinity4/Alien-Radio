@@ -7,8 +7,8 @@
   if (!button || !dialog || !form) return;
   const update = () => {
     const user = window.StarQuestAuth?.currentUser?.();
-    button.textContent = user ? 'Wallet: ' + user.username : 'Connect wallet';
-    button.hidden = false;
+    button.textContent = 'Recover wallet';
+    button.hidden = !!user;
   };
   button.addEventListener('click', () => dialog.showModal());
   dialog.querySelector('[data-close-account]')?.addEventListener('click', () => dialog.close());
