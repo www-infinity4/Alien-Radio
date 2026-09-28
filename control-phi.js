@@ -233,7 +233,9 @@
     const quantList=document.querySelector('[data-control-phi-music-quant-list]');
     if(quantList){
       const playable=read('musicPhi:quants:v1',[]),listening=read('musicPhi:listeningQuants:v1',[]);
-      const all=[...playable.map(item=>({...item,walletKind:'Playable'})),...listening.map(item=>({...item,walletKind:'Listening'}))].sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+      const cloud=window.MusicQuantCloud?.state;
+      const saved=cloud?.ok&&Array.isArray(cloud.quants)?cloud.quants:[...playable,...listening];
+      const all=saved.map(item=>({...item,walletKind:item.kind==='listening'?'Listening':'Playable'})).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
       quantList.innerHTML=all.map((item,index)=>`<a class="cp-music-quant-row" href="#${item.walletKind==='Playable'?clean(item.id,80):'listeningQuantList'}"><strong>${item.walletKind} Music Quant ${all.length-index}</strong><small>${clean(item.song||item.context?.playback?.song||item.hash?.slice(0,16)||item.id,100)}</small></a>`).join('')||'<small>No Music Quants saved yet.</small>';
     }
     return snapshot;
