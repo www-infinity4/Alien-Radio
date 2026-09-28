@@ -32,12 +32,13 @@ async function sync(){
   const stateResponse=await bridge.authenticatedFetch(ENDPOINT+'/v1/music-quants/state',{cache:'no-store'});
   const state=await stateResponse.json().catch(()=>({}));
   if(!stateResponse.ok)throw new Error(state.error||'music_quant_state_failed');
-  mergeCloud(state.quants);mirror(state);
+  mergeCloud(state.quants);window.MusicQuantCloud.state=state;mirror(state);
   window.dispatchEvent(new CustomEvent('musicquant:cloud-synced',{detail:state}));
  }catch(error){console.warn('Music Quant cloud sync deferred',error);window.dispatchEvent(new CustomEvent('musicquant:cloud-error',{detail:{message:String(error?.message||error)}}))}
  finally{syncing=false}
 }
-window.MusicQuantCloud={sync,endpoint:ENDPOINT};
+window.MusicQuantCloud={sync,endpoint:ENDPOINT,state:null};
+document.addEventListener('starquest:ledger-connected',()=>void sync());
 addEventListener('musicquant:changed',()=>void sync());
 addEventListener('online',()=>void sync());
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{sync();setInterval(sync,30000)},{once:true});else{sync();setInterval(sync,30000)}
