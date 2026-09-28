@@ -27,6 +27,10 @@ async function sync(){
    for(let offset=0;offset<local.length;offset+=100){
     const response=await bridge.authenticatedFetch(ENDPOINT+'/v1/music-quants/sync',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({quants:local.slice(offset,offset+100)})});
     if(!response.ok)throw new Error('music_quant_sync_failed');
+    const receipt=await response.json().catch(()=>({}));
+    const submitted=local.slice(offset,offset+100).map(q=>q.id);
+    const accepted=new Set(receipt.accepted||[]);
+    if(submitted.some(id=>!accepted.has(id)))throw new Error('music_quant_rejected_by_ledger');
    }
   }
   const stateResponse=await bridge.authenticatedFetch(ENDPOINT+'/v1/music-quants/state',{cache:'no-store'});
@@ -34,7 +38,7 @@ async function sync(){
   if(!stateResponse.ok)throw new Error(state.error||'music_quant_state_failed');
   mergeCloud(state.quants);window.MusicQuantCloud.state=state;mirror(state);
   window.dispatchEvent(new CustomEvent('musicquant:cloud-synced',{detail:state}));
- }catch(error){console.warn('Music Quant cloud sync deferred',error);window.dispatchEvent(new CustomEvent('musicquant:cloud-error',{detail:{message:String(error?.message||error)}}))}
+ }catch(error){console.warn('Music Quant cloud sync deferred',error);window.dispatchEvent(new CustomEvent('musicquant:cloud-error',{detail:{message:String(error?.message||error)}}));window.ControlPhi?.refreshWallet?.()}
  finally{syncing=false}
 }
 window.MusicQuantCloud={sync,endpoint:ENDPOINT,state:null};
