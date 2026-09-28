@@ -230,7 +230,7 @@
     const name=document.querySelector('[data-control-phi-wallet-name]');
     if(name)name.textContent=snapshot.username;
     const status=document.querySelector('[data-control-phi-wallet-status]');
-    if(status)status.textContent=window.MusicQuantCloud?.state?.ok?'Music Quants verified in your Cloudflare ledger.':(Number(window.MusicQuantCloud?.localCount)||0)+' Music Quants saved on this device · connect your StarQuest account to sync them to the cloud.';
+    if(status)status.textContent=window.MusicQuantCloud?.state?.ok?'Music Quants verified in your Cloudflare ledger.':(Number(window.MusicQuantCloud?.localCount)||0)+' Music Quant'+((Number(window.MusicQuantCloud?.localCount)||0)===1?'':'s')+' saved on this device · connect your StarQuest account to sync them to the cloud.';
     const quantList=document.querySelector('[data-control-phi-music-quant-list]');
     if(quantList){
       const playable=read('musicPhi:quants:v1',[]),listening=read('musicPhi:listeningQuants:v1',[]);
