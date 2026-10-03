@@ -20,7 +20,7 @@ function mergeCloud(cloud){
  write(LOCAL,playableMerged);write(LISTENING,listeningMerged);return [...playableMerged,...listeningMerged];
 }
 async function sync(){
- if(syncing)return {ok:false,reason:'sync_in_progress'};const bridge=window.StarQuestCloudLedger;const indexed=window.MusicQuantStore?await window.MusicQuantStore.list().catch(()=>[]):[],playableMap=new Map([...read(LOCAL,[]),...indexed].filter(q=>q?.id&&!q.transferredAt).map(q=>[q.id,q])),listeningMap=new Map(read(LISTENING,[]).filter(q=>q?.id&&!q.transferredAt).map(q=>[q.id,q])),localBalance=playableMap.size+listeningMap.size;window.MusicQuantCloud.localCount=localBalance;window.ControlPhi?.refreshWallet?.();if(!bridge?.authenticatedFetch){return {ok:false,reason:'account_not_connected',localBalance}}syncing=true;
+ if(syncing)return {ok:false,reason:'sync_in_progress'};const Wallet=window.InfinityCloudWallet;const bridge=window.StarQuestCloudLedger||(Wallet?{authenticatedFetch:(url,opt={})=>{const w=new Wallet({appName:document.title});return fetch(url,{...opt,headers:{'content-type':'application/json',authorization:'Bearer '+w.token(),...(opt.headers||{})},body:typeof opt.body==='string'?opt.body:opt.body?JSON.stringify(opt.body):undefined})}}:null);const indexed=window.MusicQuantStore?await window.MusicQuantStore.list().catch(()=>[]):[],playableMap=new Map([...read(LOCAL,[]),...indexed].filter(q=>q?.id&&!q.transferredAt).map(q=>[q.id,q])),listeningMap=new Map(read(LISTENING,[]).filter(q=>q?.id&&!q.transferredAt&&!playableMap.has(q.id)).map(q=>[q.id,q])),localBalance=playableMap.size+listeningMap.size;window.MusicQuantCloud.localCount=localBalance;window.MusicQuantCloud.pianoCount=playableMap.size;window.MusicQuantCloud.listeningCount=listeningMap.size;window.ControlPhi?.refreshWallet?.();if(!bridge?.authenticatedFetch){return {ok:false,reason:'account_not_connected',localBalance}}syncing=true;
  try{
   const local=[...playableMap.values(),...listeningMap.values()].sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).slice(0,1000);
   if(local.length){
@@ -36,7 +36,7 @@ async function sync(){
   const stateResponse=await bridge.authenticatedFetch(ENDPOINT+'/v1/music-quants/state',{cache:'no-store'});
   const state=await stateResponse.json().catch(()=>({}));
   if(!stateResponse.ok)throw new Error(state.error||'music_quant_state_failed');
-  mergeCloud(state.quants);window.MusicQuantCloud.state=state;window.MusicQuantCloud.lastError='';mirror(state);
+  mergeCloud(state.quants);const owned=new Map((state.quants||[]).filter(q=>q?.id&&!q.transferredAt).map(q=>[q.id,q]));window.MusicQuantCloud.pianoCount=[...owned.values()].filter(q=>q.kind!=='listening').length;window.MusicQuantCloud.listeningCount=[...owned.values()].filter(q=>q.kind==='listening').length;window.MusicQuantCloud.state=state;window.MusicQuantCloud.lastError='';mirror(state);
   window.dispatchEvent(new CustomEvent('musicquant:cloud-synced',{detail:state}));
   return state;
  }catch(error){console.warn('Music Quant cloud sync deferred',error);window.MusicQuantCloud.lastError=String(error?.message||error);window.dispatchEvent(new CustomEvent('musicquant:cloud-error',{detail:{message:window.MusicQuantCloud.lastError}}));window.ControlPhi?.refreshWallet?.();return {ok:false,reason:window.MusicQuantCloud.lastError}}

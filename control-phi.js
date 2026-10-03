@@ -153,6 +153,7 @@
     return wallet;
   }
 
+  window.addEventListener('phi:asset-balances',()=>refreshWalletUI());
   function auxiliaryBalances(){
     let quants=0,infinity=0,musicQuants=0;
     try{
@@ -171,7 +172,7 @@
     const cloud=window.MusicQuantCloud?.state;
     musicQuants=Math.max(musicQuants,Number(window.MusicQuantCloud?.localCount)||0);
     if(cloud?.ok&&Number.isFinite(Number(cloud.balance)))musicQuants=Number(cloud.balance);
-    return {quants,infinity,musicQuants};
+    const owned=window.PhiAssetBalances?.snapshot?.();if(owned?.QUANT?.cloud||owned?.QUANT?.pending)quants=owned.QUANT.balance;if(owned?.INFINITY?.cloud||owned?.INFINITY?.pending)infinity=owned.INFINITY.balance;return {quants,infinity,musicQuants};
   }
 
   function walletSnapshot(){
