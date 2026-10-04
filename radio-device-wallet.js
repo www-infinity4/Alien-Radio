@@ -17,8 +17,20 @@ async function recoverSavedDevice(){
    if(!response.ok)continue;
    const result=await response.json();
    const username=String(result?.state?.username||'').toLowerCase();
-   const user=users[username];
-   if(!user||username!==key.slice(TOKEN_PREFIX.length))continue;
+   if(!username||username!==key.slice(TOKEN_PREFIX.length))continue;
+   let user=users[username];
+   if(!user){
+    const state=result?.state||{};
+    user={
+     key:username,username:String(state.username||username),passwordHash:'',
+     joinedAt:Date.now(),lastLoginAt:Date.now(),tokens:Math.max(0,Number(state.starCoins)||0),
+     pendingShareCredits:Math.max(0,Number(state.pendingShareCredits)||0),shareCount:Math.max(0,Number(state.shareCount)||0),
+     shareEvents:[],ledger:Array.isArray(state.ledger)?state.ledger:[],watchHistory:Array.isArray(state.watchHistory)?state.watchHistory:[],
+     watchPositions:{},unlockedContent:{}
+    };
+    users[username]=user;
+    localStorage.setItem('starquest_users',JSON.stringify(users));
+   }
    localStorage.setItem('starquest_session',JSON.stringify({key:username,username:user.username||username,signedInAt:Date.now()}));
    document.dispatchEvent(new CustomEvent('starquest:auth-changed',{detail:{user:window.StarQuestAuth.currentUser(),action:'device-recovery'}}));
    return true;
