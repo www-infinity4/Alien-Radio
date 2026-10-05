@@ -171,7 +171,7 @@
     try{const playable=(JSON.parse(localStorage.getItem('musicPhi:quants:v1')||'[]')||[]).length,listening=(JSON.parse(localStorage.getItem('musicPhi:listeningQuants:v1')||'[]')||[]).length;musicQuants=Math.max(musicQuants,playable+listening)}catch{}
     const cloud=window.MusicQuantCloud?.state;
     musicQuants=Math.max(musicQuants,Number(window.MusicQuantCloud?.localCount)||0);
-    if(cloud?.ok&&Number.isFinite(Number(cloud.balance)))musicQuants=Number(cloud.balance);
+    if(cloud?.ok&&Number.isFinite(Number(cloud.balance)))musicQuants=Math.max(musicQuants,Number(cloud.balance));
     const owned=window.PhiAssetBalances?.snapshot?.();if(owned?.QUANT?.cloud||owned?.QUANT?.pending)quants=owned.QUANT.balance;if(owned?.INFINITY?.cloud||owned?.INFINITY?.pending)infinity=owned.INFINITY.balance;return {quants,infinity,musicQuants};
   }
 
