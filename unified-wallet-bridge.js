@@ -6,6 +6,7 @@ const write=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));re
 const digest=async value=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value)))].map(x=>x.toString(16).padStart(2,'0')).join('');
 let wallet=null,starting=null,pending=Promise.resolve();
 function legacyInfinity(){const state=read(UNIFIED,{}),wallets=state?.wallets&&typeof state.wallets==='object'?Object.values(state.wallets):[];return Math.max(Number(state?.balances?.INFINITY)||0,...wallets.map(item=>Number(item?.balances?.INFINITY)||0),0)}
+function legacyMusicQuantBalance(){const state=read(UNIFIED,{}),wallets=state?.wallets&&typeof state.wallets==='object'?Object.values(state.wallets):[];const localLists=(read(PLAYABLE,[]).filter(item=>item?.id&&!item.transferredAt).length+read(LISTENING,[]).filter(item=>item?.id&&!item.transferredAt).length);return Math.max(Number(state?.musicQuants)||0,Number(state?.balances?.MUSIC_QUANT)||0,...wallets.map(item=>Number(item?.balances?.MUSIC_QUANT)||0),localLists,0)}
 async function localTokens(){
  const indexed=window.MusicQuantStore?await window.MusicQuantStore.list().catch(()=>[]):[];
  const playable=new Map([...read(PLAYABLE,[]),...indexed].filter(item=>item?.id&&!item.transferredAt).map(item=>[item.id,item]));
@@ -21,10 +22,10 @@ function mirror(state){
 }
 async function importExisting(){
  const tokens=await localTokens(),sorted=tokens.slice().sort((a,b)=>String(a.id).localeCompare(String(b.id)));
- if(!sorted.length){await wallet.importLegacy({importKey:'alien-radio-empty-v2',balances:{INFINITY:legacyInfinity()},tokens:[]});return}
+ if(!sorted.length){await wallet.importLegacy({importKey:'alien-radio-empty-v3',balances:{INFINITY:legacyInfinity(),MUSIC_QUANT:legacyMusicQuantBalance()},tokens:[]});return}
  for(let offset=0;offset<sorted.length;offset+=400){
   const batch=sorted.slice(offset,offset+400),signature=await digest(batch.map(x=>x.id).join('|'));
-  await wallet.importLegacy({importKey:'alien-radio-v2-'+offset+'-'+batch.length+'-'+signature.slice(0,16),balances:{INFINITY:legacyInfinity()},tokens:batch});
+  await wallet.importLegacy({importKey:'alien-radio-v3-'+offset+'-'+batch.length+'-'+signature.slice(0,16),balances:{INFINITY:legacyInfinity(),MUSIC_QUANT:legacyMusicQuantBalance()},tokens:batch});
  }
 }
 async function mintChanged(event){
