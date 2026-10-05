@@ -39,9 +39,18 @@ async function recoverSavedDevice(){
  return false;
 }
 async function start(){
- if(window.StarQuestAuth?.currentUser?.())return;
  try{
   note('CONNECTING DEVICE WALLET');
+  if(window.StarQuestAuth?.currentUser?.()){
+   const connected=await window.StarQuestCloudLedger?.connect?.();
+   if(!connected)throw new Error('Cloudflare device wallet connection pending');
+   note('UNIFIED WALLET CONNECTED');
+   STATUS?.classList.add('connected');
+   RECOVERY?.setAttribute('hidden','');
+   await window.MusicQuantCloud?.sync?.();
+   window.ControlPhi?.refreshWallet?.();
+   return;
+  }
   if(await recoverSavedDevice())return;
   const users=JSON.parse(localStorage.getItem('starquest_users')||'{}');
   if(Object.keys(users).length){note('WALLET RECOVERY AVAILABLE');return}
