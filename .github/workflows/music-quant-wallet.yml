@@ -1,0 +1,21 @@
+name: Music Quant ledger and wallet bridge contracts
+on:
+  push:
+    branches: [main]
+    paths: ['music-quant-cloud.js','unified-wallet-bridge.js','index.html','tests/music-quant-wallet-reconcile.test.cjs','.github/workflows/music-quant-wallet.yml']
+  pull_request:
+    paths: ['music-quant-cloud.js','unified-wallet-bridge.js','index.html','tests/music-quant-wallet-reconcile.test.cjs','.github/workflows/music-quant-wallet.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check music-quant-cloud.js
+      - run: node --check unified-wallet-bridge.js
+      - run: node --test tests/music-quant-wallet-reconcile.test.cjs
