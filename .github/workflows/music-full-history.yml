@@ -2,9 +2,9 @@ name: Music Quant complete-history wallet recovery
 on:
   push:
     branches: [main]
-    paths: ['music-quant-cloud.js','test/music-full-history.test.cjs','.github/workflows/music-full-history.yml']
+    paths: ['music-quant-cloud.js','test/music-full-history.test.cjs','test/music-listening-retention.test.cjs','listening-quant.js','unified-wallet-bridge.js','.github/workflows/music-full-history.yml']
   pull_request:
-    paths: ['music-quant-cloud.js','test/music-full-history.test.cjs','.github/workflows/music-full-history.yml']
+    paths: ['music-quant-cloud.js','test/music-full-history.test.cjs','test/music-listening-retention.test.cjs','listening-quant.js','unified-wallet-bridge.js','.github/workflows/music-full-history.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -17,4 +17,6 @@ jobs:
         with:
           node-version: '22'
       - run: node --check music-quant-cloud.js
-      - run: node --test test/music-full-history.test.cjs
+      - run: node --check listening-quant.js
+      - run: node --check unified-wallet-bridge.js
+      - run: node --test test/music-full-history.test.cjs test/music-listening-retention.test.cjs
