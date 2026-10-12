@@ -75,5 +75,5 @@ test('Unified Wallet reconciliation verifies identical Cloudflare user identity 
  assert.ok(imports.length>0,'same verified owner should trigger durable import: '+statusNode.textContent+' '+errors.join(' || '));
  assert.ok(imports.some(batch=>batch.tokens.some(t=>t.id==='mq_real_listening')));
  assert.match(statusNode.textContent,/MUSIC QUANTS VERIFIED/);
- assert.equal(inst.listener instanceof Function,true);
+ assert.equal(typeof inst.listener,'function');
 });
