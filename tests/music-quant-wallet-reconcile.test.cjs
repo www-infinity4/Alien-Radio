@@ -2,7 +2,7 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const read=file=>fs.readFileSync(file,'utf8');
 test('Music Quants never overwrite selected wallet with a different authenticated ledger owner',()=>{
  const cloud=read('music-quant-cloud.js');
- assert.match(cloud,/currentWalletId:unified.currentWalletId\|\|walletId/);
+ assert.match(cloud,/currentWalletId:selected\|\|walletId/);
  assert.match(cloud,/const confirmed=Math.max\(0,Number\(state.balance\)\|\|0\)/);
  assert.match(cloud,/displayMusic=selected===walletId\?confirmed:/,'music receipts must not overwrite the unified balance');
  assert.doesNotMatch(cloud,/preserved=Math.max\(Number\(unified.musicQuants\)/);
