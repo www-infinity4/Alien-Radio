@@ -71,7 +71,7 @@ test('Unified Wallet reconciliation verifies identical Cloudflare user identity 
  emit();await idle();
  assert.equal(imports.length,0,'another wallet may never receive the music tokens');
  assert.match(statusNode.textContent,/different accounts/);
- ledgerOwner='authenticated-wallet-account';emit();await idle();
+ ledgerOwner='authenticated-wallet-account';await context.window.InfinityRadioMusicWallet.reconnect();emit();await idle();
  assert.ok(imports.length>0,'same verified owner should trigger durable import: '+statusNode.textContent+' '+errors.join(' || '));
  assert.ok(imports.some(batch=>batch.tokens.some(t=>t.id==='mq_real_listening')));
  assert.match(statusNode.textContent,/MUSIC QUANTS VERIFIED/);
