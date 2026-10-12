@@ -4,7 +4,25 @@ const UNIFIED='infinity_unified_wallet_v1',PLAYABLE='musicPhi:quants:v1',LISTENI
 const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}};
 const write=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));return true}catch{return false}};
 const digest=async value=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value)))].map(x=>x.toString(16).padStart(2,'0')).join('');
-let wallet=null,starting=null,pending=Promise.resolve(),connected=false,lastReconciled='';
+const LEDGER='https://quanta-phi-ledger.marvaseater.workers.dev';
+let wallet=null,starting=null,pending=Promise.resolve(),connected=false,lastReconciled='',lastError='';
+function status(message,problem=false){
+ const label=document.getElementById('ledgerState');
+ if(label){label.textContent=message;label.dataset.musicWalletProblem=problem?'true':'false';if(problem)label.classList.remove('connected')}
+ if(problem)window.dispatchEvent(new CustomEvent('musicquant:wallet-link-error',{detail:{message}}));
+}
+async function verifyOwner(){
+ const bridge=window.StarQuestCloudLedger;
+ if(!bridge?.authenticatedFetch)throw Error('Music Quant Cloudflare account is not connected');
+ if(!wallet)throw Error('Unified Wallet is not connected');
+ const unified=await wallet.refresh();
+ if(!unified?.ok||!unified.user?.id)throw Error('Unified Wallet account identity is missing');
+ const response=await bridge.authenticatedFetch(LEDGER+'/v1/quants/state',{cache:'no-store'});
+ const ledger=await response.json().catch(()=>({}));
+ if(!response.ok||!ledger.user_id)throw Error(ledger.error||'Music Quant owner verification failed');
+ if(String(ledger.user_id)!==String(unified.user.id))throw Error('Music Quant ledger and Unified Wallet belong to different accounts; no credits transferred');
+ return unified;
+}
 function legacyInfinity(){const state=read(UNIFIED,{}),wallets=state?.wallets&&typeof state.wallets==='object'?Object.values(state.wallets):[];return Math.max(Number(state?.balances?.INFINITY)||0,...wallets.map(item=>Number(item?.balances?.INFINITY)||0),0)}
 function legacyMusicQuantBalance(){const state=read(UNIFIED,{}),wallets=state?.wallets&&typeof state.wallets==='object'?Object.values(state.wallets):[];const localLists=(read(PLAYABLE,[]).filter(item=>item?.id&&!item.transferredAt).length+read(LISTENING,[]).filter(item=>item?.id&&!item.transferredAt).length);return Math.max(Number(state?.musicQuants)||0,Number(state?.balances?.MUSIC_QUANT)||0,...wallets.map(item=>Number(item?.balances?.MUSIC_QUANT)||0),localLists,0)}
 async function localTokens(){
@@ -21,6 +39,7 @@ function mirror(state){
  window.dispatchEvent(new CustomEvent('controlphi:wallet-change',{detail:{...state.balances,source:'unified-wallet-cloudflare'}}));window.ControlPhi?.refreshWallet?.();
 }
 async function importExisting(){
+ await verifyOwner(); // no cross-account imports or synthetic new identities.
  const tokens=await localTokens(),sorted=tokens.slice().sort((a,b)=>String(a.id).localeCompare(String(b.id)));
  if(!sorted.length){await wallet.importLegacy({importKey:'alien-radio-empty-v3',balances:{INFINITY:legacyInfinity(),MUSIC_QUANT:legacyMusicQuantBalance()},tokens:[]});return}
  for(let offset=0;offset<sorted.length;offset+=400){
@@ -28,39 +47,82 @@ async function importExisting(){
   await wallet.importLegacy({importKey:'alien-radio-v3-'+offset+'-'+batch.length+'-'+signature.slice(0,16),balances:{INFINITY:legacyInfinity(),MUSIC_QUANT:legacyMusicQuantBalance()},tokens:batch});
  }
 }
-async function mintChanged(event){
- const ids=[event?.detail?.quantId,...(Array.isArray(event?.detail?.quantIds)?event.detail.quantIds:[])].filter(Boolean);
- if(!ids.length)return;
- const saved=await localTokens(),byId=new Map(saved.map(token=>[token.id,token]));
- for(const id of new Set(ids)){
-  const token=byId.get(String(id));
-  if(!token)continue;
-  await wallet.mintToken(token.type,token.data,'alien-radio:'+token.id);
- }
- await wallet.refresh();
+/* New listening/piano records are committed to the dedicated authenticated
+ * Music Quant ledger first. The only subsequent Unified Wallet import uses the
+ * same permanent mq_ receipt IDs. Do not also mint ut_ copies in parallel. */
+async function queueLedgerSync(){
+ const cloud=window.MusicQuantCloud;
+ if(!cloud?.sync)throw Error('Music Quant ledger sync not loaded');
+ const state=await cloud.sync();
+ if(state?.reason==='sync_in_progress')return; // cloud queues one more pass
+ if(!state?.ok)throw Error(state?.reason||'Music Quant ledger sync pending');
 }
-async function start(){if(!window.InfinityUnifiedWallet)return;if(connected)return wallet;if(starting)return starting;if(!wallet){wallet=new window.InfinityUnifiedWallet({appName:'Infinity Radio'});window.InfinityRadioUnifiedWallet=wallet;wallet.subscribe(mirror)}starting=(async()=>{try{await wallet.connect();connected=true;await importExisting()}catch(error){console.warn('Unified Wallet waiting for the StarQuest account connection',error);window.dispatchEvent(new CustomEvent('infinity:wallet-error',{detail:{message:String(error?.message||error)}}))}finally{starting=null}})();return starting}
+
+async function start(){
+ if(!window.InfinityUnifiedWallet){status('MUSIC QUANT WALLET PENDING · Unified Wallet script unavailable',true);return null}
+ if(connected)return wallet;
+ if(starting)return starting;
+ if(!wallet){wallet=new window.InfinityUnifiedWallet({appName:'Infinity Radio'});window.InfinityRadioUnifiedWallet=wallet;wallet.subscribe(mirror)}
+ starting=(async()=>{try{
+  await wallet.connect();
+  await verifyOwner(); // never import into a different wallet
+  connected=true;
+  await importExisting();
+  lastError='';
+  status('MUSIC QUANT WALLET VERIFIED');
+  return wallet;
+ }catch(error){
+  connected=false;lastError=String(error?.message||error);
+  status('MUSIC QUANT WALLET PENDING · '+lastError,true);
+  window.dispatchEvent(new CustomEvent('infinity:wallet-error',{detail:{message:lastError}}));
+  return null;
+ }finally{starting=null}})();
+ return starting;
+}
 // The Quant ledger can restore records that are absent from this device's
 // local radio history. Reconcile these same immutable IDs into Unified Wallet.
 // Do not respond to Unified Wallet's own tokens event (would create a loop).
 addEventListener('musicquant:cloud-synced',event=>{
  if(!Array.isArray(event?.detail?.quants))return;
  const state=event.detail;
- const signature=[state.wallet_id,state.balance,...state.quants.slice(0,20).map(q=>q.id)].join('|');
- if(signature===lastReconciled)return;
  pending=pending.then(async()=>{
   await start();
-  if(!connected||!wallet)return;
-  await importExisting(); // idempotent by importKey and quant ID
-  await wallet.refresh();lastReconciled=signature;
- }).catch(error=>console.warn('Music Quant Unified Wallet reconciliation pending',error));
+  if(!connected||!wallet)throw Error(lastError||'Unified Wallet not connected');
+  // Event payload is already authenticated by the music ledger but its user
+  // must still match the wallet before importing any receipts.
+  const unified=await verifyOwner();
+  const ids=(state.quants||[]).filter(q=>q?.id&&!q.transferredAt).map(q=>String(q.id)).sort();
+  const signature=await digest(JSON.stringify([unified.user.id,state.wallet_id,state.balance,ids]));
+  if(signature===lastReconciled)return;
+  await importExisting(); // idempotent by import key and immutable mq_ receipt
+  const confirmed=await verifyOwner();
+  if(!Number.isFinite(Number(confirmed.balances?.MUSIC_QUANT))||
+     Number(confirmed.balances.MUSIC_QUANT)<Number(state.balance||0))
+   throw Error('Unified Wallet has not confirmed the Music Quant balance');
+  lastReconciled=signature;lastError='';
+  status('UNIFIED WALLET · '+Number(confirmed.balances.MUSIC_QUANT)+' MUSIC QUANTS VERIFIED');
+  window.dispatchEvent(new CustomEvent('musicquant:wallet-confirmed',{
+   detail:{musicQuants:Number(confirmed.balances.MUSIC_QUANT),musicLedgerQuants:Number(state.balance||0),walletId:state.wallet_id}
+  }));
+ }).catch(error=>{
+  lastError=String(error?.message||error);
+  status('MUSIC QUANT WALLET PENDING · '+lastError,true);
+  console.warn('Music Quant Unified Wallet reconciliation pending',error);
+ });
 });
-addEventListener('musicquant:changed',event=>{
- pending=pending.then(async()=>{
-  await start();
-  if(connected&&wallet)await mintChanged(event);
- }).catch(error=>console.warn('Unified Music Quant sync deferred',error));
+addEventListener('musicquant:changed',()=>{
+ // New receipts remain in the local outbox until music ledger accepts them.
+ // That ledger's cloud-synced event triggers owner-verified wallet import.
+ pending=pending.then(queueLedgerSync).catch(error=>{
+  lastError=String(error?.message||error);
+  status('MUSIC QUANT CREDIT PENDING · '+lastError,true);
+ });
 });
-document.addEventListener('starquest:ledger-connected',()=>void start());addEventListener('online',()=>void (wallet?wallet.refresh().then(mirror).catch(()=>{}):start()));
+
+document.addEventListener('starquest:ledger-connected',()=>{void start();void window.MusicQuantCloud?.sync?.()});
+document.addEventListener('starquest:auth-changed',()=>{connected=false;lastReconciled='';void start()});
+addEventListener('online',()=>{void start();void window.MusicQuantCloud?.sync?.()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){void start();void window.MusicQuantCloud?.sync?.()}});
+setInterval(()=>{if(!document.hidden){void start();void window.MusicQuantCloud?.sync?.()}},30000);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else void start();
 })();
