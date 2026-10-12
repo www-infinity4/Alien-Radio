@@ -6,7 +6,7 @@ test('Completed-song listening records are not discarded after 500 entries',asyn
  const old=Array.from({length:520},(_,i)=>({id:'mq_old_'+i,kind:'listening',song:'Song '+i,startedAt:'2026-01-'+String(i%28+1).padStart(2,'0')+'T00:00:00Z',notes:[],createdAt:new Date(Date.UTC(2026,0,1,0,0,i)).toISOString()}));
  memory.set('musicPhi:listeningQuants:v1',JSON.stringify(old));
  const ctx={window:{dispatchEvent:event=>events.push(event)},localStorage:{getItem:key=>memory.get(key)||null,setItem:(key,v)=>memory.set(key,v)},
-  document:{readyState:'loading',addEventListener(){}},addEventListener:(type,fn)=>listeners[type]=fn,
+  document:{readyState:'loading',addEventListener(){},getElementById(){return null}},addEventListener:(type,fn)=>listeners[type]=fn,
   CustomEvent:class{constructor(type,init){this.type=type;this.detail=init.detail}},
   crypto:{subtle:{digest:async()=>Uint8Array.from({length:32},(_,i)=>i).buffer}},
   TextEncoder,console};
