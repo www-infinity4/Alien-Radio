@@ -129,6 +129,6 @@ document.addEventListener('starquest:ledger-connected',()=>{void start();void wi
 document.addEventListener('starquest:auth-changed',()=>{connected=false;lastReconciled='';void start()});
 addEventListener('online',()=>{void start();void window.MusicQuantCloud?.sync?.()});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){void start();void window.MusicQuantCloud?.sync?.()}});
-setInterval(()=>{if(!document.hidden){void start();void window.MusicQuantCloud?.sync?.()}},30000);
+setInterval(()=>{if(!document.hidden&&!connected)void start()},30000); // MusicQuantCloud owns the single 30s ledger sync.
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else void start();
 })();
