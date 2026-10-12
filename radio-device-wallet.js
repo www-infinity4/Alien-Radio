@@ -53,7 +53,18 @@ async function start(){
   }
   if(await recoverSavedDevice())return;
   const users=JSON.parse(localStorage.getItem('starquest_users')||'{}');
-  if(Object.keys(users).length){note('WALLET RECOVERY AVAILABLE');return}
+  let priorWallet={};try{priorWallet=JSON.parse(localStorage.getItem('infinity_unified_wallet_v1')||'{}')}catch{}
+  const historical=Number(priorWallet?.musicQuants||0)>0||
+   Object.values(priorWallet?.wallets||{}).some(w=>Number(w?.balances?.MUSIC_QUANT||0)>0||
+    Number(w?.balances?.INFINITY||0)>0||Number(w?.balances?.QUANT||0)>0);
+  const storedDevice=Array.from({length:localStorage.length},(_,i)=>localStorage.key(i)||'').some(k=>k.startsWith(TOKEN_PREFIX));
+  // Existing wallet evidence MUST NOT silently turn into a brand-new wallet.
+  // Preserve the local histories and offer recovery for their real owner.
+  if(Object.keys(users).length||storedDevice||historical||localStorage.getItem('starquest_session')){
+   note('EXISTING WALLET RECOVERY REQUIRED · balances preserved');
+   if(RECOVERY){RECOVERY.hidden=false;RECOVERY.removeAttribute('hidden')}
+   return;
+  }
   const username='device_'+randomPart();
   const password=randomPart()+randomPart();
   const result=await window.StarQuestAuth.register(username,password);

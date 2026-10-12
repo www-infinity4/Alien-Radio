@@ -6,6 +6,8 @@ on:
   pull_request:
     paths: ['music-quant-cloud.js','unified-wallet-bridge.js','index.html','tests/music-quant-wallet-reconcile.test.cjs','.github/workflows/music-quant-wallet.yml']
   workflow_dispatch:
+  schedule:
+    - cron: '13 */6 * * *'
 permissions:
   contents: read
 jobs:
@@ -19,3 +21,21 @@ jobs:
       - run: node --check music-quant-cloud.js
       - run: node --check unified-wallet-bridge.js
       - run: node --test tests/music-quant-wallet-reconcile.test.cjs
+      - name: Watch live Radio wallet connection and Cloudflare ledgers
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          node --input-type=module <<'NODE'
+          const checks=[
+            ['Infinity Radio wallet bridge','https://quantaphi.org/infinity-radio/unified-wallet-bridge.js?v=20261011-verified-receipts3','verifyOwner'],
+            ['Infinity Radio music ledger sync','https://quantaphi.org/infinity-radio/music-quant-cloud.js?v=20261011-music-balance-guard3','music_quant_history_incomplete'],
+            ['Music Quant ledger API','https://quanta-phi-ledger.marvaseater.workers.dev/health','ok'],
+            ['Unified Wallet API','https://unified-wallet.marvaseater.workers.dev/health','ok']
+          ];
+          for(const [name,url,contract] of checks){
+            const response=await fetch(url,{signal:AbortSignal.timeout(15000)});
+            if(!response.ok)throw Error(name+' HTTP '+response.status);
+            const body=await response.text();
+            if(!body.includes(contract))throw Error(name+' lost required code/health contract');
+            console.log(name+' accessible and contract present');
+          }
+          NODE
