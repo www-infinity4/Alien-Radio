@@ -6,6 +6,12 @@ const write=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));re
 const digest=async value=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value)))].map(x=>x.toString(16).padStart(2,'0')).join('');
 const LEDGER='https://quanta-phi-ledger.marvaseater.workers.dev';
 let wallet=null,starting=null,pending=Promise.resolve(),connected=false,lastReconciled='',lastError='';
+window.InfinityRadioMusicWallet={
+ get confirmed(){return Boolean(lastReconciled&&!lastError&&connected)},
+ get lastError(){return lastError},
+ reconnect(){return start()},
+ get receiptCheckpoint(){return Boolean(lastReconciled)}
+};
 function status(message,problem=false){
  const label=document.getElementById('ledgerState');
  if(label){label.textContent=message;label.dataset.musicWalletProblem=problem?'true':'false';if(problem)label.classList.remove('connected')}
