@@ -231,7 +231,7 @@
     const name=document.querySelector('[data-control-phi-wallet-name]');
     if(name)name.textContent=snapshot.username;
     const status=document.querySelector('[data-control-phi-wallet-status]');
-    if(status)status.textContent=window.MusicQuantCloud?.state?.ok?'Music Quants verified in your Cloudflare ledger.':(Number(window.MusicQuantCloud?.localCount)||0)+' Music Quant'+((Number(window.MusicQuantCloud?.localCount)||0)===1?'':'s')+' saved on this device · cloud sync '+(window.MusicQuantCloud?.lastError?'failed: '+window.MusicQuantCloud.lastError:'needs a connected StarQuest account')+'.';
+    if(status){const guard=window.InfinityRadioMusicWallet,ledger=window.MusicQuantCloud?.state;status.textContent=guard?.confirmed?'Music Quant receipts verified in the authenticated Unified Wallet.':guard?.lastError?'Music Quant wallet connection pending: '+guard.lastError:ledger?.ok?'Music Quant ledger connected; confirming receipt synchronization with Unified Wallet.':(Number(window.MusicQuantCloud?.localCount)||0)+' Music Quants saved on this device · Cloudflare sync pending.';}
     const quantList=document.querySelector('[data-control-phi-music-quant-list]');
     if(quantList){
       const playable=read('musicPhi:quants:v1',[]),listening=read('musicPhi:listeningQuants:v1',[]);
