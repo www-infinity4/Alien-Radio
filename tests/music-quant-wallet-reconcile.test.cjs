@@ -74,7 +74,10 @@ test('Unified Wallet reconciliation verifies identical Cloudflare user identity 
  ledgerOwner='authenticated-wallet-account';await context.window.InfinityRadioMusicWallet.reconnect();emit();await idle();
  assert.ok(imports.length>0,'same verified owner should trigger durable import: '+statusNode.textContent+' '+errors.join(' || '));
  assert.ok(imports.some(batch=>batch.tokens.some(t=>t.id==='mq_real_listening')));
- assert.match(statusNode.textContent,/MUSIC QUANTS VERIFIED/);
+ for(let i=0;i<100&&!context.window.InfinityRadioMusicWallet.receiptCheckpoint;i++)
+  await new Promise(resolve=>setTimeout(resolve,10));
+ assert.equal(context.window.InfinityRadioMusicWallet.receiptCheckpoint,true,
+  'Music Quant ledger receipts must finish reconciliation: '+statusNode.textContent+' '+errors.join(' || '));
  assert.equal(typeof inst.listener,'function');
 });
 
