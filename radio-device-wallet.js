@@ -43,6 +43,7 @@ async function start(){
   // Existing StarQuest credential may live on the old GitHub Pages origin.
   // Wait for its owner-verified, first-party handoff before testing identity.
   if(window.QuantaCloudConnection?.ready)await window.QuantaCloudConnection.ready;
+  if(window.StarQuestLedgerReady)await window.StarQuestLedgerReady;
   if(!window.StarQuestAuth?.currentUser?.())
    await window.QuantaCloudConnection?.recoverAccountProfileFromDevice?.();
   if(window.StarQuestAuth?.currentUser?.()){
