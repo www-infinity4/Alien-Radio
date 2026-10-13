@@ -22,3 +22,21 @@ test('Unified wallet backfill never truncates listening history at 500 records',
  assert.doesNotMatch(bridge,/write\(LISTENING,[\s\S]{0,300}\.slice\(0,500\)/);
  assert.match(bridge,/token\.token_type==='LISTENING_QUANT'/);
 });
+
+test('Listening Quant survives a full localStorage by saving to IndexedDB and remains a listening receipt',async()=>{
+ const listeners={},events=[],stored=[];
+ const ctx={window:{MusicQuantStore:{put:async q=>stored.push(q),list:async()=>stored},dispatchEvent:e=>events.push(e)},
+  localStorage:{getItem:()=>null,setItem:()=>{throw Error('QuotaExceededError')}},
+  document:{readyState:'loading',addEventListener(){},getElementById:()=>null},
+  addEventListener:(type,fn)=>listeners[type]=fn,
+  CustomEvent:class{constructor(type,init){this.type=type;this.detail=init.detail}},
+  crypto:{subtle:{digest:async()=>Uint8Array.from({length:32},(_,i)=>i).buffer}},
+  TextEncoder,console};
+ vm.runInNewContext(load('listening-quant.js'),ctx);
+ listeners['infinityradio:track-complete']({detail:{track:{title:'Saved via IndexedDB',url:'https://archive.org/download/example'},startedAt:'2026-10-13T08:00:00Z',endedAt:'2026-10-13T08:04:00Z',durationSec:240}});
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(stored.length,1);
+ assert.equal(stored[0].kind,'listening');
+ assert.equal(events.filter(e=>e.type==='musicquant:changed').length,1);
+ assert.equal(events.filter(e=>e.type==='musicquant:cloud-error').length,0);
+});

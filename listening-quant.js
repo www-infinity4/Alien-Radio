@@ -12,7 +12,24 @@ async function mint(detail){
  if(quants.some(quant=>quant.startedAt===detail.startedAt&&quant.song===title))return;
  const events=contextBetween(detail.startedAt,detail.endedAt);
  const body={version:2,kind:'listening',notes:[],settings:{},song:title,sourceUrl:String(track.url||''),archiveItem:String(track.archiveItem||''),startedAt:String(detail.startedAt),endedAt:String(detail.endedAt||new Date().toISOString()),durationSec:Number(detail.durationSec)||null,createdAt:new Date().toISOString(),source:'infinity-radio-listening-quant',context:{version:1,playback:{song:title,station:'Infinity Radio',playing:true,capturedAt:String(detail.endedAt||new Date().toISOString())},events,retention:'user-owned-context'}};
- body.hash=await digest(body);body.id='mq_'+body.hash.slice(0,20);quants.unshift(body);if(!write(STORE,quants)){console.warn('Listening Quant device storage full; keep this record in memory until cloud reconciliation');window.dispatchEvent(new CustomEvent('musicquant:cloud-error',{detail:{message:'listening_quant_device_storage_full'}}));}render();window.dispatchEvent(new CustomEvent('musicquant:changed',{detail:{action:'listen',kind:'listening',quantId:body.id}}));
+ body.hash=await digest(body);body.id='mq_'+body.hash.slice(0,20);quants.unshift(body);
+ // Keep the small browser-storage copy for compatibility, but save every new
+ // listening receipt in IndexedDB too. A full localStorage must not silently
+ // discard an earned receipt while the radio counter keeps increasing.
+ const localSaved=write(STORE,quants);
+ let indexedSaved=false;
+ if(window.MusicQuantStore?.put){
+  try{await window.MusicQuantStore.put(body);indexedSaved=true}
+  catch(error){console.warn('Listening Quant IndexedDB storage pending',error)}
+ }
+ if(!localSaved&&!indexedSaved){
+  quants=quants.filter(quant=>quant.id!==body.id);
+  window.dispatchEvent(new CustomEvent('musicquant:cloud-error',{detail:{message:'listening_quant_device_storage_full'}}));
+  render();
+  return;
+ }
+ render();
+ window.dispatchEvent(new CustomEvent('musicquant:changed',{detail:{action:'listen',kind:'listening',quantId:body.id,stored:localSaved||indexedSaved}}));
 }
 function install(){
  const host=document.createElement('section');host.className='listening-quant-panel';host.innerHTML='<div><small>AUTOMATIC · ONE PER COMPLETED SONG</small><h2>Listening Quants</h2><p>Listening earns a Music Quant even when you do not click. Searches, shopping and shares during that song can travel with it as useful context.</p></div><strong id="listeningQuantBalance">0 Listening Quants</strong><div id="listeningQuantList"></div>';
@@ -21,6 +38,11 @@ function install(){
 }
 function render(){const balance=document.getElementById('listeningQuantBalance'),list=document.getElementById('listeningQuantList');if(balance)balance.textContent=quants.length+' Listening Quant'+(quants.length===1?'':'s');if(list)list.innerHTML=quants.slice(0,10).map((quant,index)=>'<article class="lq-card"><b>'+esc(quant.song)+'</b><small>Listening Quant '+(quants.length-index)+' · '+(quant.context?.events?.length||0)+' purposeful event'+((quant.context?.events?.length||0)===1?'':'s')+' · '+esc(quant.hash?.slice(0,16)||'pending')+'</small></article>').join('')||'<p>No completed-song Quant yet. Finish the current song to earn one automatically.</p>'}
 addEventListener('infinityradio:track-complete',event=>void mint(event.detail));
-addEventListener('musicquant:cloud-synced',()=>{quants=read(STORE,[]);render()});
+addEventListener('musicquant:cloud-synced',async()=>{
+ const indexed=window.MusicQuantStore?.list?await window.MusicQuantStore.list().catch(()=>[]):[];
+ quants=[...new Map([...read(STORE,[]),...indexed.filter(record=>record?.kind==='listening')].filter(record=>record?.id&&!record.transferredAt).map(record=>[record.id,record])).values()]
+  .sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+ render();
+});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();
