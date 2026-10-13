@@ -107,7 +107,10 @@ body.web-mode .player h1,body.web-mode .player p,body.web-mode #piano-status{dis
 <script src="https://www-infinity4.github.io/TV-Database/js/auth.js"></script>
 <script>window.STARQUEST_LEDGER_CONFIG=window.STARQUEST_LEDGER_CONFIG||{endpoint:"https://starquest-ledger.marvaseater.workers.dev"};</script>
 <script src="https://www-infinity4.github.io/TV-Database/js/starquest-cloud-ledger.js?v=20260927-unified3"></script>
-<script src="radio-device-wallet.js?v=20261011-owner-protect3"></script>
+<!-- First-party wallet device credential transfer, never automated navigation. -->
+<script>window.QuantaCloudConnectionDisableAutoRecovery=true;</script>
+<script src="https://quantaphi.org/cloud-wallet-client.js?v=20261013-radio-owner-reconnect1"></script>
+<script src="radio-device-wallet.js?v=20261013-owner-reconnect1"></script>
 <script>document.addEventListener("starquest:ledger-connected",()=>{const el=document.getElementById("ledgerState");if(el){el.textContent="UNIFIED WALLET CONNECTED";el.classList.add("connected")}window.ControlPhi?.refreshWallet?.()});document.addEventListener("starquest:ledger-error",event=>{const el=document.getElementById("ledgerState");if(el)el.textContent="WALLET PENDING · "+String(event.detail?.error||"UNKNOWN").replace(/_/g," ").toUpperCase()});document.addEventListener("DOMContentLoaded",()=>{if(!window.StarQuestAuth?.currentUser?.()){const el=document.getElementById("ledgerState");if(el)el.textContent="GUEST · CONNECT ACCOUNT FOR CLOUD WALLET"}});</script>
 <script src="https://unified-wallet.marvaseater.workers.dev/unified-wallet.js?v=20260927-cloud2"></script>
 <script src="app.js?v=20260927-archive100"></script>
@@ -119,6 +122,6 @@ body.web-mode .player h1,body.web-mode .player p,body.web-mode #piano-status{dis
 <script src="listener-notes.js?v=20260927-notes1"></script>
 <script src="unified-wallet-bridge.js?v=20261011-verified-receipts3"></script>
 <script src="music-quant-transfer.js?v=20260928-transfer1"></script>
-<script src="radio-account.js?v=20260928-recovery3"></script>
+<script src="radio-account.js?v=20261013-owner-reconnect1"></script>
 </body>
 </html>
