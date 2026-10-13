@@ -77,3 +77,16 @@ test('Unified Wallet reconciliation verifies identical Cloudflare user identity 
  assert.match(statusNode.textContent,/MUSIC QUANTS VERIFIED/);
  assert.equal(typeof inst.listener,'function');
 });
+
+test('Infinity Radio reconnect uses existing first-party wallet rather than issuing a new account',()=>{
+ const html=read('index.html');
+ const device=read('radio-device-wallet.js');
+ const account=read('radio-account.js');
+ assert.ok(html.includes('QuantaCloudConnectionDisableAutoRecovery=true'));
+ assert.ok(html.includes('cloud-wallet-client.js'));
+ assert.ok(device.includes('await window.QuantaCloudConnection.ready'));
+ assert.ok(!device.includes('StarQuestAuth.register('));
+ assert.ok(account.includes('bridge?.recoverWallet?.(true)'));
+ assert.ok(account.includes('window.InfinityRadioMusicWallet?.confirmed === true'));
+ assert.ok(account.includes('verify-existing'));
+});
