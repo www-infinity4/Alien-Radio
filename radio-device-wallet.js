@@ -5,7 +5,6 @@ const STATUS=document.getElementById('ledgerState');
 const RECOVERY=document.getElementById('connectAccountButton');
 function note(message){if(STATUS)STATUS.textContent=message}
 function tokenFor(key){const raw=localStorage.getItem(key)||'';if(/^sq_[A-Za-z0-9_-]{32,}$/.test(raw))return raw;try{const token=JSON.parse(raw)?.deviceToken;return /^sq_[A-Za-z0-9_-]{32,}$/.test(token)?token:''}catch{return ''}}
-function randomPart(){const bytes=new Uint8Array(18);crypto.getRandomValues(bytes);return [...bytes].map(byte=>byte.toString(16).padStart(2,'0')).join('')}
 async function recoverSavedDevice(){
  const users=JSON.parse(localStorage.getItem('starquest_users')||'{}');
  for(let i=0;i<localStorage.length;i++){
@@ -40,18 +39,28 @@ async function recoverSavedDevice(){
 }
 async function start(){
  try{
-  note('CONNECTING DEVICE WALLET');
+  note('CHECKING SAVED DEVICE WALLET');
+  // Existing StarQuest credential may live on the old GitHub Pages origin.
+  // Wait for its owner-verified, first-party handoff before testing identity.
+  if(window.QuantaCloudConnection?.ready)await window.QuantaCloudConnection.ready;
+  if(window.StarQuestLedgerReady)await window.StarQuestLedgerReady;
+  if(!window.StarQuestAuth?.currentUser?.())
+   await window.QuantaCloudConnection?.recoverAccountProfileFromDevice?.();
   if(window.StarQuestAuth?.currentUser?.()){
    const connected=await window.StarQuestCloudLedger?.connect?.();
    if(!connected)throw new Error('Cloudflare device wallet connection pending');
    note('UNIFIED WALLET CONNECTED');
    STATUS?.classList.add('connected');
-   RECOVERY?.setAttribute('hidden','');
+   // A StarQuest session alone does not verify Music Quant wallet ownership.
    await window.MusicQuantCloud?.sync?.();
    window.ControlPhi?.refreshWallet?.();
    return;
   }
-  if(await recoverSavedDevice())return;
+  if(await recoverSavedDevice()){
+   const connected=await window.StarQuestCloudLedger?.connect?.();
+   if(connected){note('DEVICE WALLET VERIFIED');await window.MusicQuantCloud?.sync?.();}
+   return;
+  }
   const users=JSON.parse(localStorage.getItem('starquest_users')||'{}');
   let priorWallet={};try{priorWallet=JSON.parse(localStorage.getItem('infinity_unified_wallet_v1')||'{}')}catch{}
   const historical=Number(priorWallet?.musicQuants||0)>0||
@@ -65,17 +74,9 @@ async function start(){
    if(RECOVERY){RECOVERY.hidden=false;RECOVERY.removeAttribute('hidden')}
    return;
   }
-  const username='device_'+randomPart();
-  const password=randomPart()+randomPart();
-  const result=await window.StarQuestAuth.register(username,password);
-  if(typeof result==='string')throw new Error(result);
-  const connected=await window.StarQuestCloudLedger.connect();
-  if(!connected)throw new Error('Cloudflare device wallet connection pending');
-  note('DEVICE WALLET CONNECTED');
-  STATUS?.classList.add('connected');
-  RECOVERY?.setAttribute('hidden','');
-  await window.MusicQuantCloud?.sync?.();
-  window.ControlPhi?.refreshWallet?.();
+  // No identity proof -> no new account. Existing holdings remain untouched.
+  note('NO VERIFIED DEVICE WALLET · RECONNECT EXISTING ACCOUNT');
+  if(RECOVERY){RECOVERY.hidden=false;RECOVERY.removeAttribute('hidden')}
  }catch(error){
   note('DEVICE WALLET PENDING');
   console.warn('Device wallet connection deferred',error);

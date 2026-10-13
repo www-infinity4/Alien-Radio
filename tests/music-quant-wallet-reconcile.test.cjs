@@ -74,6 +74,22 @@ test('Unified Wallet reconciliation verifies identical Cloudflare user identity 
  ledgerOwner='authenticated-wallet-account';await context.window.InfinityRadioMusicWallet.reconnect();emit();await idle();
  assert.ok(imports.length>0,'same verified owner should trigger durable import: '+statusNode.textContent+' '+errors.join(' || '));
  assert.ok(imports.some(batch=>batch.tokens.some(t=>t.id==='mq_real_listening')));
- assert.match(statusNode.textContent,/MUSIC QUANTS VERIFIED/);
+ for(let i=0;i<100&&!context.window.InfinityRadioMusicWallet.receiptCheckpoint;i++)
+  await new Promise(resolve=>setTimeout(resolve,10));
+ assert.equal(context.window.InfinityRadioMusicWallet.receiptCheckpoint,true,
+  'Music Quant ledger receipts must finish reconciliation: '+statusNode.textContent+' '+errors.join(' || '));
  assert.equal(typeof inst.listener,'function');
+});
+
+test('Infinity Radio reconnect uses existing first-party wallet rather than issuing a new account',()=>{
+ const html=read('index.html');
+ const device=read('radio-device-wallet.js');
+ const account=read('radio-account.js');
+ assert.ok(html.includes('QuantaCloudConnectionDisableAutoRecovery=true'));
+ assert.ok(html.includes('cloud-wallet-client.js'));
+ assert.ok(device.includes('await window.QuantaCloudConnection.ready'));
+ assert.ok(!device.includes('StarQuestAuth.register('));
+ assert.ok(account.includes('bridge?.recoverWallet?.(true)'));
+ assert.ok(account.includes('window.InfinityRadioMusicWallet?.confirmed === true'));
+ assert.ok(account.includes('verify-existing'));
 });
