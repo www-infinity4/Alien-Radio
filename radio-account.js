@@ -16,6 +16,7 @@
     try {
       const bridge=window.QuantaCloudConnection;
       if(bridge?.ready)await bridge.ready;
+      if(window.StarQuestLedgerReady)await window.StarQuestLedgerReady;
       await bridge?.recoverAccountProfileFromDevice?.();
       if(window.StarQuestAuth?.currentUser?.()){
         const connected=await window.StarQuestCloudLedger?.connect?.();
