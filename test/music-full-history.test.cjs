@@ -12,7 +12,7 @@ function fixture(mismatch=false){
   const page=url.includes('?offset=2')?pages[1]:pages[0];
   return {ok:true,json:async()=>page};
  }},ControlPhi:{refreshWallet(){}},dispatchEvent(){}};
- vm.runInNewContext(script,context,{timeout:2000});return{cloud:context.window.MusicQuantCloud,memory,queries,stored};
+ vm.runInNewContext(script,context,{timeout:2000});return{cloud:context.window.MusicQuantCloud,window:context.window,memory,queries,stored};
 }
 test('Fetches all Music Quant pages before announcing wallet recovery',async()=>{
  const f=fixture(),state=await f.cloud.sync();assert.equal(state.balance,3);
@@ -60,4 +60,13 @@ test('A Music Quant created during an in-flight sync is committed by the queued 
  assert.ok(posted.some(batch=>batch.includes(record.id)));
  assert.equal(context.window.MusicQuantCloud.state.balance,1);
  assert.ok(events.includes('musicquant:cloud-synced'));
+});
+
+test('Radio uses the device wallet bridge when the StarQuest profile cache is disconnected',async()=>{
+ const f=fixture();
+ f.window.QuantaCloudConnection=f.window.StarQuestCloudLedger;
+ f.window.StarQuestCloudLedger={authenticatedFetch:async()=>{throw Error('ledger_not_connected')}};
+ const state=await f.cloud.sync();
+ assert.equal(state.ok,true);assert.equal(state.balance,3);
+ assert.equal(f.cloud.lastError,'');
 });

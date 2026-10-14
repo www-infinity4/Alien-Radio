@@ -18,7 +18,7 @@ function status(message,problem=false){
  if(problem)window.dispatchEvent(new CustomEvent('musicquant:wallet-link-error',{detail:{message}}));
 }
 async function verifyOwner(){
- const bridge=window.StarQuestCloudLedger;
+ const bridge=window.QuantaCloudConnection||window.StarQuestCloudLedger;
  if(!bridge?.authenticatedFetch)throw Error('Music Quant Cloudflare account is not connected');
  if(!wallet)throw Error('Unified Wallet is not connected');
  const unified=await wallet.refresh();
@@ -65,10 +65,10 @@ async function queueLedgerSync(){
 }
 
 async function start(){
- if(!window.InfinityUnifiedWallet){status('MUSIC QUANT WALLET PENDING · Unified Wallet script unavailable',true);return null}
+ if(!(window.InfinityCloudWallet||window.InfinityUnifiedWallet)){status('MUSIC QUANT WALLET PENDING · Unified Wallet script unavailable',true);return null}
  if(connected)return wallet;
  if(starting)return starting;
- if(!wallet){wallet=new window.InfinityUnifiedWallet({appName:'Infinity Radio'});window.InfinityRadioUnifiedWallet=wallet;wallet.subscribe(mirror)}
+ if(!wallet){wallet=new (window.InfinityCloudWallet||window.InfinityUnifiedWallet)({appName:'Infinity Radio'});window.InfinityRadioUnifiedWallet=wallet;wallet.subscribe(mirror)}
  starting=(async()=>{try{
   await wallet.connect();
   await verifyOwner(); // never import into a different wallet
