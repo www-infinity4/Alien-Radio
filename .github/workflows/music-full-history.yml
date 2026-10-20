@@ -2,9 +2,9 @@ name: Music Quant complete-history wallet recovery
 on:
   push:
     branches: [main]
-    paths: ['music-quant-cloud.js','test/music-full-history.test.cjs','test/music-listening-retention.test.cjs','listening-quant.js','unified-wallet-bridge.js','.github/workflows/music-full-history.yml']
+    paths: ['music-quant-cloud.js','test/music-full-history.test.cjs','test/music-listening-retention.test.cjs','test/piano-playback.test.cjs','app.js','index.html','oracle-track-feed.json','listening-quant.js','unified-wallet-bridge.js','.github/workflows/music-full-history.yml']
   pull_request:
-    paths: ['music-quant-cloud.js','test/music-full-history.test.cjs','test/music-listening-retention.test.cjs','listening-quant.js','unified-wallet-bridge.js','.github/workflows/music-full-history.yml']
+    paths: ['music-quant-cloud.js','test/music-full-history.test.cjs','test/music-listening-retention.test.cjs','test/piano-playback.test.cjs','app.js','index.html','oracle-track-feed.json','listening-quant.js','unified-wallet-bridge.js','.github/workflows/music-full-history.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -16,6 +16,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: node --check app.js
+      - run: node --test test/piano-playback.test.cjs
       - run: node --check music-quant-cloud.js
       - run: node --check listening-quant.js
       - run: node --check unified-wallet-bridge.js
