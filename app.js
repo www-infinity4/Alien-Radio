@@ -9,6 +9,12 @@
    synthType: fallback Web Audio synth profile key if the stream cannot be loaded
 ── */
 const PIANO_PLAYLIST = [
+  { title: "Chopin · Prelude Op. 28 No. 15 · Raindrop", url: "https://archive.org/download/musopen-chopin/Prelude%20Op.%2028%20no.%2015.mp3", archiveItem: "musopen-chopin" },
+  { title: "Chopin · Prelude Op. 28 No. 17", url: "https://archive.org/download/musopen-chopin/Prelude%20Op.%2028%20no.%2017.mp3", archiveItem: "musopen-chopin" },
+  { title: "Chopin · Waltz in E Minor B. 56", url: "https://archive.org/download/musopen-chopin/WaltzB.56InEMinor.mp3", archiveItem: "musopen-chopin" },
+  { title: "Chopin · Polonaise Op. 71 No. 2", url: "https://archive.org/download/musopen-chopin/PolonaiseOp.71No.2InBFlatMajor.mp3", archiveItem: "musopen-chopin" },
+  { title: "Chopin · Waltz No. 18 in E-flat", url: "https://archive.org/download/musopen-chopin/Waltz%20no.%2018%20-%20op.%20posth%20Eb-major.mp3", archiveItem: "musopen-chopin" },
+  { title: "Chopin · Waltz in E-flat B. 46", url: "https://archive.org/download/musopen-chopin/WaltzB.46InEFlatMajor.mp3", archiveItem: "musopen-chopin" },
   { title: "Chopin · Prelude in E Minor Op. 28 No. 4", url: "https://www.orangefreesounds.com/wp-content/uploads/2016/09/Prelude-in-e-minor.mp3" },
   { title: "Chopin · Waltz Op. 64 No. 2", url: "https://www.orangefreesounds.com/wp-content/uploads/2018/07/Chopin-waltz-op-64-no-2-in-c-sharp-minor.mp3" },
   { title: "Schumann · Träumerei", url: "https://www.orangefreesounds.com/wp-content/uploads/2016/01/Traumerei-piano-music.mp3" },
@@ -50,9 +56,19 @@ async function loadArchivePianoLibrary(){
 }
 loadArchivePianoLibrary();
 
+// Queue revision resets only once, so the freshly added songs play first without
+// throwing listeners back to track 1 on every return or screen unlock.
+const PIANO_QUEUE_REVISION = '2026-10-20-new-piano-front';
 let pianoTrackIndex = (() => {
-  const saved = Number(sessionStorage.getItem('infinityRadio:pianoTrackIndex'));
-  return Number.isInteger(saved) && saved >= 0 && saved < PIANO_PLAYLIST.length ? saved : 0;
+  try {
+    if (sessionStorage.getItem('infinityRadio:pianoQueueRevision') !== PIANO_QUEUE_REVISION) {
+      sessionStorage.setItem('infinityRadio:pianoQueueRevision', PIANO_QUEUE_REVISION);
+      sessionStorage.setItem('infinityRadio:pianoTrackIndex', '0');
+      return 0;
+    }
+    const saved = Number(sessionStorage.getItem('infinityRadio:pianoTrackIndex'));
+    return Number.isInteger(saved) && saved >= 0 && saved < PIANO_PLAYLIST.length ? saved : 0;
+  } catch (_) { return 0; }
 })();
 
 const CHANNELS = [
@@ -95,6 +111,7 @@ function showToast(msg, icon = '📡') {
   const toast = document.createElement('div');
   toast.className = 'toast';
   toast.innerHTML = `<span class="toast-icon">${icon}</span>${msg}`;
+  if (!container) return; // The compact station page has no toast tray.
   container.appendChild(toast);
   setTimeout(() => toast.remove(), 3100);
 }
@@ -176,10 +193,21 @@ function togglePlay() {
   if (btn) btn.textContent = state.isPlaying ? '⏸' : '▶';
   if (art) art.classList.toggle('playing', state.isPlaying);
   if (state.isPlaying) {
-    startAudio(state.activeChannel);
-    // No flashing visualizer in piano-only mode.
+    // Resume the *same* track/position after pause; do not tear down the audio
+    // element (doing so loses Android's active media session).
+    if (streamAudioEl && streamAudioEl.currentSrc) {
+      const pending = streamAudioEl.play();
+      if (pending?.catch) pending.catch(() => {
+        state.isPlaying = false;
+        if (btn) btn.textContent = '▶';
+        syncRadioMediaState('paused');
+      });
+    } else {
+      startAudio(state.activeChannel);
+    }
   } else {
-    stopAudio();
+    if (streamAudioEl) streamAudioEl.pause();
+    syncRadioMediaState('paused');
     stopVisualizer();
   }
 }
@@ -214,6 +242,57 @@ let streamAudioEl  = null;
 let streamMediaSrc = null;
 let pianoTrackSession = null;
 
+// Android Chrome/PWA can expose this continuous HTML audio element to the
+// system media notification and lock-screen controls. No hidden timers,
+// wake locks, or synthetic clicks: they are unreliable when a screen sleeps.
+let consecutivePianoErrors = 0;
+let mediaHandlersInstalled = false;
+function syncRadioMediaState(status) {
+  if ('mediaSession' in navigator) navigator.mediaSession.playbackState = status;
+}
+function updateRadioMediaMetadata(track) {
+  if (!('mediaSession' in navigator) || !('MediaMetadata' in window)) return;
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: track.title,
+    artist: 'Classical Piano',
+    album: 'Infinity Radio',
+  });
+}
+function movePianoTrack(offset) {
+  if (!PIANO_PLAYLIST.length) return;
+  pianoTrackIndex = (pianoTrackIndex + offset + PIANO_PLAYLIST.length) % PIANO_PLAYLIST.length;
+  try { sessionStorage.setItem('infinityRadio:pianoTrackIndex', String(pianoTrackIndex)); } catch (_) {}
+  if (!state.isPlaying) {
+    state.isPlaying = true;
+    const btn = document.getElementById('play-btn');
+    if (btn) btn.textContent = '⏸';
+  }
+  if (streamAudioEl) playPianoTrack(streamAudioEl);
+  else startAudio(state.activeChannel);
+}
+function installRadioMediaHandlers() {
+  if (mediaHandlersInstalled || !('mediaSession' in navigator)) return;
+  mediaHandlersInstalled = true;
+  const actions = {
+    play: () => { if (!state.isPlaying) togglePlay(); else streamAudioEl?.play().catch(() => {}); },
+    pause: () => { if (state.isPlaying) togglePlay(); },
+    stop: () => { if (state.isPlaying) togglePlay(); },
+    nexttrack: () => movePianoTrack(1),
+    previoustrack: () => movePianoTrack(-1),
+  };
+  Object.entries(actions).forEach(([name, handler]) => {
+    try { navigator.mediaSession.setActionHandler(name, handler); } catch (_) { /* browser does not support action */ }
+  });
+}
+// Never shut down the player when a page becomes hidden. Recover only when
+// the browser foregrounds a previously interrupted, still-requested session.
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && state.isPlaying && streamAudioEl?.paused && streamAudioEl.currentSrc) {
+    streamAudioEl.play().catch(() => showToast('Tap Play to resume piano', '▶️'));
+  }
+});
+
+
 // Synth profiles — keyed by synthType (used as fallback when stream fails)
 const SYNTH_PROFILES = {
   spaceHum:   { baseFreq: 55,  lfoRate: 0.3, filterFreq: 800  },
@@ -245,8 +324,10 @@ function stopAudio() {
   // Stop HTML5 stream
   if (streamAudioEl) {
     streamAudioEl.pause();
-    streamAudioEl.src = '';
+    streamAudioEl.removeAttribute('src');
+    streamAudioEl.load();
     streamAudioEl = null;
+    syncRadioMediaState('paused');
   }
   if (streamMediaSrc) {
     try { streamMediaSrc.disconnect(); } catch (e) {}
@@ -277,31 +358,51 @@ function startStream(url, fallbackSynthType) {
   if (!PIANO_PLAYLIST.length) return;
   let el = streamAudioEl;
   if (!el) {
-    el = new Audio();
-    el.preload = 'metadata';
+    el = document.getElementById('infinity-radio-audio') || new Audio();
+    el.preload = 'auto';
     streamAudioEl = el;
+    installRadioMediaHandlers();
+    // The same DOM element survives source changes; never register duplicate
+    // ended listeners, which would skip two songs at each boundary.
+    if (!el.dataset.infinityRadioWired) {
+    el.dataset.infinityRadioWired = '1';
+    el.addEventListener('playing', () => {
+      consecutivePianoErrors = 0;
+      syncRadioMediaState('playing');
+    });
+    el.addEventListener('pause', () => syncRadioMediaState('paused'));
     el.addEventListener('ended', () => {
       if (!state.isPlaying || el !== streamAudioEl) return;
       const finished=pianoTrackSession;
       if(finished)window.dispatchEvent(new CustomEvent('infinityradio:track-complete',{detail:{...finished,endedAt:new Date().toISOString(),durationSec:Number.isFinite(el.duration)?Math.round(el.duration):null}}));
       pianoTrackSession=null;
       pianoTrackIndex = (pianoTrackIndex + 1) % PIANO_PLAYLIST.length;
-      sessionStorage.setItem('infinityRadio:pianoTrackIndex', String(pianoTrackIndex));
+      try { sessionStorage.setItem('infinityRadio:pianoTrackIndex', String(pianoTrackIndex)); } catch (_) {}
       playPianoTrack(el);
     });
     el.addEventListener('error', () => {
       if (!state.isPlaying || el !== streamAudioEl) return;
       pianoTrackIndex = (pianoTrackIndex + 1) % PIANO_PLAYLIST.length;
-      sessionStorage.setItem('infinityRadio:pianoTrackIndex', String(pianoTrackIndex));
+      try { sessionStorage.setItem('infinityRadio:pianoTrackIndex', String(pianoTrackIndex)); } catch (_) {}
+      if (++consecutivePianoErrors >= PIANO_PLAYLIST.length) {
+        state.isPlaying = false;
+        syncRadioMediaState('paused');
+        const btn = document.getElementById('play-btn');
+        if (btn) btn.textContent = '▶';
+        showToast('Piano sources unavailable. Tap Play to retry.', '🎹');
+        return;
+      }
       showToast('Skipping unavailable piano track', '🎹');
-      setTimeout(() => playPianoTrack(el), 250);
+      setTimeout(() => { if (state.isPlaying && el === streamAudioEl) playPianoTrack(el); }, 250);
     });
+    }
   }
   playPianoTrack(el);
 }
 
 function playPianoTrack(el) {
   const track = PIANO_PLAYLIST[pianoTrackIndex % PIANO_PLAYLIST.length];
+  updateRadioMediaMetadata(track);
   pianoTrackSession={track:{title:track.title,url:track.url,archiveItem:track.archiveItem||''},trackIndex:pianoTrackIndex,startedAt:new Date().toISOString()};
   window.dispatchEvent(new CustomEvent('infinityradio:track-start',{detail:pianoTrackSession}));
   el.volume = state.volume / 100;
@@ -314,6 +415,7 @@ function playPianoTrack(el) {
       state.isPlaying = false;
       const btn = document.getElementById('play-btn');
       if (btn) btn.textContent = '▶';
+      syncRadioMediaState('paused');
       showToast('Tap Play to start piano', '▶️');
     }
   });
