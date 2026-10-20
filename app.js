@@ -362,6 +362,10 @@ function startStream(url, fallbackSynthType) {
     el.preload = 'auto';
     streamAudioEl = el;
     installRadioMediaHandlers();
+    // The same DOM element survives source changes; never register duplicate
+    // ended listeners, which would skip two songs at each boundary.
+    if (!el.dataset.infinityRadioWired) {
+    el.dataset.infinityRadioWired = '1';
     el.addEventListener('playing', () => {
       consecutivePianoErrors = 0;
       syncRadioMediaState('playing');
@@ -373,7 +377,7 @@ function startStream(url, fallbackSynthType) {
       if(finished)window.dispatchEvent(new CustomEvent('infinityradio:track-complete',{detail:{...finished,endedAt:new Date().toISOString(),durationSec:Number.isFinite(el.duration)?Math.round(el.duration):null}}));
       pianoTrackSession=null;
       pianoTrackIndex = (pianoTrackIndex + 1) % PIANO_PLAYLIST.length;
-      sessionStorage.setItem('infinityRadio:pianoTrackIndex', String(pianoTrackIndex));
+      try { sessionStorage.setItem('infinityRadio:pianoTrackIndex', String(pianoTrackIndex)); } catch (_) {}
       playPianoTrack(el);
     });
     el.addEventListener('error', () => {
@@ -391,6 +395,7 @@ function startStream(url, fallbackSynthType) {
       showToast('Skipping unavailable piano track', '🎹');
       setTimeout(() => { if (state.isPlaying && el === streamAudioEl) playPianoTrack(el); }, 250);
     });
+    }
   }
   playPianoTrack(el);
 }
