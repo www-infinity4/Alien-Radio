@@ -82,6 +82,7 @@ body.web-mode .player h1,body.web-mode .player p,body.web-mode #piano-status{dis
 <h1 id="np-title">INFINITY RADIO</h1>
 <p id="np-artist">Continuous classical piano</p>
 <button id="play-btn" type="button" onclick="togglePlay()" aria-label="Play or pause">▶</button>
+<audio id="infinity-radio-audio" preload="auto" playsinline aria-label="Infinity Radio piano audio" hidden></audio>
 <div id="piano-status">Piano Radio</div>
 <div id="freq-display" hidden>88.1</div><div id="channel-name" hidden>PIANO</div><div id="signal-bars" hidden></div><ul id="channel-list" hidden></ul><div id="sig-meter-signal" hidden></div>
 </main>
@@ -113,7 +114,7 @@ body.web-mode .player h1,body.web-mode .player p,body.web-mode #piano-status{dis
 <script src="radio-device-wallet.js?v=20261013-owner-reconnect1"></script>
 <script>document.addEventListener("starquest:ledger-connected",()=>{const el=document.getElementById("ledgerState");if(el){el.textContent="UNIFIED WALLET CONNECTED";el.classList.add("connected")}window.ControlPhi?.refreshWallet?.()});document.addEventListener("starquest:ledger-error",event=>{const el=document.getElementById("ledgerState");if(el)el.textContent="WALLET PENDING · "+String(event.detail?.error||"UNKNOWN").replace(/_/g," ").toUpperCase()});document.addEventListener("DOMContentLoaded",()=>{if(!window.StarQuestAuth?.currentUser?.()){const el=document.getElementById("ledgerState");if(el)el.textContent="GUEST · CONNECT ACCOUNT FOR CLOUD WALLET"}});</script>
 <script src="https://unified-wallet.marvaseater.workers.dev/unified-wallet.js?v=20260927-cloud2"></script>
-<script src="app.js?v=20260927-archive100"></script>
+<script src="app.js?v=20261020-background-piano-front1"></script>
 <script src="music-quant-store.js?v=20260927-idb1"></script>
 <script src="music-quant.js?v=20260928-cloud-commit7"></script>
 <script src="music-quant-composer.js?v=20260928-continuous1"></script>
