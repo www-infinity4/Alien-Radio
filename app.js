@@ -246,6 +246,11 @@ let pianoTrackSession = null;
 // system media notification and lock-screen controls. No hidden timers,
 // wake locks, or synthetic clicks: they are unreliable when a screen sleeps.
 let consecutivePianoErrors = 0;
+// The play() promise for an old song can settle after the next track starts.
+// These serials ensure a late rejection or duplicate media error cannot stop
+// the station or skip a second song.
+let pianoPlayAttempt = 0;
+let failedPianoAttempt = -1;
 let mediaHandlersInstalled = false;
 function syncRadioMediaState(status) {
   if ('mediaSession' in navigator) navigator.mediaSession.playbackState = status;
@@ -382,25 +387,53 @@ function startStream(url, fallbackSynthType) {
     });
     el.addEventListener('error', () => {
       if (!state.isPlaying || el !== streamAudioEl) return;
-      pianoTrackIndex = (pianoTrackIndex + 1) % PIANO_PLAYLIST.length;
-      try { sessionStorage.setItem('infinityRadio:pianoTrackIndex', String(pianoTrackIndex)); } catch (_) {}
-      if (++consecutivePianoErrors >= PIANO_PLAYLIST.length) {
-        state.isPlaying = false;
-        syncRadioMediaState('paused');
-        const btn = document.getElementById('play-btn');
-        if (btn) btn.textContent = '▶';
-        showToast('Piano sources unavailable. Tap Play to retry.', '🎹');
-        return;
-      }
-      showToast('Skipping unavailable piano track', '🎹');
-      setTimeout(() => { if (state.isPlaying && el === streamAudioEl) playPianoTrack(el); }, 250);
+      recoverPianoPlayback(el, pianoPlayAttempt, el.error || new Error('media_error'));
     });
     }
   }
   playPianoTrack(el);
 }
 
+function recoverPianoPlayback(el, attempt, error) {
+  // An error event and a rejected play() promise can report the same failure.
+  // The next song must only be selected once, and obsolete requests ignored.
+  if (!state.isPlaying || el !== streamAudioEl ||
+      attempt !== pianoPlayAttempt || failedPianoAttempt === attempt) return;
+  failedPianoAttempt = attempt;
+  pianoTrackSession = null;
+  if (error?.name === 'NotAllowedError') {
+    // Android/browser autoplay policy needs a real user gesture. Do not
+    // silently exhaust the playlist or claim that background play is possible.
+    state.isPlaying = false;
+    syncRadioMediaState('paused');
+    const btn = document.getElementById('play-btn');
+    if (btn) btn.textContent = '▶';
+    showToast('Tap Play to resume Infinity Radio', '▶️');
+    return;
+  }
+  if (++consecutivePianoErrors >= PIANO_PLAYLIST.length) {
+    state.isPlaying = false;
+    syncRadioMediaState('paused');
+    const btn = document.getElementById('play-btn');
+    if (btn) btn.textContent = '▶';
+    showToast('Piano sources unavailable. Tap Play to retry.', '🎹');
+    return;
+  }
+  pianoTrackIndex = (pianoTrackIndex + 1) % PIANO_PLAYLIST.length;
+  try { sessionStorage.setItem('infinityRadio:pianoTrackIndex', String(pianoTrackIndex)); } catch (_) {}
+  showToast('Skipping unavailable piano track', '🎹');
+  // Move forward without a foreground-only timer. Check the serial again
+  // because the listener may have paused or manually switched tracks.
+  Promise.resolve().then(() => {
+    if (state.isPlaying && el === streamAudioEl && pianoPlayAttempt === attempt) {
+      playPianoTrack(el);
+    }
+  });
+}
+
 function playPianoTrack(el) {
+  if (!state.isPlaying || el !== streamAudioEl || !PIANO_PLAYLIST.length) return;
+  const attempt = ++pianoPlayAttempt;
   const track = PIANO_PLAYLIST[pianoTrackIndex % PIANO_PLAYLIST.length];
   updateRadioMediaMetadata(track);
   pianoTrackSession={track:{title:track.title,url:track.url,archiveItem:track.archiveItem||''},trackIndex:pianoTrackIndex,startedAt:new Date().toISOString()};
@@ -409,16 +442,14 @@ function playPianoTrack(el) {
   const channelLabel = document.getElementById('np-channel');
   if (channelLabel) channelLabel.textContent = track.title;
   if (el.src !== track.url) el.src = track.url;
-  const p = el.play();
-  if (p && typeof p.catch === 'function') p.catch(() => {
-    if (el === streamAudioEl && state.isPlaying) {
-      state.isPlaying = false;
-      const btn = document.getElementById('play-btn');
-      if (btn) btn.textContent = '▶';
-      syncRadioMediaState('paused');
-      showToast('Tap Play to start piano', '▶️');
+  try {
+    const p = el.play();
+    if (p && typeof p.catch === 'function') {
+      p.catch(error => recoverPianoPlayback(el, attempt, error));
     }
-  });
+  } catch (error) {
+    recoverPianoPlayback(el, attempt, error);
+  }
 }
 
 function startSynth() {
