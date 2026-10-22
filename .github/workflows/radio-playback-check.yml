@@ -1,0 +1,23 @@
+name: Infinity Radio playback checks
+
+on:
+  pull_request:
+    paths:
+      - 'app.js'
+      - 'index.html'
+      - 'radio-playback.test.js'
+      - '.github/workflows/radio-playback-check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  playback:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check JavaScript syntax
+        run: node --check app.js
+      - name: Verify continuous playlist playback
+        run: node --test radio-playback.test.js
