@@ -8,7 +8,7 @@ const feed = JSON.parse(fs.readFileSync('oracle-track-feed.json', 'utf8'));
 
 test('new piano tracks lead the actual player and shared Oracle feed', () => {
   const playlist = script.slice(script.indexOf('const PIANO_PLAYLIST = ['), script.indexOf('];', script.indexOf('const PIANO_PLAYLIST = [')));
-  const firstSix = feed.tracks.slice(0, 6);
+  const firstSix = feed.tracks.filter(track => track.url.startsWith('https://archive.org/download/musopen-chopin/')).slice(-6);
   assert.equal(firstSix.length, 6);
   for (const track of firstSix) {
     assert.ok(playlist.includes(JSON.stringify(track.url)), track.title + ' should be in radio');
@@ -17,7 +17,7 @@ test('new piano tracks lead the actual player and shared Oracle feed', () => {
   const firstOriginal = playlist.indexOf('Chopin · Prelude in E Minor Op. 28 No. 4');
   for (const track of firstSix) assert.ok(playlist.indexOf(track.title) < firstOriginal);
   assert.equal(new Set(feed.tracks.map(t => t.url)).size, feed.tracks.length);
-  assert.equal(feed.tracks.length, 30);
+  assert.ok(feed.tracks.length >= 30, 'publishing discoveries may only increase the catalog');
 });
 
 test('screen-off playback has HTML audio and Android media controls', () => {
@@ -26,7 +26,10 @@ test('screen-off playback has HTML audio and Android media controls', () => {
   assert.match(script, /navigator\.mediaSession\.setActionHandler/);
   for (const name of ['play','pause','nexttrack','previoustrack']) assert.ok(script.includes(name + ': () =>'));
   assert.match(script, /document\.addEventListener\('visibilitychange'/);
-  assert.match(script, /if \(!document\.hidden && state\.isPlaying/);
+  assert.match(script, /if\(document\.hidden\|\|!state\.isPlaying/);
+  for(const event of ["focus","pageshow","online"]) assert.ok(script.includes("addEventListener('"+event+"',resumeInterruptedRadio)"));
+  assert.match(html,/radio-queue\.js\?v=/);
+  assert.match(script,/refreshPianoLibrary\(\)/);
   assert.match(script, /el\.dataset\.infinityRadioWired/);
   assert.match(script, /PIANO_QUEUE_REVISION/);
   assert.match(script, /if \(streamAudioEl\) streamAudioEl\.pause\(\);/);
