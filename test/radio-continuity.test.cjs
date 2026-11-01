@@ -3,7 +3,7 @@
 'use strict';
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
-const {mergeNewTracks,readSavedTracks}=require('../radio-queue.cjs');
+const {mergeNewTracks,readSavedTracks}=require('../radio-queue.js');
 const {buildCatalog}=require('../scripts/update-radio-catalog.cjs');
 
 const url=(name)=>'https://archive.org/download/musopen-chopin/'+encodeURIComponent(name)+'.mp3';
