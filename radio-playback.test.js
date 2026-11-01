@@ -52,7 +52,7 @@ function buildRadio(trackCount = 3) {
     load() {}
   }
   const audio = new FakeAudio();
-  const events = [], messages = [], saved = new Map();
+  const events = [], messages = [], saved = new Map(), lifecycle = new Map();
   const labels = {
     'infinity-radio-audio': audio,
     'play-btn': { textContent: '▶' },
@@ -64,12 +64,17 @@ function buildRadio(trackCount = 3) {
       url: 'https://archive.org/download/track-' + (i + 1) + '.mp3',
     })),
     pianoTrackIndex: 0,
+    pianoCurrentTrackUrl: '',
     state: { isPlaying: false, volume: 72, activeChannel: 0 },
     document: {
-      addEventListener() {},
+      hidden: false,
+      addEventListener(name, handler) { lifecycle.set('document:'+name, handler); },
       getElementById(id) { return labels[id] || null; },
     },
-    window: { dispatchEvent(event) { events.push(event); } },
+    window: {
+      dispatchEvent(event) { events.push(event); },
+      addEventListener(name, handler) { lifecycle.set('window:'+name, handler); },
+    },
     navigator: { mediaSession: { setActionHandler() {}, playbackState: 'paused' } },
     MediaMetadata: class { constructor(details) { Object.assign(this, details); } },
     CustomEvent: class { constructor(type, { detail }) { this.type = type; this.detail = detail; } },
@@ -88,7 +93,7 @@ function buildRadio(trackCount = 3) {
         errors: consecutivePianoErrors, attempts: pianoPlayAttempt }; }
     };
   `, context, { filename: 'app.js radio engine' });
-  return { audio, events, messages, saved, api: context.radioTest };
+  return { audio, events, messages, saved, lifecycle, api: context.radioTest };
 }
 
 const failure = (name) => Object.assign(new Error(name), { name });
@@ -162,4 +167,26 @@ test('a late ended event after pause does not advance playback or award a track'
   r.audio.dispatch('ended');
   assert.equal(r.api.status().index, 0);
   assert.equal(r.events.filter(event => event.type === 'infinityradio:track-complete').length, 0);
+});
+
+test('returning to radio after Android focus interruption resumes a requested song', async()=>{
+  const r=buildRadio();
+  r.api.start();
+  assert.equal(r.audio.played.length,1);
+  r.audio.pause(); // Android suspended the player; the user did not press Pause.
+  r.lifecycle.get('window:focus')();
+  await flush();
+  assert.equal(r.audio.played.length,2);
+  assert.equal(r.api.status().playing,true);
+});
+test('returning to the page never overrides a deliberate Pause', async()=>{
+  const r=buildRadio();
+  r.api.start();
+  r.api.pause();
+  for(const event of ['window:focus','window:pageshow','window:online','document:visibilitychange']) {
+    r.lifecycle.get(event)();
+  }
+  await flush();
+  assert.equal(r.audio.played.length,1);
+  assert.equal(r.api.status().playing,false);
 });
