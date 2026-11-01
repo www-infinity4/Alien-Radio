@@ -56,10 +56,13 @@ let pianoTrackIndex=(()=>{
   }catch(_){return 0}
 })();
 let pianoCurrentTrackUrl='';
+let pianoNewTracksWaiting=false;
 function addPianoTracks(incoming,source){
   const previousUrl=pianoCurrentTrackUrl||(pianoTrackIndex>0?PIANO_PLAYLIST[pianoTrackIndex]?.url:'');
   const merged=radioQueue.mergeNewTracks(PIANO_PLAYLIST,incoming);
   if(!merged.added)return 0;
+  // Finish the current recording, then play the newly discovered front of stack.
+  if(pianoCurrentTrackUrl)pianoNewTracksWaiting=true;
   PIANO_PLAYLIST.splice(0,PIANO_PLAYLIST.length,...merged.tracks);
   // Do not restart or skip a playing/paused recording when a catalog refresh arrives.
   pianoTrackIndex=previousUrl?PIANO_PLAYLIST.findIndex(track=>track.url===previousUrl):0;
@@ -302,7 +305,9 @@ function updateRadioMediaMetadata(track) {
 }
 function movePianoTrack(offset) {
   if (!PIANO_PLAYLIST.length) return;
-  pianoTrackIndex = (pianoTrackIndex + offset + PIANO_PLAYLIST.length) % PIANO_PLAYLIST.length;
+  pianoTrackIndex = (pianoNewTracksWaiting && offset > 0) ? 0 :
+    (pianoTrackIndex + offset + PIANO_PLAYLIST.length) % PIANO_PLAYLIST.length;
+  if(offset > 0)pianoNewTracksWaiting=false;
   try { sessionStorage.setItem('infinityRadio:pianoTrackIndex', String(pianoTrackIndex)); } catch (_) {}
   if (!state.isPlaying) {
     state.isPlaying = true;
@@ -423,7 +428,8 @@ function startStream(url, fallbackSynthType) {
       const finished=pianoTrackSession;
       if(finished)window.dispatchEvent(new CustomEvent('infinityradio:track-complete',{detail:{...finished,endedAt:new Date().toISOString(),durationSec:Number.isFinite(el.duration)?Math.round(el.duration):null}}));
       pianoTrackSession=null;
-      pianoTrackIndex = (pianoTrackIndex + 1) % PIANO_PLAYLIST.length;
+      pianoTrackIndex = pianoNewTracksWaiting ? 0 : (pianoTrackIndex + 1) % PIANO_PLAYLIST.length;
+      pianoNewTracksWaiting=false;
       try { sessionStorage.setItem('infinityRadio:pianoTrackIndex', String(pianoTrackIndex)); } catch (_) {}
       playPianoTrack(el);
     });

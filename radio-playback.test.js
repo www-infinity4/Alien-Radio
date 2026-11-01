@@ -65,6 +65,7 @@ function buildRadio(trackCount = 3) {
     })),
     pianoTrackIndex: 0,
     pianoCurrentTrackUrl: '',
+    pianoNewTracksWaiting: false,
     state: { isPlaying: false, volume: 72, activeChannel: 0 },
     document: {
       hidden: false,
@@ -88,6 +89,7 @@ function buildRadio(trackCount = 3) {
     globalThis.radioTest = {
       start() { state.isPlaying = true; startStream('ignored'); },
       next() { movePianoTrack(1); },
+      queueNewest() { PIANO_PLAYLIST.unshift({title:'New arrival',url:'https://archive.org/download/new.mp3'}); pianoTrackIndex++; pianoNewTracksWaiting=true; },
       pause() { state.isPlaying = false; streamAudioEl.pause(); },
       status() { return { playing: state.isPlaying, index: pianoTrackIndex,
         errors: consecutivePianoErrors, attempts: pianoPlayAttempt }; }
@@ -189,4 +191,23 @@ test('returning to the page never overrides a deliberate Pause', async()=>{
   await flush();
   assert.equal(r.audio.played.length,1);
   assert.equal(r.api.status().playing,false);
+});
+
+test('catalog growth never interrupts the current song; the newest entry plays next',()=>{
+ const r=buildRadio();
+ r.api.start();
+ r.api.queueNewest();
+ assert.equal(r.audio.played.length,1,'new music must not restart the active audio');
+ r.audio.dispatch('ended');
+ assert.equal(r.audio.played[1],'https://archive.org/download/new.mp3');
+ assert.equal(r.api.status().index,0);
+ assert.equal(r.events.filter(e=>e.type==='infinityradio:track-complete').length,1);
+});
+test('manual Next selects newly discovered music before returning to older tracks',()=>{
+ const r=buildRadio();
+ r.api.start();
+ r.api.queueNewest();
+ r.api.next();
+ assert.equal(r.audio.played[1],'https://archive.org/download/new.mp3');
+ assert.equal(r.api.status().index,0);
 });
