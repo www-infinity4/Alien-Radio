@@ -41,35 +41,72 @@ const PIANO_PLAYLIST = [
   { title: "Mozart · Piano Sonata No. 11 · Alla Turca", url: "https://www.orangefreesounds.com/wp-content/uploads/2017/10/Piano-sonata-no-11.mp3" }
 ];
 const ARCHIVE_PIANO_SOURCE='musopen-chopin';
-async function loadArchivePianoLibrary(){
+const radioQueue=globalThis.InfinityRadioQueue;
+const BASE_PIANO_URLS=new Set(PIANO_PLAYLIST.map(track=>track.url));
+const PIANO_QUEUE_REVISION='2026-10-20-new-piano-front';
+let pianoTrackIndex=(()=>{
   try{
-    const response=await fetch('https://archive.org/metadata/'+ARCHIVE_PIANO_SOURCE,{cache:'force-cache'});
-    if(!response.ok)throw new Error('archive_metadata_'+response.status);
-    const metadata=await response.json(),existing=new Set(PIANO_PLAYLIST.map(track=>track.url));
-    const additions=(Array.isArray(metadata.files)?metadata.files:[])
-      .filter(file=>/\.mp3$/i.test(String(file?.name||''))&&/mp3/i.test(String(file?.format||'MP3')))
-      .map(file=>{const name=String(file.name),title=String(file.title||file.track||name.replace(/\.mp3$/i,'').replace(/[_-]+/g,' ')).trim();return {title:'Chopin · '+title,url:'https://archive.org/download/'+ARCHIVE_PIANO_SOURCE+'/'+name.split('/').map(encodeURIComponent).join('/'),archiveItem:ARCHIVE_PIANO_SOURCE}})
-      .filter(track=>track.title&&track.url&&!existing.has(track.url)).slice(0,100);
-    additions.forEach(track=>{existing.add(track.url);PIANO_PLAYLIST.push(track)});
-    window.dispatchEvent(new CustomEvent('infinityradio:library-loaded',{detail:{added:additions.length,total:PIANO_PLAYLIST.length,source:ARCHIVE_PIANO_SOURCE}}));
-  }catch(error){console.warn('Archive piano library deferred',error)}
-}
-loadArchivePianoLibrary();
-
-// Queue revision resets only once, so the freshly added songs play first without
-// throwing listeners back to track 1 on every return or screen unlock.
-const PIANO_QUEUE_REVISION = '2026-10-20-new-piano-front';
-let pianoTrackIndex = (() => {
-  try {
-    if (sessionStorage.getItem('infinityRadio:pianoQueueRevision') !== PIANO_QUEUE_REVISION) {
-      sessionStorage.setItem('infinityRadio:pianoQueueRevision', PIANO_QUEUE_REVISION);
-      sessionStorage.setItem('infinityRadio:pianoTrackIndex', '0');
+    if(sessionStorage.getItem('infinityRadio:pianoQueueRevision')!==PIANO_QUEUE_REVISION){
+      sessionStorage.setItem('infinityRadio:pianoQueueRevision',PIANO_QUEUE_REVISION);
+      sessionStorage.setItem('infinityRadio:pianoTrackIndex','0');
       return 0;
     }
-    const saved = Number(sessionStorage.getItem('infinityRadio:pianoTrackIndex'));
-    return Number.isInteger(saved) && saved >= 0 && saved < PIANO_PLAYLIST.length ? saved : 0;
-  } catch (_) { return 0; }
+    const saved=Number(sessionStorage.getItem('infinityRadio:pianoTrackIndex'));
+    return Number.isInteger(saved)&&saved>=0&&saved<PIANO_PLAYLIST.length?saved:0;
+  }catch(_){return 0}
 })();
+let pianoCurrentTrackUrl='';
+function addPianoTracks(incoming,source){
+  const previousUrl=pianoCurrentTrackUrl||(pianoTrackIndex>0?PIANO_PLAYLIST[pianoTrackIndex]?.url:'');
+  const merged=radioQueue.mergeNewTracks(PIANO_PLAYLIST,incoming);
+  if(!merged.added)return 0;
+  PIANO_PLAYLIST.splice(0,PIANO_PLAYLIST.length,...merged.tracks);
+  // Do not restart or skip a playing/paused recording when a catalog refresh arrives.
+  pianoTrackIndex=previousUrl?PIANO_PLAYLIST.findIndex(track=>track.url===previousUrl):0;
+  if(pianoTrackIndex<0)pianoTrackIndex=0;
+  try{
+    const discoveries=PIANO_PLAYLIST.filter(track=>!BASE_PIANO_URLS.has(track.url)&&radioQueue.validDiscovery(track));
+    localStorage.setItem(radioQueue.CACHE_KEY,JSON.stringify(discoveries));
+    sessionStorage.setItem('infinityRadio:pianoTrackIndex',String(pianoTrackIndex));
+  }catch(_){/* Storage may be unavailable; the in-memory queue still grows. */}
+  window.dispatchEvent(new CustomEvent('infinityradio:library-loaded',{
+    detail:{added:merged.added,total:PIANO_PLAYLIST.length,source}
+  }));
+  return merged.added;
+}
+try{addPianoTracks(radioQueue.readSavedTracks(localStorage),'device-cache')}catch(_){}
+async function loadPublishedPianoLibrary(){
+  try{
+    const response=await fetch('./oracle-track-feed.json',{cache:'no-store'});
+    if(!response.ok)throw new Error('catalog_http_'+response.status);
+    const data=await response.json();
+    if(!Array.isArray(data.tracks))throw new Error('catalog_tracks_missing');
+    addPianoTracks(data.tracks,'published-catalog');
+  }catch(error){console.warn('Published piano catalog deferred',error)}
+}
+async function loadArchivePianoLibrary(){
+  try{
+    const response=await fetch('https://archive.org/metadata/'+ARCHIVE_PIANO_SOURCE,{cache:'no-store'});
+    if(!response.ok)throw new Error('archive_metadata_'+response.status);
+    const metadata=await response.json();
+    const additions=(Array.isArray(metadata.files)?metadata.files:[])
+      .filter(file=>/\.mp3$/i.test(String(file?.name||''))&&/mp3/i.test(String(file?.format||'')))
+      .sort((a,b)=>Number(b.mtime||0)-Number(a.mtime||0))
+      .map(file=>{
+        const name=String(file.name);
+        const title=String(file.title||file.track||name.replace(/\.mp3$/i,'').replace(/[_-]+/g,' ')).trim();
+        return {title:'Chopin · '+title,url:'https://archive.org/download/'+ARCHIVE_PIANO_SOURCE+'/'+name.split('/').map(encodeURIComponent).join('/'),archiveItem:ARCHIVE_PIANO_SOURCE};
+      });
+    addPianoTracks(additions,'archive-metadata');
+  }catch(error){console.warn('Archive piano library deferred',error)}
+}
+async function refreshPianoLibrary(){
+  await loadPublishedPianoLibrary();
+  await loadArchivePianoLibrary();
+}
+refreshPianoLibrary();
+// Foreground refresh; browsing other cards never clears the accumulated queue.
+setInterval(()=>{if(!document.hidden)refreshPianoLibrary()},60*60*1000);
 
 const CHANNELS = [
   {
@@ -291,11 +328,16 @@ function installRadioMediaHandlers() {
 }
 // Never shut down the player when a page becomes hidden. Recover only when
 // the browser foregrounds a previously interrupted, still-requested session.
-document.addEventListener('visibilitychange', () => {
-  if (!document.hidden && state.isPlaying && streamAudioEl?.paused && streamAudioEl.currentSrc) {
-    streamAudioEl.play().catch(() => showToast('Tap Play to resume piano', '▶️'));
-  }
-});
+function resumeInterruptedRadio(){
+  // Keep a user-requested session alive after Android returns focus. Do not
+  // turn a user-pressed Pause into an unintended new Play request.
+  if(document.hidden||!state.isPlaying||!streamAudioEl?.paused||!streamAudioEl.currentSrc)return;
+  streamAudioEl.play().catch(()=>showToast('Tap Play to resume piano','▶️'));
+}
+document.addEventListener('visibilitychange',resumeInterruptedRadio);
+window.addEventListener('focus',resumeInterruptedRadio);
+window.addEventListener('pageshow',resumeInterruptedRadio);
+window.addEventListener('online',resumeInterruptedRadio);
 
 
 // Synth profiles — keyed by synthType (used as fallback when stream fails)
@@ -435,6 +477,7 @@ function playPianoTrack(el) {
   if (!state.isPlaying || el !== streamAudioEl || !PIANO_PLAYLIST.length) return;
   const attempt = ++pianoPlayAttempt;
   const track = PIANO_PLAYLIST[pianoTrackIndex % PIANO_PLAYLIST.length];
+  pianoCurrentTrackUrl=track.url;
   updateRadioMediaMetadata(track);
   pianoTrackSession={track:{title:track.title,url:track.url,archiveItem:track.archiveItem||''},trackIndex:pianoTrackIndex,startedAt:new Date().toISOString()};
   window.dispatchEvent(new CustomEvent('infinityradio:track-start',{detail:pianoTrackSession}));
