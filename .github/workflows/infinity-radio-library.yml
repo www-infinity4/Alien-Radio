@@ -1,0 +1,41 @@
+name: Infinity Radio append-only music catalog
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 10 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: infinity-radio-catalog
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify existing queue and playback before ingestion
+        run: node --test radio-playback.test.js test/piano-playback.test.cjs test/radio-continuity.test.cjs
+      - name: Discover newly published approved Archive.org recordings
+        run: node scripts/update-radio-catalog.cjs
+      - name: Verify catalog is cumulative after ingestion
+        run: node --test radio-playback.test.js test/piano-playback.test.cjs test/radio-continuity.test.cjs
+      - name: Publish only additive catalog changes
+        run: |
+          if git diff --quiet -- oracle-track-feed.json; then
+            echo "No new approved audio files; preserving all earlier songs."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add oracle-track-feed.json
+          git commit -m "chore(radio): prepend newly discovered recordings; retain full archive"
+          git push origin HEAD:main
