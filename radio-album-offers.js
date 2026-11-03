@@ -182,6 +182,9 @@
    win.addEventListener('infinityradio:track-start',event=>{
      if(event?.detail?.track?.title)showTrack(event.detail.track);
    });
+   win.addEventListener('infinityradio:track-selected',event=>{
+     if(event?.detail?.track?.title)showTrack(event.detail.track);
+   });
    win.addEventListener('infinityradio:library-loaded',selected);
    doc.getElementById('piano-library-select')?.addEventListener('change',selected);
    selected();
