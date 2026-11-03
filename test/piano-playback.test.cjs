@@ -56,3 +56,11 @@ test('published collection adds other composers, retains all earlier recordings,
  assert.equal(new Set(feed.tracks.map(track=>track.url)).size,274);
  assert.equal(feed.tracks.filter(track=>track.archiveItem==='MusopenCollectionAsFlac').length,145);
 });
+
+test('full station falls back to the immutable 274-song snapshot if the moving catalog returns 129',()=>{
+ assert.match(script,/RADIO_BOOTSTRAP_CATALOG/);
+ assert.match(script,/data\.tracks\.length<274/);
+ assert.match(script,/snapshot\.tracks\.length>=274/);
+ assert.match(script,/addPianoTracks\(snapshot\.tracks,'verified-274-track-snapshot'\)/);
+ assert.match(html,/app\.js\?v=20261102-274-snapshot2/);
+});

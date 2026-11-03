@@ -41,6 +41,9 @@ const PIANO_PLAYLIST = [
   { title: "Mozart · Piano Sonata No. 11 · Alla Turca", url: "https://www.orangefreesounds.com/wp-content/uploads/2017/10/Piano-sonata-no-11.mp3" }
 ];
 const ARCHIVE_PIANO_SOURCE='musopen-chopin';
+// Immutable verified 274-track bootstrap while GitHub's moving main URL propagates.
+// The additive published feed remains authoritative once it catches up or grows.
+const RADIO_BOOTSTRAP_CATALOG='https://raw.githubusercontent.com/www-infinity4/Alien-Radio/2a9476cf50fe8c2a2a2f7aa6a4d6ce27ab6aae66/oracle-track-feed.json';
 const radioQueue=globalThis.InfinityRadioQueue;
 const BASE_PIANO_URLS=new Set(PIANO_PLAYLIST.map(track=>track.url));
 const PIANO_QUEUE_REVISION='2026-11-02-published-collection-front';
@@ -125,6 +128,19 @@ async function loadPublishedPianoLibrary(){
     const data=await response.json();
     if(!Array.isArray(data.tracks))throw new Error('catalog_tracks_missing');
     addPianoTracks(data.tracks,'published-catalog');
+    if(data.tracks.length<274){
+      // Do not advertise an updated song count while a cached 129-entry main
+      // response is still being served. Use the verified commit snapshot.
+      try{
+        const stable=await fetch(RADIO_BOOTSTRAP_CATALOG,{cache:'no-store'});
+        if(stable.ok){
+          const snapshot=await stable.json();
+          if(Array.isArray(snapshot.tracks)&&snapshot.tracks.length>=274){
+            addPianoTracks(snapshot.tracks,'verified-274-track-snapshot');
+          }
+        }
+      }catch(error){console.warn('Radio bootstrap snapshot deferred',error)}
+    }
     renderPianoLibrary('published collection');
   }catch(error){console.warn('Published piano catalog deferred',error);renderPianoLibrary('catalog unavailable · saved songs only')}
 }
