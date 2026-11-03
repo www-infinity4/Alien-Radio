@@ -81,6 +81,8 @@ function buildRadio(trackCount = 3) {
     CustomEvent: class { constructor(type, { detail }) { this.type = type; this.detail = detail; } },
     sessionStorage: { setItem(key, value) { saved.set(key, value); } },
     showToast(message) { messages.push(message); },
+    // Unit fixture extracts the audio engine, not the separate DOM catalog presenter.
+    renderPianoLibrary() {},
     console,
     setTimeout,
     Audio: FakeAudio,
