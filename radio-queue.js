@@ -1,14 +1,19 @@
 /* Shared append-only Infinity Radio queue utilities.
-   Browser: globalThis.InfinityRadioQueue. Node: require('./radio-queue.cjs').
+   Browser: globalThis.InfinityRadioQueue. Node: require('./radio-queue.js').
    Only explicitly approved Archive.org source recordings enter the discovered set. */
 (function (root) {
   'use strict';
   const CACHE_KEY = 'infinityRadio:discoveredPianoTracks:v1';
   const ARCHIVE_PREFIX = 'https://archive.org/download/musopen-chopin/';
+  const MUSOPEN_PREFIX = 'https://archive.org/download/MusopenCollectionAsFlac/';
+  const ARCHIVE_PREFIXES = [ARCHIVE_PREFIX,MUSOPEN_PREFIX];
+  function sourceId(url) {
+    return ARCHIVE_PREFIXES.find(prefix=>url.startsWith(prefix))?.slice('https://archive.org/download/'.length,-1)||'';
+  }
 
   function validDiscovery(track) {
     if (!track || typeof track.title !== 'string' || !track.title.trim() ||
-        typeof track.url !== 'string' || !track.url.startsWith(ARCHIVE_PREFIX) ||
+        typeof track.url !== 'string' || !sourceId(track.url) ||
         !/\.mp3$/i.test(track.url)) return false;
     try {
       const parsed = new URL(track.url);
@@ -18,7 +23,7 @@
   }
   function cleanTrack(track) {
     return {title: track.title.trim().slice(0, 200), url: track.url,
-      archiveItem: 'musopen-chopin'};
+      archiveItem: sourceId(track.url)};
   }
   function mergeNewTracks(existing, incoming) {
     const base = Array.isArray(existing) ? existing : [];
@@ -37,7 +42,7 @@
       return mergeNewTracks([], value).tracks;
     } catch (_) { return []; }
   }
-  const api = {CACHE_KEY, ARCHIVE_PREFIX, validDiscovery, mergeNewTracks, readSavedTracks};
+  const api = {CACHE_KEY, ARCHIVE_PREFIX, MUSOPEN_PREFIX, ARCHIVE_PREFIXES, validDiscovery, mergeNewTracks, readSavedTracks};
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.InfinityRadioQueue = api;
 })(globalThis);

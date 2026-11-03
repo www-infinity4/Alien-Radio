@@ -4,6 +4,731 @@
   "station": "Classical Piano",
   "tracks": [
     {
+      "title": "Felix Mendelssohn - Hebrides Overture Fingal's Cave",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mendelssohn_Hebrides/FelixMendelssohn-HebridesOvertureFingalsCave.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Joseph Haydn - String Quartet in D, Op. 645, H 363, Lark - 03 - Menuetto Allegretto",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Haydn_StringQuartetInDMajorOp.64/JosephHaydn-StringQuartetInDOp.645H363Lark-03-MenuettoAllegretto.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Joseph Haydn - String Quartet in D, Op. 645, H 363, Lark - 04 - Finale Vivace",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Haydn_StringQuartetInDMajorOp.64/JosephHaydn-StringQuartetInDOp.645H363Lark-04-FinaleVivace.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Felix Mendelssohn - Symphony No. 4 in A Major, Op. 90 'Italian' - 04 - Saltarello (Presto)",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mendelssohn_ItalianSymphony/FelixMendelssohn-SymphonyNo.4InAMajorOp.90italian-04-Saltarellopresto.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Wolfgang Amadeus Mozart - String Quartet No. 15 in D Minor, K 421 - 03 - Minuetto",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mozart_StringQuartetNo.15inDMinorK421/WolfgangAmadeusMozart-StringQuartetNo.15InDMinorK421-03-Minuetto.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Felix Mendelssohn - Symphony No. 4 in A Major, Op. 90 'Italian' - 01 - Allegro vivace",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mendelssohn_ItalianSymphony/FelixMendelssohn-SymphonyNo.4InAMajorOp.90italian-01-AllegroVivace.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Felix Mendelssohn - Symphony No. 3 in A Minor 'Scottish', Op. 56 - 01 - Andante con moto",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mendelssohn_ScottishSymphony/FelixMendelssohn-SymphonyNo.3InAMinorscottishOp.56-01-AndanteConMoto.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Wolfgang Amadeus Mozart - String Quartet No. 15 in D Minor, K 421 - 02 - Andante",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mozart_StringQuartetNo.15inDMinorK421/WolfgangAmadeusMozart-StringQuartetNo.15InDMinorK421-02-Andante.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Wolfgang Amadeus Mozart - String Quartet No. 15 in D Minor, K 421 - 01 - Allegro Moderato",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mozart_StringQuartetNo.15inDMinorK421/WolfgangAmadeusMozart-StringQuartetNo.15InDMinorK421-01-AllegroModerato.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Alexander Borodin - String Quartet No. 2 in D Major - 04 - Finale Andante - Vivace",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Borodin_StringQuartetNo.2inDMajor/AlexanderBorodin-StringQuartetNo.2InDMajor-04-FinaleAndante-Vivace.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in A Minor, D. 845 - 01 - Moderato",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInAMinorD.845/FranzSchubert-SonataInAMinorD.845-01-Moderato.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johannes Brahms - Tragic Overture",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Brahms_TragicOverture/JohannesBrahms-TragicOverture.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "AntonÃ­n DvoÅ™Ã¡k - String Quartet No. 10 in E Flat, Op. 51 - 01 - Allegro Ma Non Troppo",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Dvorak_StringQuartetNo.10inEFlatOp.51/AntonnDvorak-StringQuartetNo.10InEFlatOp.51-01-AllegroMaNonTroppo.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Felix Mendelssohn - Symphony No. 4 in A Major, Op. 90 'Italian' - 03 - Con moto moderato",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mendelssohn_ItalianSymphony/FelixMendelssohn-SymphonyNo.4InAMajorOp.90italian-03-ConMotoModerato.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Felix Mendelssohn - Symphony No. 4 in A Major, Op. 90 'Italian' - 02 - Andante con moto",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mendelssohn_ItalianSymphony/FelixMendelssohn-SymphonyNo.4InAMajorOp.90italian-02-AndanteConMoto.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Felix Mendelssohn - String Quartet No. 6 in F Minor, Op. 80 - 01 - Allegro vivace assai",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mendelssohn_StringQuartetNo.6inFMinorOp.80/FelixMendelssohn-StringQuartetNo.6InFMinorOp.80-01-AllegroVivaceAssai.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "AntonÃ­n DvoÅ™Ã¡k - String Quartet No. 10 in E Flat, Op. 51 - 03 - Romanza",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Dvorak_StringQuartetNo.10inEFlatOp.51/AntonnDvorak-StringQuartetNo.10InEFlatOp.51-03-Romanza.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Felix Mendelssohn - String Quartet No. 6 in F Minor, Op. 80 - 04 - Fuga",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mendelssohn_StringQuartetNo.6inFMinorOp.80/FelixMendelssohn-StringQuartetNo.6InFMinorOp.80-04-Fuga.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Wolfgang Amadeus Mozart - String Quartet No. 19 in C, K 465, Dissonance - 04 - Allegro Volto",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mozart_StringQuartetNo.19inCMajorK465/WolfgangAmadeusMozart-StringQuartetNo.19InCK465Dissonance-04-AllegroVolto.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "AntonÃ­n DvoÅ™Ã¡k - String Quartet No. 12 in F Major, Op. 96, American - 02 - Lento",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Dvorak_StringQuartetNo.12inFMajorOp.96/AntonnDvorak-StringQuartetNo.12InFMajorOp.96American-02-Lento.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "AntonÃ­n DvoÅ™Ã¡k - String Quartet No. 10 in E Flat, Op. 51 - 04 - Finale Allegro Assai",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Dvorak_StringQuartetNo.10inEFlatOp.51/AntonnDvorak-StringQuartetNo.10InEFlatOp.51-04-FinaleAllegroAssai.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 01 - Goldberg Variations, BWV. 988 - Aria",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-01-GoldbergVariationsBwv.988-Aria.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Alexander Borodin - String Quartet No. 2 in D Major - 03 - Nocturne Andante",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Borodin_StringQuartetNo.2inDMajor/AlexanderBorodin-StringQuartetNo.2InDMajor-03-NocturneAndante.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "AntonÃ­n DvoÅ™Ã¡k - String Quartet No. 10 in E Flat, Op. 51 - 02 - Dumka",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Dvorak_StringQuartetNo.10inEFlatOp.51/AntonnDvorak-StringQuartetNo.10InEFlatOp.51-02-Dumka.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Wolfgang Amadeus Mozart - Symphony No. 40 in G Minor, K. 550 - 02 - Andante",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mozart_SymphonyNo.40inGMinor/WolfgangAmadeusMozart-SymphonyNo.40InGMinorK.550-02-Andante.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "AntonÃ­n DvoÅ™Ã¡k - String Quartet No. 12 in F Major, Op. 96, American - 01 - Allegro ma non troppo",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Dvorak_StringQuartetNo.12inFMajorOp.96/AntonnDvorak-StringQuartetNo.12InFMajorOp.96American-01-AllegroMaNonTroppo.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Wolfgang Amadeus Mozart - Symphony No. 40 in G Minor, K. 550 - 01 - Molto Allegro",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mozart_SymphonyNo.40inGMinor/WolfgangAmadeusMozart-SymphonyNo.40InGMinorK.550-01-MoltoAllegro.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Wolfgang Amadeus Mozart - Magic Flute Overture",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mozart_MagicFluteOverture/WolfgangAmadeusMozart-MagicFluteOverture.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Felix Mendelssohn - Symphony No. 3 in A Minor 'Scottish', Op. 56 - 04 - Allegro vivacissimo",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mendelssohn_ScottishSymphony/FelixMendelssohn-SymphonyNo.3InAMinorscottishOp.56-04-AllegroVivacissimo.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Felix Mendelssohn - String Quartet No. 6 in F Minor, Op. 80 - 02 - Allegro assai",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mendelssohn_StringQuartetNo.6inFMinorOp.80/FelixMendelssohn-StringQuartetNo.6InFMinorOp.80-02-AllegroAssai.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Wolfgang Amadeus Mozart - Marriage of Figaro",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mozart_MarriageOfFigaro/WolfgangAmadeusMozart-MarriageOfFigaro.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Felix Mendelssohn - Symphony No. 3 in A Minor 'Scottish', Op. 56 - 02 - Vivace non troppo",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mendelssohn_ScottishSymphony/FelixMendelssohn-SymphonyNo.3InAMinorscottishOp.56-02-VivaceNonTroppo.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Joseph Haydn - String Quartet in D, Op. 645, H 363, Lark - 02 - Adagio, Cantabile",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Haydn_StringQuartetInDMajorOp.64/JosephHaydn-StringQuartetInDOp.645H363Lark-02-AdagioCantabile.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Wolfgang Amadeus Mozart - String Quartet No. 15 in D Minor, K 421 - 04 - Allegro Ma Non Troppo",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mozart_StringQuartetNo.15inDMinorK421/WolfgangAmadeusMozart-StringQuartetNo.15InDMinorK421-04-AllegroMaNonTroppo.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Felix Mendelssohn - Symphony No. 3 in A Minor 'Scottish', Op. 56 - 03 - Adagio",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mendelssohn_ScottishSymphony/FelixMendelssohn-SymphonyNo.3InAMinorscottishOp.56-03-Adagio.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johannes Brahms - Symphony No. 3 in F Major, Op. 90 - 01 - Allegro con brio",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Brahms_SymphonyNo.3inFMajor/JohannesBrahms-SymphonyNo.3InFMajorOp.90-01-AllegroConBrio.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johannes Brahms - Symphony No. 1 in C Minor, Op. 68 - 01 - Un poco sostenuto - Allegro",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Brahms_SymphonyNo.1inCMinor/JohannesBrahms-SymphonyNo.1InCMinorOp.68-01-UnPocoSostenuto-Allegro.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johannes Brahms - Symphony No. 4 in E Minor, Op. 98 - 03 - Allegro Giocoso",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Brahms_SymphonyNo.4inEMinor/JohannesBrahms-SymphonyNo.4InEMinorOp.98-03-AllegroGiocoso.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johannes Brahms - Symphony No. 3 in F Major, Op. 90 - 03 - Poco allegretto",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Brahms_SymphonyNo.3inFMajor/JohannesBrahms-SymphonyNo.3InFMajorOp.90-03-PocoAllegretto.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johannes Brahms - Symphony No. 4 in E Minor, Op. 98 - 04 - Allegro Energico e Passionato",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Brahms_SymphonyNo.4inEMinor/JohannesBrahms-SymphonyNo.4InEMinorOp.98-04-AllegroEnergicoEPassionato.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Wolfgang Amadeus Mozart - Symphony No. 40 in G Minor, K. 550 - 03 - Menuetto Allegretto",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mozart_SymphonyNo.40inGMinor/WolfgangAmadeusMozart-SymphonyNo.40InGMinorK.550-03-MenuettoAllegretto.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johannes Brahms - Symphony No. 3 in F Major, Op. 90 - 04 - Allegro",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Brahms_SymphonyNo.3inFMajor/JohannesBrahms-SymphonyNo.3InFMajorOp.90-04-Allegro.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johannes Brahms - Symphony No. 4 in E Minor, Op. 98 - 02 - Andante Moderato",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Brahms_SymphonyNo.4inEMinor/JohannesBrahms-SymphonyNo.4InEMinorOp.98-02-AndanteModerato.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Wolfgang Amadeus Mozart - Symphony No. 40 in G Minor, K. 550 - 04 - Allegro assai",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mozart_SymphonyNo.40inGMinor/WolfgangAmadeusMozart-SymphonyNo.40InGMinorK.550-04-AllegroAssai.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in A Major, D. 664 - 01 - Allegro moderato",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInAMajorD.664/FranzSchubert-SonataInAMajorD.664-01-AllegroModerato.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johannes Brahms - Symphon No. 2 in D Major, Op. 73 - 03 - Allegretto Grazioso (take 1)",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Brahms_SymphonyNo.2inDMajor/JohannesBrahms-SymphonyNo.2InDMajorOp.73-03-AllegrettoGraziosotake1.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "AntonÃ­n DvoÅ™Ã¡k - String Quartet No. 12 in F Major, Op. 96, American - 03 - Molto Vivace",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Dvorak_StringQuartetNo.12inFMajorOp.96/AntonnDvorak-StringQuartetNo.12InFMajorOp.96American-03-MoltoVivace.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in A Major, D. 664 - 02 - Andante",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInAMajorD.664/FranzSchubert-SonataInAMajorD.664-02-Andante.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johannes Brahms - Symphony No. 3 in F Major, Op. 90 - 02 - Andante",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Brahms_SymphonyNo.3inFMajor/JohannesBrahms-SymphonyNo.3InFMajorOp.90-02-Andante.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johannes Brahms - Symphon No. 2 in D Major, Op. 73 - 03 - Allegretto Grazioso (take 2)",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Brahms_SymphonyNo.2inDMajor/JohannesBrahms-SymphonyNo.2InDMajorOp.73-03-AllegrettoGraziosotake2.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johannes Brahms - Symphon No. 2 in D Major, Op. 73 - 02 - Adagio non toppo",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Brahms_SymphonyNo.2inDMajor/JohannesBrahms-SymphonyNo.2InDMajorOp.73-02-AdagioNonToppo.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in A Minor, D. 784 - 01 - Allegro giusto",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInAMinorD.784/FranzSchubert-SonataInAMinorD.784-01-AllegroGiusto.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in A Major, D. 664 - 03 - Allegro",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInAMajorD.664/FranzSchubert-SonataInAMajorD.664-03-Allegro.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Nikolai Rimsky-Korsakov - Russian Easter Festival Overture, Op. 36",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Rimsky-Korsakov_RussianOverture/NikolaiRimsky-korsakov-RussianEasterFestivalOvertureOp.36.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johannes Brahms - Symphony No. 4 in E Minor, Op. 98 - 01 - Allegro Non Troppo",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Brahms_SymphonyNo.4inEMinor/JohannesBrahms-SymphonyNo.4InEMinorOp.98-01-AllegroNonTroppo.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in A Minor, D. 845 - 02 - Andante poco mosso",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInAMinorD.845/FranzSchubert-SonataInAMinorD.845-02-AndantePocoMosso.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Alexander Borodin - String Quartet No. 1 in A Major - 01 - Moderato - Allegro",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Borodin_StringQuartetNo.1inAMajor/AlexanderBorodin-StringQuartetNo.1InAMajor-01-Moderato-Allegro.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Alexander Borodin - String Quartet No. 2 in D Major - 02 - Scherzo Allegro",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Borodin_StringQuartetNo.2inDMajor/AlexanderBorodin-StringQuartetNo.2InDMajor-02-ScherzoAllegro.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johannes Brahms - Symphony No. 1 in C Minor, Op. 68 - 02 - Andante sostenuto",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Brahms_SymphonyNo.1inCMinor/JohannesBrahms-SymphonyNo.1InCMinorOp.68-02-AndanteSostenuto.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in A Minor, D. 784 - 03 - Allegro vivace",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInAMinorD.784/FranzSchubert-SonataInAMinorD.784-03-AllegroVivace.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in A Minor, D. 784 - 02 - Andante",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInAMinorD.784/FranzSchubert-SonataInAMinorD.784-02-Andante.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johannes Brahms - Symphony No. 1 in C Minor, Op. 68 - 03 - Un poco allegretto e grazioso",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Brahms_SymphonyNo.1inCMinor/JohannesBrahms-SymphonyNo.1InCMinorOp.68-03-UnPocoAllegrettoEGrazioso.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Alexander Borodin - In the Steppes of Central Asia",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Borodin_InTheSteppesOfCentralAsia/AlexanderBorodin-InTheSteppesOfCentralAsia.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in A Minor, D. 959 - 01 - Allegro",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInAMinorD.959/FranzSchubert-SonataInAMinorD.959-01-Allegro.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Alexander Borodin - String Quartet No. 1 in A Major - 03 - Scherzo Prestissimo",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Borodin_StringQuartetNo.1inAMajor/AlexanderBorodin-StringQuartetNo.1InAMajor-03-ScherzoPrestissimo.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johannes Brahms - Symphony No. 1 in C Minor, Op. 68 - 04 - Adagio - PiÃ¹ andante - Allegro non troppo, ma con brio",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Brahms_SymphonyNo.1inCMinor/JohannesBrahms-SymphonyNo.1InCMinorOp.68-04-Adagio-PiAndante-AllegroNonTroppoMaConBrio.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johannes Brahms - Symphon No. 2 in D Major, Op. 73 - 01 - Allegro non troppo",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Brahms_SymphonyNo.2inDMajor/JohannesBrahms-SymphonyNo.2InDMajorOp.73-01-AllegroNonTroppo.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in A Minor, D. 845 - 03 - Scherzo. Allegro vivace - Trio. Un poco piu lento",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInAMinorD.845/FranzSchubert-SonataInAMinorD.845-03-Scherzo.AllegroVivace-Trio.UnPocoPiuLento.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Alexander Borodin - String Quartet No. 1 in A Major - 04 - Andante - Allegro risoluto",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Borodin_StringQuartetNo.1inAMajor/AlexanderBorodin-StringQuartetNo.1InAMajor-04-Andante-AllegroRisoluto.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in A Minor, D. 845 - 04 - Rondo. Allegro vivace",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInAMinorD.845/FranzSchubert-SonataInAMinorD.845-04-Rondo.AllegroVivace.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Alexander Borodin - String Quartet No. 1 in A Major - 02 - Andante con moto",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Borodin_StringQuartetNo.1inAMajor/AlexanderBorodin-StringQuartetNo.1InAMajor-02-AndanteConMoto.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Felix Mendelssohn - String Quartet No. 6 in F Minor, Op. 80 - 03 - Adagio",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mendelssohn_StringQuartetNo.6inFMinorOp.80/FelixMendelssohn-StringQuartetNo.6InFMinorOp.80-03-Adagio.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 03 - Goldberg Variations, BWV. 988 - Variation 2",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-03-GoldbergVariationsBwv.988-Variation2.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "AntonÃ­n DvoÅ™Ã¡k - String Quartet No. 12 in F Major, Op. 96, American - 04 - Finale - Vivace ma non troppo",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Dvorak_StringQuartetNo.12inFMajorOp.96/AntonnDvorak-StringQuartetNo.12InFMajorOp.96American-04-Finale-VivaceMaNonTroppo.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 21 - Goldberg Variations, BWV. 988 - Variation 20",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-21-GoldbergVariationsBwv.988-Variation20.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in D Major, D. 850 - 01 - Allegro vivace",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInDMajorD.850/FranzSchubert-SonataInDMajorD.850-01-AllegroVivace.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Ludwig van Beethoven - String Quartet No. 6 in B Flat Major, Op. 18, No. 6 - 03 - Scherzo Allegro",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Beethoven_StringQuartetNo.6inBFlatMajorOp.18/LudwigVanBeethoven-StringQuartetNo.6InBFlatMajorOp.18No.6-03-ScherzoAllegro.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in A Minor, D. 959 - 04 - Rondo. Allegretto",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInAMinorD.959/FranzSchubert-SonataInAMinorD.959-04-Rondo.Allegretto.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Ludwig van Beethoven - Symphony No. 3 in E Flat Major Eroica, Op. 55 - 01 - Allegro con brio",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Beethoven_SymphonyNo.3Eroica/LudwigVanBeethoven-SymphonyNo.3InEFlatMajorEroicaOp.55-01-AllegroConBrio.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Ludwig van Beethoven - Symphony No. 3 in E Flat Major Eroica, Op. 55 - 02 - Marcia funebre Adagio assai",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Beethoven_SymphonyNo.3Eroica/LudwigVanBeethoven-SymphonyNo.3InEFlatMajorEroicaOp.55-02-MarciaFunebreAdagioAssai.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 32 - Goldberg Variations, BWV. 988 - Aria Da Capo",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-32-GoldbergVariationsBwv.988-AriaDaCapo.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Josef Suk - Meditation",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Suk_Meditation/JosefSuk-Meditation.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 08 - Goldberg Variations, BWV. 988 - Variation 7",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-08-GoldbergVariationsBwv.988-Variation7.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 07 - Goldberg Variations, BWV. 988 - Variation 6. Canon on the second",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-07-GoldbergVariationsBwv.988-Variation6.CanonOnTheSecond.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Pyotr Ilyich Tchaikovsky - Symphony No. 6 in B Minor, Op. 74, 'PathÃ©tique' - 01 - Adagio, Allegro Non Troppo",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Tchaikovsky_SymphonyPathetique/PyotrIlyichTchaikovsky-SymphonyNo.6InBMinorOp.74pathtique-01-AdagioAllegroNonTroppo.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "BedÅ™ich Smetana - MÃ¡ vlast - Vltava",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Smetana_Vltava/BedichSmetana-MVlast-Vltava.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 11 - Goldberg Variations, BWV. 988 - Variation 10. Fughetta",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-11-GoldbergVariationsBwv.988-Variation10.Fughetta.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 09 - Goldberg Variations, BWV. 988 - Variation 8",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-09-GoldbergVariationsBwv.988-Variation8.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 10 - Goldberg Variations, BWV. 988 - Variation 9. Canon on the third",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-10-GoldbergVariationsBwv.988-Variation9.CanonOnTheThird.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 12 - Goldberg Variations, BWV. 988 - Variation 11",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-12-GoldbergVariationsBwv.988-Variation11.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 30 - Goldberg Variations, BWV. 988 - Variation 29",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-30-GoldbergVariationsBwv.988-Variation29.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Ludwig van Beethoven - Coriolan Overture",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Beethoven_CoriolanOverture/LudwigVanBeethoven-CoriolanOverture.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 28 - Goldberg Variations, BWV. 988 - Variation 27. Canon on the ninth",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-28-GoldbergVariationsBwv.988-Variation27.CanonOnTheNinth.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 29 - Goldberg Variations, BWV. 988 - Variation 28",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-29-GoldbergVariationsBwv.988-Variation28.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Ludwig van Beethoven - String Quartet No. 6 in B Flat Major, Op. 18, No. 6 - 04 - (Adagio) La Malinconia",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Beethoven_StringQuartetNo.6inBFlatMajorOp.18/LudwigVanBeethoven-StringQuartetNo.6InBFlatMajorOp.18No.6-04-adagioLaMalinconia.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Ludwig van Beethoven - String Quartet No. 6 in B Flat Major, Op. 18, No. 6 - 01 - Allegro con brio",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Beethoven_StringQuartetNo.6inBFlatMajorOp.18/LudwigVanBeethoven-StringQuartetNo.6InBFlatMajorOp.18No.6-01-AllegroConBrio.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johannes Brahms - Symphon No. 2 in D Major, Op. 73 - 04 - Allegro Con Spirito",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Brahms_SymphonyNo.2inDMajor/JohannesBrahms-SymphonyNo.2InDMajorOp.73-04-AllegroConSpirito.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in A Minor, D. 959 - 02 - Andantino",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInAMinorD.959/FranzSchubert-SonataInAMinorD.959-02-Andantino.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in C Minor, D. 958 - 04 - Allegro",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInCMinorD.958/FranzSchubert-SonataInCMinorD.958-04-Allegro.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 27 - Goldberg Variations, BWV. 988 - Variation 26",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-27-GoldbergVariationsBwv.988-Variation26.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in C Minor, D. 958 - 02 - Adagio",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInCMinorD.958/FranzSchubert-SonataInCMinorD.958-02-Adagio.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Ludwig van Beethoven - Egmont Overture, Op. 84",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Beethoven_EgmontOvertureOp.84/LudwigVanBeethoven-EgmontOvertureOp.84.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 31 - Goldberg Variations, BWV. 988 - Variation 30. Quodlibet",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-31-GoldbergVariationsBwv.988-Variation30.Quodlibet.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in C Minor, D. 958 - 03 - Menuetto Allegro",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInCMinorD.958/FranzSchubert-SonataInCMinorD.958-03-MenuettoAllegro.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in A Minor, D. 959 - 03 - Scherzo. Allegro vivace",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInAMinorD.959/FranzSchubert-SonataInAMinorD.959-03-Scherzo.AllegroVivace.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Ludwig van Beethoven - String Quartet No. 6 in B Flat Major, Op. 18, No. 6 - 02 - Adagio ma non troppo",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Beethoven_StringQuartetNo.6inBFlatMajorOp.18/LudwigVanBeethoven-StringQuartetNo.6InBFlatMajorOp.18No.6-02-AdagioMaNonTroppo.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Ludwig van Beethoven - Symphony No. 3 in E Flat Major Eroica, Op. 55 - 03 - Scherzo Allegro vivace",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Beethoven_SymphonyNo.3Eroica/LudwigVanBeethoven-SymphonyNo.3InEFlatMajorEroicaOp.55-03-ScherzoAllegroVivace.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in C Minor, D. 958 - 01 - Allegro",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInCMinorD.958/FranzSchubert-SonataInCMinorD.958-01-Allegro.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Pyotr Ilyich Tchaikovsky - Symphony No. 6 in B Minor, Op. 74, 'PathÃ©tique' - 03 - Allegro molto vivace",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Tchaikovsky_SymphonyPathetique/PyotrIlyichTchaikovsky-SymphonyNo.6InBMinorOp.74pathtique-03-AllegroMoltoVivace.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 02 - Goldberg Variations, BWV. 988 - Variation 1",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-02-GoldbergVariationsBwv.988-Variation1.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 17 - Goldberg Variations, BWV. 988 - Variation 16. Overture",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-17-GoldbergVariationsBwv.988-Variation16.Overture.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Alexander Borodin - String Quartet No. 2 in D Major - 01 - Allegro moderato",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Borodin_StringQuartetNo.2inDMajor/AlexanderBorodin-StringQuartetNo.2InDMajor-01-AllegroModerato.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 18 - Goldberg Variations, BWV. 988 - Variation 17",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-18-GoldbergVariationsBwv.988-Variation17.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in E Flat Major, D. 568 - 01 - Allegro moderato",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInEFlatMajorD.568/FranzSchubert-SonataInEFlatMajorD.568-01-AllegroModerato.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 14 - Goldberg Variations, BWV. 988 - Variation 13",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-14-GoldbergVariationsBwv.988-Variation13.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 16 - Goldberg Variations, BWV. 988 - Variation 15. Canon on the fifth",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-16-GoldbergVariationsBwv.988-Variation15.CanonOnTheFifth.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in E Flat Major, D. 568 - 02 - Andante molto",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInEFlatMajorD.568/FranzSchubert-SonataInEFlatMajorD.568-02-AndanteMolto.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Ludwig van Beethoven - Symphony No. 3 in E Flat Major Eroica, Op. 55 - 04 - Finale Allegro molto",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Beethoven_SymphonyNo.3Eroica/LudwigVanBeethoven-SymphonyNo.3InEFlatMajorEroicaOp.55-04-FinaleAllegroMolto.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Edvard Grieg - Peer Gynt Suite No. 1, Op. 46 - 02 - Aase's Death",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Greig_PeerGynt/EdvardGrieg-PeerGyntSuiteNo.1Op.46-02-AasesDeath.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Wolfgang Amadeus Mozart - String Quartet No. 19 in C, K 465, Dissonance - 01 - Adagio Allegro",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mozart_StringQuartetNo.19inCMajorK465/WolfgangAmadeusMozart-StringQuartetNo.19InCK465Dissonance-01-AdagioAllegro.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Edvard Grieg - Peer Gynt Suite No. 1, Op. 46 - 04 - In the Hall of the Mountain King",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Greig_PeerGynt/EdvardGrieg-PeerGyntSuiteNo.1Op.46-04-InTheHallOfTheMountainKing.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Joseph Haydn - String Quartet in D, Op. 645, H 363, Lark - 01 - Allegro Moderato",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Haydn_StringQuartetInDMajorOp.64/JosephHaydn-StringQuartetInDOp.645H363Lark-01-AllegroModerato.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Edvard Grieg - Peer Gynt Suite No. 1, Op. 46 - 03 - Anitra's Dream",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Greig_PeerGynt/EdvardGrieg-PeerGyntSuiteNo.1Op.46-03-AnitrasDream.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Edvard Grieg - Peer Gynt Suite No. 1, Op. 46 - 01 - Morning",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Greig_PeerGynt/EdvardGrieg-PeerGyntSuiteNo.1Op.46-01-Morning.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Wolfgang Amadeus Mozart - String Quartet No. 19 in C, K 465, Dissonance - 03 - Minuetto Allegretto",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mozart_StringQuartetNo.19inCMajorK465/WolfgangAmadeusMozart-StringQuartetNo.19InCK465Dissonance-03-MinuettoAllegretto.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Wolfgang Amadeus Mozart - String Quartet No. 19 in C, K 465, Dissonance - 02 - Andante Cantabile",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Mozart_StringQuartetNo.19inCMajorK465/WolfgangAmadeusMozart-StringQuartetNo.19InCK465Dissonance-02-AndanteCantabile.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in E Flat Major, D. 568 - 03 - Menuetto Allegretto",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInEFlatMajorD.568/FranzSchubert-SonataInEFlatMajorD.568-03-MenuettoAllegretto.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 15 - Goldberg Variations, BWV. 988 - Variation 14",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-15-GoldbergVariationsBwv.988-Variation14.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in E Flat Major, D. 568 - 04 - Allegro moderato",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInEFlatMajorD.568/FranzSchubert-SonataInEFlatMajorD.568-04-AllegroModerato.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 13 - Goldberg Variations, BWV. 988 - Variation 12. Canon on the fourth",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-13-GoldbergVariationsBwv.988-Variation12.CanonOnTheFourth.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Pyotr Ilyich Tchaikovsky - Symphony No. 6 in B Minor, Op. 74, 'PathÃ©tique' - 02 - Allegro con gracia",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Tchaikovsky_SymphonyPathetique/PyotrIlyichTchaikovsky-SymphonyNo.6InBMinorOp.74pathtique-02-AllegroConGracia.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 05 - Goldberg Variations, BWV. 988 - Variation 4",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-05-GoldbergVariationsBwv.988-Variation4.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Pyotr Ilyich Tchaikovsky - Symphony No. 6 in B Minor, Op. 74, 'PathÃ©tique' - 04 - Finale Adagio lamentoso",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Tchaikovsky_SymphonyPathetique/PyotrIlyichTchaikovsky-SymphonyNo.6InBMinorOp.74pathtique-04-FinaleAdagioLamentoso.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 04 - Goldberg Variations, BWV. 988 - Variation 3. Canon on the unison",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-04-GoldbergVariationsBwv.988-Variation3.CanonOnTheUnison.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 06 - Goldberg Variations, BWV. 988 - Variation 5",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-06-GoldbergVariationsBwv.988-Variation5.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in D Major, D. 850 - 03 - Scherzo. Allegro vivace",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInDMajorD.850/FranzSchubert-SonataInDMajorD.850-03-Scherzo.AllegroVivace.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 22 - Goldberg Variations, BWV. 988 - Variation 21. Canon on the seventh",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-22-GoldbergVariationsBwv.988-Variation21.CanonOnTheSeventh.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in D Major, D. 850 - 02 - Con moto",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInDMajorD.850/FranzSchubert-SonataInDMajorD.850-02-ConMoto.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 20 - Goldberg Variations, BWV. 988 - Variation 19",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-20-GoldbergVariationsBwv.988-Variation19.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 19 - Goldberg Variations, BWV. 988 - Variation 18. Canon on the sixth",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-19-GoldbergVariationsBwv.988-Variation18.CanonOnTheSixth.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 25 - Goldberg Variations, BWV. 988 - Variation 24. Canon on the octave",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-25-GoldbergVariationsBwv.988-Variation24.CanonOnTheOctave.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 26 - Goldberg Variations, BWV. 988 - Variation 25",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-26-GoldbergVariationsBwv.988-Variation25.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Franz Schubert - Sonata in D Major, D. 850 - 04 - Rondo. Allegro moderato",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Schubert_SonataInDMajorD.850/FranzSchubert-SonataInDMajorD.850-04-Rondo.AllegroModerato.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 23 - Goldberg Variations, BWV. 988 - Variation 22",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-23-GoldbergVariationsBwv.988-Variation22.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
+      "title": "Johann Sebastian Bach - 24 - Goldberg Variations, BWV. 988 - Variation 23",
+      "url": "https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/JohannSebastianBach-24-GoldbergVariationsBwv.988-Variation23.mp3",
+      "archiveItem": "MusopenCollectionAsFlac"
+    },
+    {
       "title": "Chopin · Nocturne, Op. 55 no. 1 in F minor",
       "url": "https://archive.org/download/musopen-chopin/Nocturne%20Op.%2055%20no.%201%20in%20F%20minor.mp3",
       "archiveItem": "musopen-chopin"
@@ -619,5 +1344,5 @@
       "url": "https://www.orangefreesounds.com/wp-content/uploads/2017/10/Piano-sonata-no-11.mp3"
     }
   ],
-  "updated": "2026-11-01"
+  "updated": "2026-11-02"
 }
