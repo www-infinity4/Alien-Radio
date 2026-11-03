@@ -1,0 +1,40 @@
+/* Product-first, readable album shelf. It does not control or pause audio. */
+.radio-album-shop{
+  box-sizing:border-box;margin:14px 0 20px;padding:16px;border-radius:16px;
+  border:1px solid #a7c5c5;background:#eaf2f0;color:#203c45;
+  font:400 15px/1.55 system-ui,-apple-system,sans-serif;
+}
+.radio-album-shop[hidden]{display:none}
+.radio-album-shop h2{font-size:clamp(18px,4.2vw,23px);letter-spacing:.02em;line-height:1.28;margin:4px 0 6px;color:#173640}
+.radio-album-shop .radio-shop-eyebrow{font-size:11px;font-weight:800;letter-spacing:.09em;margin:0;color:#3b6065}
+.radio-album-shop .radio-shop-track{font-size:14px;line-height:1.5;margin:4px 0 14px;color:#35545c;overflow-wrap:anywhere}
+.radio-shop-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,225px),1fr));gap:12px;margin:12px 0}
+.radio-shop-product{display:flex;flex-direction:column;min-width:0;padding:10px;border-radius:12px;border:1px solid #c3d3d2;background:#f5f8f6;color:#253f46}
+.radio-shop-product-link{display:flex;align-items:center;gap:10px;min-height:106px;text-decoration:none;color:inherit}
+.radio-shop-art{width:94px;height:94px;flex:0 0 94px;object-fit:cover;border-radius:7px;border:1px solid #ced8d7;background:#edf1ef}
+.radio-shop-product-copy{display:flex;flex-direction:column;gap:3px;min-width:0;overflow-wrap:anywhere}
+.radio-shop-product-copy strong{font-size:14px;line-height:1.35;font-weight:800}
+.radio-shop-product-copy small{font-size:12px;line-height:1.4;color:#49636a}
+.radio-shop-price{font-weight:700}
+.radio-shop-store-action,.radio-shop-links a{
+  display:inline-flex;align-items:center;justify-content:center;text-align:center;
+  padding:9px 12px;min-height:44px;box-sizing:border-box;border:1px solid #94b5b4;
+  border-radius:10px;background:#e7eeec;color:#15444c;text-decoration:none;
+  font-size:13px;font-weight:750;letter-spacing:.01em;
+}
+.radio-shop-store-action{margin-top:10px}
+.radio-shop-links{display:flex;gap:8px;flex-wrap:wrap}
+.radio-shop-links a{flex:1 1 180px}
+.radio-shop-product-link:focus-visible,.radio-shop-store-action:focus-visible,.radio-shop-links a:focus-visible{
+  outline:3px solid #366e83;outline-offset:2px
+}
+.radio-album-shop .radio-shop-note{margin:11px 0 0;font-size:12px;line-height:1.6;color:#43616a}
+@media(max-width:360px){
+  .radio-album-shop{padding:12px}
+  .radio-shop-product-link{gap:8px}
+  .radio-shop-art{width:82px;height:82px;flex-basis:82px}
+}
+
+.radio-shop-apple-badge{grid-column:1/-1;display:inline-flex;align-items:center;justify-content:flex-start;max-width:178px;min-height:44px}
+.radio-shop-apple-badge img{display:block;width:166px;height:auto;max-width:100%;border:0}
+.radio-shop-apple-badge:focus-visible{outline:3px solid #366e83;outline-offset:2px}

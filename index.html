@@ -20,6 +20,7 @@
 <meta name="twitter:image" content="https://quantaphi.org/infinity-radio/social-preview.png">
 <meta name="twitter:image:alt" content="Infinity Radio — classical piano, live metals, and deep focus.">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="radio-album-offers.css?v=20261103-commerce1">
 <style>
 body{margin:0;background:#020812;color:#dff;font-family:Arial,sans-serif}
 .radio-shell{max-width:760px;margin:auto;padding:14px}
@@ -102,6 +103,19 @@ body.web-mode .player h1,body.web-mode .player p,body.web-mode #piano-status{dis
     <button id="piano-library-play" type="button" disabled>Play selected song</button>
   </div>
 </section>
+<section id="radio-album-shop" class="radio-album-shop" aria-label="Find physical and digital albums for this song" hidden>
+  <header>
+    <p class="radio-shop-eyebrow">INFINITY RADIO · REAL ALBUM OFFERS</p>
+    <h2>Love the music? Find the album.</h2>
+    <p id="radio-shop-track" class="radio-shop-track"></p>
+  </header>
+  <div id="radio-shop-cards" class="radio-shop-grid" aria-label="Matching digital album editions"></div>
+  <nav class="radio-shop-links" aria-label="Find physical CD editions">
+    <a id="radio-shop-cd" target="_blank" rel="noopener noreferrer">Find CD editions · Discogs</a>
+    <a id="radio-shop-ebay" target="_blank" rel="noopener noreferrer">Find Buy It Now CDs · eBay</a>
+  </nav>
+  <p id="radio-shop-note" class="radio-shop-note">Other recordings may use different performers. Retailer inventory and prices must be confirmed before purchase.</p>
+</section>
 <section class="ad-rail" aria-label="Phi collects">
   <div class="ad-label">SANTA’S HELPER · SHOPPING MATCH</div>
   <div id="quanta-feed">Open Quanta Phi and collect cards to build this feed.</div>
@@ -132,6 +146,7 @@ body.web-mode .player h1,body.web-mode .player p,body.web-mode #piano-status{dis
 <script src="https://unified-wallet.marvaseater.workers.dev/unified-wallet.js?v=20260927-cloud2"></script>
 <script src="radio-queue.js?v=20261101-continuity"></script>
 <script src="app.js?v=20261102-274-snapshot2"></script>
+<script src="radio-album-offers.js?v=20261103-commerce1"></script>
 <script src="music-quant-store.js?v=20260927-idb1"></script>
 <script src="music-quant.js?v=20260928-cloud-commit7"></script>
 <script src="music-quant-composer.js?v=20260928-continuous1"></script>

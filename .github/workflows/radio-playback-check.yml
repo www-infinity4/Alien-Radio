@@ -5,6 +5,8 @@ on:
     paths:
       - 'app.js'
       - 'index.html'
+      - 'radio-album-offers.js'
+      - 'radio-album-offers.css'
       - 'radio-playback.test.js'
       - 'radio-queue.js'
       - 'test/**'
@@ -23,6 +25,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Check JavaScript syntax
-        run: node --check app.js
+        run: node --check app.js && node --check radio-album-offers.js
       - name: Verify continuous playlist playback
-        run: node --test radio-playback.test.js test/piano-playback.test.cjs test/radio-continuity.test.cjs
+        run: node --test radio-playback.test.js test/piano-playback.test.cjs test/radio-continuity.test.cjs test/radio-album-offers.test.cjs
