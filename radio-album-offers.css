@@ -34,3 +34,7 @@
   .radio-shop-product-link{gap:8px}
   .radio-shop-art{width:82px;height:82px;flex-basis:82px}
 }
+
+.radio-shop-apple-badge{grid-column:1/-1;display:inline-flex;align-items:center;justify-content:flex-start;max-width:178px;min-height:44px}
+.radio-shop-apple-badge img{display:block;width:166px;height:auto;max-width:100%;border:0}
+.radio-shop-apple-badge:focus-visible{outline:3px solid #366e83;outline-offset:2px}
