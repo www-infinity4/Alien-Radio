@@ -63,3 +63,13 @@ test('shopping cards follow track-start and library selections without modifying
   assert.doesNotMatch(source,/recordListeningQuant|creditStar|mintQuant|wallet\.|audio\.play\(/);
   assert.match(source,/Download on iTunes|View on Apple Music/);
 });
+
+test('shopping cards keep only one unmodified retailer-approved Apple Music badge',()=>{
+ const source=fs.readFileSync(path.join(__dirname,'../radio-album-offers.js'),'utf8');
+ assert.match(source,/https:\/\/marketing\.services\.apple\/mdsa\/assets\/storage\/blobs\/images\//);
+ assert.match(source,/const firstMusic=matches\.find/);
+ assert.match(source,/badge\.href=firstMusic\.storeUrl/);
+ const query=shop.queryForTrack({title:'Chopin · Nocturne Op. 9 No. 2'});
+ assert.doesNotMatch(query,/[.,;]/);
+ assert.match(query,/Chopin Nocturne/);
+});
