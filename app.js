@@ -125,6 +125,7 @@ async function loadPublishedPianoLibrary(){
     const data=await response.json();
     if(!Array.isArray(data.tracks))throw new Error('catalog_tracks_missing');
     addPianoTracks(data.tracks,'published-catalog');
+    renderPianoLibrary('published collection');
   }catch(error){console.warn('Published piano catalog deferred',error);renderPianoLibrary('catalog unavailable · saved songs only')}
 }
 async function loadArchivePianoLibrary(){
