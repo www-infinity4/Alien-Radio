@@ -43,7 +43,7 @@ const PIANO_PLAYLIST = [
 const ARCHIVE_PIANO_SOURCE='musopen-chopin';
 const radioQueue=globalThis.InfinityRadioQueue;
 const BASE_PIANO_URLS=new Set(PIANO_PLAYLIST.map(track=>track.url));
-const PIANO_QUEUE_REVISION='2026-10-20-new-piano-front';
+const PIANO_QUEUE_REVISION='2026-11-02-published-collection-front';
 let pianoTrackIndex=(()=>{
   try{
     if(sessionStorage.getItem('infinityRadio:pianoQueueRevision')!==PIANO_QUEUE_REVISION){
@@ -57,8 +57,47 @@ let pianoTrackIndex=(()=>{
 })();
 let pianoCurrentTrackUrl='';
 let pianoNewTracksWaiting=false;
+// The public player must display the real catalog, rather than hiding additions
+// behind a static first track and a Play button.
+function renderPianoLibrary(source='') {
+  const select=document.getElementById('piano-library-select');
+  const count=document.getElementById('piano-library-count');
+  const button=document.getElementById('piano-library-play');
+  if(!select||!count||!button)return;
+  const previous=select.value;
+  select.replaceChildren();
+  const fragment=document.createDocumentFragment();
+  PIANO_PLAYLIST.forEach((track,i)=>{
+    const option=document.createElement('option');
+    option.value=String(i);
+    option.textContent=(i+1)+'. '+track.title;
+    fragment.appendChild(option);
+  });
+  select.appendChild(fragment);
+  const selectedUrl=pianoCurrentTrackUrl||'';
+  const chosenIndex=selectedUrl?PIANO_PLAYLIST.findIndex(track=>track.url===selectedUrl):0;
+  // A refresh retains a genuinely active track, but a fresh visit starts at the
+  // newest catalog entry instead of an obsolete saved index from earlier visits.
+  select.value=String(chosenIndex>=0?chosenIndex:0);
+  button.disabled=!PIANO_PLAYLIST.length;
+  count.textContent=PIANO_PLAYLIST.length+' songs · newest arrivals first'+(source?' · '+source:'');
+}
+function playSelectedFromLibrary() {
+  const select=document.getElementById('piano-library-select');
+  if(!select)return;
+  const index=Number(select.value);
+  if(!Number.isInteger(index)||index<0||index>=PIANO_PLAYLIST.length)return;
+  pianoTrackIndex=index;
+  pianoNewTracksWaiting=false;
+  state.isPlaying=true;
+  const btn=document.getElementById('play-btn');
+  if(btn)btn.textContent='⏸';
+  if(streamAudioEl)playPianoTrack(streamAudioEl);
+  else startAudio(state.activeChannel);
+}
+document.getElementById('piano-library-play')?.addEventListener('click',playSelectedFromLibrary);
 function addPianoTracks(incoming,source){
-  const previousUrl=pianoCurrentTrackUrl||(pianoTrackIndex>0?PIANO_PLAYLIST[pianoTrackIndex]?.url:'');
+  const previousUrl=pianoCurrentTrackUrl;
   const merged=radioQueue.mergeNewTracks(PIANO_PLAYLIST,incoming);
   if(!merged.added)return 0;
   // Finish the current recording, then play the newly discovered front of stack.
@@ -72,6 +111,7 @@ function addPianoTracks(incoming,source){
     localStorage.setItem(radioQueue.CACHE_KEY,JSON.stringify(discoveries));
     sessionStorage.setItem('infinityRadio:pianoTrackIndex',String(pianoTrackIndex));
   }catch(_){/* Storage may be unavailable; the in-memory queue still grows. */}
+  renderPianoLibrary(source);
   window.dispatchEvent(new CustomEvent('infinityradio:library-loaded',{
     detail:{added:merged.added,total:PIANO_PLAYLIST.length,source}
   }));
@@ -85,7 +125,8 @@ async function loadPublishedPianoLibrary(){
     const data=await response.json();
     if(!Array.isArray(data.tracks))throw new Error('catalog_tracks_missing');
     addPianoTracks(data.tracks,'published-catalog');
-  }catch(error){console.warn('Published piano catalog deferred',error)}
+    renderPianoLibrary('published collection');
+  }catch(error){console.warn('Published piano catalog deferred',error);renderPianoLibrary('catalog unavailable · saved songs only')}
 }
 async function loadArchivePianoLibrary(){
   try{
@@ -107,6 +148,7 @@ async function refreshPianoLibrary(){
   await loadPublishedPianoLibrary();
   await loadArchivePianoLibrary();
 }
+renderPianoLibrary('checking published catalog');
 refreshPianoLibrary();
 // Foreground refresh; browsing other cards never clears the accumulated queue.
 setInterval(()=>{if(!document.hidden)refreshPianoLibrary()},60*60*1000);
@@ -484,6 +526,7 @@ function playPianoTrack(el) {
   const attempt = ++pianoPlayAttempt;
   const track = PIANO_PLAYLIST[pianoTrackIndex % PIANO_PLAYLIST.length];
   pianoCurrentTrackUrl=track.url;
+  renderPianoLibrary();
   updateRadioMediaMetadata(track);
   pianoTrackSession={track:{title:track.title,url:track.url,archiveItem:track.archiveItem||''},trackIndex:pianoTrackIndex,startedAt:new Date().toISOString()};
   window.dispatchEvent(new CustomEvent('infinityradio:track-start',{detail:pianoTrackSession}));
