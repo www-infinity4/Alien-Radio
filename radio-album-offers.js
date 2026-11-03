@@ -19,7 +19,7 @@
    const composer=composerOf(title);
    if(!composer)return title.replace(/\b\d{1,3}\b/g,' ').replace(/[·:_\-]+/g,' ').replace(/\s+/g,' ').trim().slice(0,100);
    let work=title.replace(/Johann Sebastian|Ludwig van|Wolfgang Amadeus|Felix|Fr[eé]d[eé]ric|Frederic|Robert|Franz|Johannes|Joseph|Anton[ií]n|Edvard|Alexander|Pyotr/gi,' ');
-   work=work.replace(/[·:_\-–—]+/g,' ').replace(/\b0?\d{1,3}\b/g,' ')
+   work=work.replace(/[·:_\-–—.,;]+/g,' ').replace(/\b0?\d{1,3}\b/g,' ')
      .replace(/\b(?:in|no|op|bwv|k)\b/gi,' ').replace(/\s+/g,' ').trim();
    work=work.replace(new RegExp(composer,'gi'),' ').replace(/\s+/g,' ').trim();
    return clean(composer+' '+work.split(' ').slice(0,7).join(' ')).slice(0,110);
@@ -120,6 +120,21 @@
        card.appendChild(store);
        cards.appendChild(card);
      });
+     // One unmodified Apple-approved badge per shelf. It links to an actual
+     // Apple Music album, never to a fabricated checkout or competing retailer.
+     const firstMusic=matches.find(album=>album.storeUrl.startsWith('https://music.apple.com/'));
+     if(firstMusic){
+       const badge=make('a','radio-shop-apple-badge');
+       badge.href=firstMusic.storeUrl;badge.target='_blank';badge.rel='noopener noreferrer';
+       const badgeImage=make('img','','Listen on Apple Music');
+       badgeImage.src='https://marketing.services.apple/mdsa/assets/storage/blobs/images/6408fe79bf4a430007e6828b/en-us-large@1x.png';
+       badgeImage.alt='Listen on Apple Music';
+       badgeImage.loading='lazy';
+       badgeImage.decoding='async';
+       badgeImage.addEventListener('error',()=>badge.remove());
+       badge.appendChild(badgeImage);
+       cards.appendChild(badge);
+     }
      note.textContent=matches.length?
        'Real store album art and links. These may be different performances from the free radio recording. Prices and stock must be confirmed with the retailer.':
        'No verified digital album match found. You can still search CD editions; no stock or price is claimed.';
