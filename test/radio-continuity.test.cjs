@@ -4,7 +4,7 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const {mergeNewTracks,readSavedTracks}=require('../radio-queue.js');
-const {buildCatalog}=require('../scripts/update-radio-catalog.cjs');
+const {buildCatalog,licenseApproved}=require('../scripts/update-radio-catalog.cjs');
 
 const url=(name)=>'https://archive.org/download/musopen-chopin/'+encodeURIComponent(name)+'.mp3';
 const old={title:'Original',url:url('old')};
@@ -56,4 +56,22 @@ test('empty or failed discovery never replaces the existing catalog',()=>{
  const result=buildCatalog(prior,[],'2026-11-01');
  assert.equal(result.added,0);
  assert.deepEqual(result.catalog,prior);
+});
+
+test('second Musopen archive enters queue with source attribution, preserving all older recordings',()=>{
+ const source='MusopenCollectionAsFlac';
+ const files=[{name:'Bach_GoldbergVariations/example.mp3',format:'VBR MP3',title:'Bach - Aria',mtime:'1440000000'}];
+ const result=buildCatalog({version:2,tracks:[old]},files,'2026-11-02',source);
+ assert.equal(result.added,1);
+ assert.deepEqual(result.catalog.tracks.map(t=>t.archiveItem||''),[source,'']);
+ assert.equal(result.catalog.tracks[1].url,old.url);
+ const verified=mergeNewTracks([old],result.catalog.tracks);
+ assert.equal(verified.added,1);
+ assert.equal(verified.tracks[0].url,'https://archive.org/download/MusopenCollectionAsFlac/Bach_GoldbergVariations/example.mp3');
+});
+test('only the exact public-domain declarations of approved Musopen items are accepted',()=>{
+ assert.equal(licenseApproved('musopen-chopin','http://creativecommons.org/publicdomain/zero/1.0/'),true);
+ assert.equal(licenseApproved('MusopenCollectionAsFlac','http://creativecommons.org/publicdomain/mark/1.0/'),true);
+ assert.equal(licenseApproved('MusopenCollectionAsFlac','https://creativecommons.org/licenses/by-nc-sa/3.0/'),false);
+ assert.equal(licenseApproved('unknown','http://creativecommons.org/publicdomain/zero/1.0/'),false);
 });
