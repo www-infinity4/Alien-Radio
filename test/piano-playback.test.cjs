@@ -34,3 +34,18 @@ test('screen-off playback has HTML audio and Android media controls', () => {
   assert.match(script, /PIANO_QUEUE_REVISION/);
   assert.match(script, /if \(streamAudioEl\) streamAudioEl\.pause\(\);/);
 });
+
+test('a visitor can see the actual song count and select any published song',()=>{
+  assert.match(html,/id="piano-library-count"[^>]*role="status"/);
+  assert.match(html,/id="piano-library-select"/);
+  assert.match(html,/id="piano-library-play"/);
+  assert.match(script,/function renderPianoLibrary/);
+  assert.match(script,/PIANO_PLAYLIST\.length\+' songs · newest arrivals first'/);
+  assert.match(script,/function playSelectedFromLibrary/);
+  assert.match(script,/startAudio\(state\.activeChannel\)/);
+  assert.match(script,/renderPianoLibrary\('published collection'\)/);
+  assert.match(script,/PIANO_QUEUE_REVISION='2026-11-02/);
+  assert.match(script,/const previousUrl=pianoCurrentTrackUrl;/);
+  assert.equal(feed.tracks.length,129);
+  assert.ok(feed.tracks[0].title.includes('Nocturne'),'newest catalog song appears first');
+});
