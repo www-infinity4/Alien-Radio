@@ -47,7 +47,7 @@ test('a visitor can see the actual song count and select any published song',()=
   assert.match(script,/PIANO_QUEUE_REVISION='2026-11-02/);
   assert.match(script,/const previousUrl=pianoCurrentTrackUrl;/);
   assert.equal(feed.tracks.length,274);
-  assert.ok(feed.tracks[0].title.includes('Nocturne'),'newest catalog song appears first');
+  assert.equal(feed.tracks[0].archiveItem,'MusopenCollectionAsFlac','newly imported source leads the catalog');
 });
 
 test('published collection adds other composers, retains all earlier recordings, and deduplicates URLs',()=>{
